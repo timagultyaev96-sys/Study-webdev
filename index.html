@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Веб-квест «Пиксель»: учи HTML и CSS, помогая кошке-магине Марте собрать сайт кофейни.">
+<meta name="description" content="Веб-квест «Пиксель»: учи HTML, CSS и JavaScript, помогая кошке-магине Марте собрать сайт кофейни.">
 <title>Веб-квест «Пиксель»</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;700;800&family=Philosopher:wght@400;700&family=Press+Start+2P&display=swap">
@@ -150,6 +150,18 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .dots i:first-child{background:var(--red)}.dots i:nth-child(2){background:var(--gold)}
 .url{flex:1;min-width:0;background:var(--soft);border-radius:999px;padding:3px 12px;font:12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .screen{height:clamp(320px,58vh,560px);overflow:auto;background:#fffaf5}
+.preview.js{grid-template-rows:auto 1fr auto}
+.preview.js .screen{height:clamp(230px,40vh,400px)}
+.rerun{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:2px 10px;font:12px var(--mono);white-space:nowrap}
+.rerun:hover{color:var(--ink);border-color:var(--orange)}
+.console{background:var(--code-bg);color:var(--code-fg);border-top:1px solid var(--code-line);font:12.5px/1.5 var(--mono)}
+.chead{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;color:#9fb3c0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--code-line)}
+.clines{max-height:150px;min-height:64px;overflow:auto;padding:6px 12px}
+.cl{white-space:pre-wrap;word-break:break-word;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.cl.err{color:#ff8a80}.cl.note{color:#9fb3c0;font-style:italic}.cl.warn{color:#f7bb4c}
+.cl code{background:rgba(255,255,255,.08);color:#ffd27a}
+.t-f{color:#9fd0ff}
+.brief>*,.learn>*,.task>*,.checks li>span{min-width:0}
 
 /* the seal */
 .seal{position:absolute;right:20px;bottom:20px;width:116px;height:116px;pointer-events:none;opacity:0}
@@ -182,6 +194,8 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .chapintro{background:var(--night);color:#fde9c8;border-radius:14px;padding:14px;display:grid;gap:8px}
 .chapintro b{color:var(--gold);font:700 15px var(--display)}
 .chapintro p{margin:0;font-size:14px;color:#c8d4dc}
+.seasgroup{display:grid;gap:6px}
+.seasgroup>span{font:700 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .skip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
 .skip b{color:var(--ink)}
 .quizbox{position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--night) 70%,transparent);display:grid;place-items:center;
@@ -297,7 +311,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     <div class="brand">
       <div class="eyebrow">Кофейня котов-магов</div>
       <h1>Веб-квест <b>«Пиксель»</b></h1>
-      <p>Кошка-магиня Марта варит кофейные зелья. Помоги ей наколдовать сайт: каждое заклинание — это строчка HTML или CSS.</p>
+      <p>Кошка-магиня Марта варит кофейные зелья. Помоги ей наколдовать сайт: каждое заклинание — это строчка HTML, CSS или JavaScript.</p>
     </div>
     <div class="xp"><span>Магическая сила</span><strong id="xp">0</strong><div class="xpbar"><i id="xpbar"></i></div></div>
   </header>
@@ -313,7 +327,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
       <div class="frame mapbox">
         <canvas id="mapc" width="160" height="110" aria-label="Пиксельная карта уровней"></canvas>
         <div id="stops"></div>
-        <div class="fog-label">СЕЗОН 2<br>JAVA<br>SCRIPT<br>скоро</div>
+        <div class="fog-label" id="foglabel">СЕЗОН 2<br>JAVA<br>SCRIPT<br>скоро</div>
         <div class="plate">ЗЕМЛИ ГИЛЬДИИ</div>
       </div>
       <aside class="panel side" id="mapside"></aside>
@@ -345,8 +359,9 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     </section>
 
     <section class="panel preview" aria-label="Как выглядит сайт">
-      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">kofeynya-piksel.local</div></div>
+      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">kofeynya-piksel.local</div><button class="rerun" id="rerun" type="button" hidden>↻ Перезапустить</button></div>
       <div class="screen"><div id="host"></div></div>
+      <div class="console" id="console" hidden><div class="chead"><span>Консоль</span><span>console.log пишет сюда</span></div><div class="clines" id="clines" aria-live="polite"></div></div>
       <div class="seal" id="seal" aria-hidden="true">
         <div class="disc"><span><b>✦</b>ЗАЧАРО-<br>ВАНО</span></div>
         <i style="--x:-70px;--y:-50px"></i><i style="--x:60px;--y:-70px"></i><i style="--x:-80px;--y:30px"></i><i style="--x:20px;--y:-90px"></i><i style="--x:-30px;--y:-80px"></i>
@@ -357,7 +372,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 </div>
 
 <script>
-const BASE = `<style>.__root{font-family:Georgia,"Times New Roman",serif;color:#1d1d1f;background:#fffaf5;padding:20px 24px;line-height:1.5;min-height:100%;box-sizing:border-box}.__root img{max-width:100%}</style>`;
+const BASE = `<style>.__root{font-family:Georgia,"Times New Roman",serif;color:#1d1d1f;background:#fffaf5;padding:20px 24px;line-height:1.5;min-height:100%;box-sizing:border-box}.__root img{max-width:100%}.__root:focus{outline:none}</style>`;
 const C = '<' + '!--';
 const CC = '/*';
 
@@ -505,6 +520,85 @@ const VT = `\n  .top {\n    display: flex;\n    justify-content: space-between;\
 const V10 = V9 + VT + `\n  .top {\n    position: sticky;\n    top: 0;\n  }`;
 const E5 = css(`  :root {\n    --night: #0f2a3b;\n    --gold: #f4ac3c;\n  }\n  .top {\n    position: sticky;\n    top: 0;\n    display: flex;\n    justify-content: space-between;\n    background-color: var(--night);\n    color: var(--gold);\n    padding: 10px;\n  }\n  .cards {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n  }\n  .card {\n    background-color: #fde9c8;\n    padding: 12px;\n    border-radius: 10px;\n  }\n  @media (max-width: 600px) {\n    .cards {\n      grid-template-columns: 1fr;\n    }\n  }\n  button {\n    background-color: var(--night);\n    color: var(--gold);\n    border: none;\n    padding: 10px 18px;\n    border-radius: 999px;\n    cursor: pointer;\n    transition: transform 0.3s;\n  }\n  button:hover {\n    transform: scale(1.1);\n  }\n  @keyframes glow {\n    from {\n      opacity: 1;\n    }\n    to {\n      opacity: 0.4;\n    }\n  }\n  .moon {\n    animation: glow 2s infinite alternate;\n  }`) +
   `<header class="top">\n  <b>Обсерватория</b>\n  <a href="#join">Вступить</a>\n</header>\n\n<h1>Ночь открытых звёзд <span class="moon">☾</span></h1>\n\n<div class="cards">\n  <div class="card">Телескоп</div>\n  <div class="card">Карта неба</div>\n  <div class="card">Какао</div>\n</div>\n\n<button>Посмотреть в телескоп</button>\n\n<footer>\n  <p>Гильдия котов-магов</p>\n</footer>`;
+
+/* ---------- season 2 helpers ---------- */
+const SC = body => `\n\n<script>\n${body}\n<\/script>`;
+const lg = (e, sub) => e.logs.some(l => l.includes(sub));
+const lgSeq = (e, arr) => e.logs.join('\u0001').includes(arr.join('\u0001'));
+const has = (e, re) => re.test(e.jsc);
+const cnt = (e, re) => (e.jsc.match(re) || []).length;
+const tx = (e, sel) => txt(q(e.root, sel));
+const noErr = e => e.errors.length === 0;
+const many = (n, fn) => { const out = []; for (let k = 0; k < n; k++) out.push(fn(k)); return out; };
+const posOf = el => el ? [el.style.left, el.style.top, el.style.transform, el.style.marginLeft].join('|') : '';
+
+const LIB0 = `<h1>Библиотека заклинаний</h1>\n<p>Под превью есть консоль: туда JavaScript пишет свои ответы.</p>`;
+const WS0 = `<h1>Часовая мастерская</h1>\n<p>Здесь шестерёнки крутятся по кругу, а заклинания повторяются сами.</p>`;
+const PCSS_G = `<style>\n  .glow {\n    color: #f4ac3c;\n    text-shadow: 0 0 8px #f4ac3c;\n  }\n</style>\n\n`;
+const PCSS_D = `<style>\n  .dark {\n    background-color: #0f2a3b;\n    color: white;\n  }\n</style>\n\n`;
+const PO0 = `<h1>Совиная почта</h1>\n<p>Окошко закрыто.</p>`;
+const MENUJS = `  const menu = [\n    { name: 'Эспрессо', price: 100, hot: true },\n    { name: 'Латте', price: 150, hot: true },\n    { name: 'Раф', price: 180, hot: true },\n    { name: 'Лимонад', price: 120, hot: false },\n  ];`;
+const KIT0 = `<h1>Кухня кофейни</h1>\n<p>Здесь хранятся рецепты и заказы.</p>`;
+const KITL = `<h1>Меню кухни</h1>\n<ul id="menu"></ul>`;
+const KITC = KITL + `\n<p>В корзине: <span id="total">0</span> руб.</p>`;
+const RENDER8 = `  const list = document.querySelector('#menu');\n  for (const item of menu) {\n    const li = document.createElement('li');\n    li.textContent = \`\${item.name} — \${item.price} руб.\`;\n    list.append(li);\n  }`;
+const CART9 = `  const list = document.querySelector('#menu');\n  const totalEl = document.querySelector('#total');\n  let total = 0;\n  for (const item of menu) {\n    const li = document.createElement('li');\n    li.textContent = \`\${item.name} — \${item.price} руб. \`;\n    const btn = document.createElement('button');\n    btn.textContent = 'В корзину';\n    btn.addEventListener('click', () => {\n      total += item.price;\n      totalEl.textContent = total;\n    });\n    li.append(btn);\n    list.append(li);\n  }`;
+const CART10 = CART9.replace('  let total = 0;', '  let total = Number(localStorage.getItem(\'total\')) || 0;\n  totalEl.textContent = total;').replace('      totalEl.textContent = total;\n', '      totalEl.textContent = total;\n      localStorage.setItem(\'total\', total);\n');
+const GCSS = `<style>\n  #field {\n    position: relative;\n    height: 160px;\n    background-color: #0f2a3b;\n    border-radius: 12px;\n  }\n  #firefly {\n    position: absolute;\n    left: 20px;\n    top: 20px;\n  }\n</style>\n\n`;
+const G8H = `<h1>Волшебный сад</h1>\n<p>Поймано светлячков: <span id="score">0</span></p>\n<div id="field">\n  <button id="firefly">✦</button>\n</div>`;
+const G9H = G8H + `\n<p>Осталось: <span id="time">10</span> с</p>\n<p id="msg"></p>`;
+const G10H = G9H + `\n<p>Рекорд: <span id="best">0</span></p>`;
+const FIRE8 = `  const fly = document.querySelector('#firefly');\n  const scoreEl = document.querySelector('#score');\n  let score = 0;\n  fly.addEventListener('click', () => {\n    score++;\n    scoreEl.textContent = score;\n    fly.style.left = Math.floor(Math.random() * 200) + 'px';\n    fly.style.top = Math.floor(Math.random() * 120) + 'px';\n  });`;
+const FIRE9 = FIRE8 + `\n\n  const timeEl = document.querySelector('#time');\n  const msg = document.querySelector('#msg');\n  let time = 10;\n  const timer = setInterval(() => {\n    time--;\n    timeEl.textContent = time;\n    if (time === 0) {\n      clearInterval(timer);\n      fly.disabled = true;\n      msg.textContent = 'Время вышло!';\n    }\n  }, 1000);`;
+const BEST10 = `\n\n  const bestEl = document.querySelector('#best');\n  let best = Number(localStorage.getItem('best')) || 0;\n  bestEl.textContent = best;`;
+const FIRE10 = FIRE8 + BEST10 + FIRE9.slice(FIRE8.length).replace("      msg.textContent = 'Время вышло!';\n", "      msg.textContent = 'Время вышло!';\n      if (score > best) {\n        best = score;\n        localStorage.setItem('best', best);\n        bestEl.textContent = best;\n      }\n");
+const STARCSS = `<style>\n  #field {\n    position: relative;\n    height: 180px;\n    background-color: #0f2a3b;\n    border-radius: 12px;\n    overflow: hidden;\n  }\n  #star {\n    position: absolute;\n    left: 50px;\n    top: 50px;\n  }\n</style>\n\n`;
+const STARH = `<h1>Звездопад</h1>\n<button id="start">Начать</button>\n<p>Счёт: <span id="score">0</span> · Время: <span id="time">15</span> · Рекорд: <span id="best">0</span></p>\n<div id="field">\n  <button id="star">★</button>\n</div>\n<p id="msg"></p>`;
+const STARJS = `  const startBtn = document.querySelector('#start');
+  const star = document.querySelector('#star');
+  const scoreEl = document.querySelector('#score');
+  const timeEl = document.querySelector('#time');
+  const bestEl = document.querySelector('#best');
+  const msg = document.querySelector('#msg');
+
+  let score = 0;
+  let time = 15;
+  let playing = false;
+  let timer = null;
+  let best = Number(localStorage.getItem('best')) || 0;
+  bestEl.textContent = best;
+
+  startBtn.addEventListener('click', () => {
+    score = 0;
+    time = 15;
+    playing = true;
+    scoreEl.textContent = score;
+    timeEl.textContent = time;
+    msg.textContent = '';
+    clearInterval(timer);
+    timer = setInterval(() => {
+      time--;
+      timeEl.textContent = time;
+      if (time === 0) {
+        clearInterval(timer);
+        playing = false;
+        msg.textContent = \`Игра окончена! Счёт: \${score}\`;
+        if (score > best) {
+          best = score;
+          localStorage.setItem('best', best);
+          bestEl.textContent = best;
+        }
+      }
+    }, 1000);
+  });
+
+  star.addEventListener('click', () => {
+    if (!playing) return;
+    score++;
+    scoreEl.textContent = score;
+    star.style.left = Math.floor(Math.random() * 200) + 'px';
+    star.style.top = Math.floor(Math.random() * 140) + 'px';
+  });`;
 
 const lastIs = (r, tag) => { const els = [...r.children].filter(e => e.tagName !== 'STYLE'); return !!els.length && els[els.length - 1].tagName === tag; };
 const labelLinked = r => { const l = r.querySelector('label[for]'); if (!l || !l.getAttribute('for')) return false; let t = null; try { t = r.querySelector('#' + CSS.escape(l.getAttribute('for'))); } catch (e) {} return !!t && t.tagName === 'INPUT'; };
@@ -1293,6 +1387,866 @@ const LEVELS = [
     hint: 'Порядок: <style> → <header class="top"> → <h1> с анимированным значком → <div class="cards"> с карточками → <button> → <footer>.',
     solution: E5,
   },
+
+  /* ================= SEASON 2 · JavaScript ================= */
+  /* ---------------- chapter 6 · library ---------------- */
+  {
+    js: true,
+    title: 'Говорящая книга',
+    say: 'Мур-мяу, второй сезон! Сайт кофейни красивый, но пока молчит. В библиотеке хранятся заклинания на JavaScript — языке, который оживляет страницы. Начнём с самого простого: пусть книга заговорит.',
+    learn: { t: 'console.log', p: 'Код на JavaScript пишут внутри тега script. console.log(...) выводит сообщение в консоль — окошко разработчика под превью. Текст пишут в кавычках.', code: "console.log('Привет!');" },
+    task: 'Внутри `script` выведи через `console.log` любой текст в кавычках.',
+    starter: LIB0 + SC(`  // Напиши здесь console.log с любым текстом в кавычках\n`),
+    checks: [
+      ['В консоли появилась запись', (r, e) => e.logs.length > 0],
+      ['Это текст в кавычках', (r, e) => /console\.log\(\s*(['"`])[\s\S]+?\1\s*\)/.test(e.js)],
+    ],
+    hint: "Внутри script напиши: console.log('Мяу!'); — кавычки обязательны.",
+    solution: LIB0 + SC(`  console.log('Мяу! Я колдую на JavaScript!');`),
+  },
+  {
+    js: true,
+    title: 'Считаем чашки',
+    say: 'В гости пришли 12 котов, и каждый выпьет по 3 чашки. Сколько всего варить? Не считай сам — пусть посчитает JavaScript.',
+    learn: { t: 'Числа и арифметика', p: '+ − * / работают как на калькуляторе. Числа пишут без кавычек, иначе это текст. Сначала выполняется умножение, потом сложение — как в математике.', code: 'console.log(2 + 3 * 4); // 14\nconsole.log((2 + 3) * 4); // 20' },
+    task: 'Выведи в консоль, сколько чашек нужно: 12 котов умножь на 3 чашки. Посчитать должен JavaScript.',
+    starter: LIB0 + SC(`  // 12 котов, каждому по 3 чашки\n`),
+    checks: [
+      ['В консоли 36', (r, e) => lg(e, '36')],
+      ['Посчитано умножением `*`', (r, e) => has(e, /\d\s*\*\s*\d/)],
+      ['Ответ не вписан готовым числом', (r, e) => !/\b36\b/.test(e.js)],
+    ],
+    hint: 'console.log(12 * 3);',
+    solution: LIB0 + SC(`  console.log(12 * 3);`),
+  },
+  {
+    js: true,
+    title: 'Сундук-переменная',
+    say: 'В сундуке 5 зелий, а сова принесла ещё 3. Заведём для зелий переменную, чтобы JavaScript запомнил их число.',
+    learn: { t: 'Переменные let', p: 'Переменная — подписанная коробка для значения. let создаёт переменную, которую можно менять. Знак = кладёт в неё новое значение.', code: 'let fish = 2;\nfish = fish + 1;\nconsole.log(fish); // 3' },
+    task: 'Создай `let potions = 5`, потом увеличь `potions` на 3 и выведи её в консоль.',
+    starter: LIB0 + SC(`  // Создай переменную potions, добавь 3 и выведи\n`),
+    checks: [
+      ['Создана `let potions = 5`', (r, e) => has(e, /let\s+potions\s*=\s*5\b/)],
+      ['potions увеличена на 3', (r, e) => has(e, /potions\s*(\+=\s*3\b|=\s*potions\s*\+\s*3\b|=\s*3\s*\+\s*potions)/)],
+      ['В консоли 8', (r, e) => lg(e, '8')],
+    ],
+    hint: 'let potions = 5; potions = potions + 3; console.log(potions);',
+    solution: LIB0 + SC(`  let potions = 5;\n  potions = potions + 3;\n  console.log(potions);`),
+  },
+  {
+    js: true,
+    title: 'Неизменное имя',
+    say: 'Имя хозяйки кофейни не меняется никогда. Для таких значений есть особая переменная.',
+    learn: { t: 'const и строки', p: 'const — переменная, которую нельзя перезаписать. Текст (строку) пишут в кавычках, а склеивают строки знаком +.', code: "const owl = 'Ухта';\nconsole.log('Сова ' + owl); // Сова Ухта" },
+    task: 'Сохрани имя в `const name = \'Марта\'` и выведи «Привет, Марта!», склеив строку с переменной через `+`.',
+    starter: LIB0 + SC(`  // Сохрани имя в const и поздоровайся\n`),
+    checks: [
+      ['Есть `const name`', (r, e) => has(e, /const\s+name\s*=/)],
+      ['Строка склеена с name через `+`', (r, e) => has(e, /\+\s*name\b|\bname\s*\+/)],
+      ['В консоли «Привет, Марта!»', (r, e) => lg(e, 'Привет, Марта')],
+    ],
+    hint: "const name = 'Марта'; console.log('Привет, ' + name + '!');",
+    solution: LIB0 + SC(`  const name = 'Марта';\n  console.log('Привет, ' + name + '!');`),
+  },
+  {
+    js: true,
+    title: 'Шаблонная строка',
+    say: 'Склеивать плюсами неудобно, особенно длинные фразы. У магов есть строки с окошками для переменных.',
+    learn: { t: 'Шаблонные строки', p: 'Строку в обратных кавычках `...` можно смешивать с переменными: ${имя} подставит значение. Обратная кавычка — клавиша Ё в английской раскладке.', code: 'const cats = 7;\nconsole.log(`В кофейне ${cats} котов`);' },
+    task: 'Создай `const cups = 3` и выведи «Марта выпила 3 чашки» шаблонной строкой с `${cups}`.',
+    starter: LIB0 + SC(`  // const cups = 3 и шаблонная строка\n`),
+    checks: [
+      ['Есть `const cups = 3`', (r, e) => has(e, /const\s+cups\s*=\s*3\b/)],
+      ['Используется `${cups}` в обратных кавычках', (r, e) => has(e, /`[^`]*\$\{\s*cups\s*\}[^`]*`/)],
+      ['В консоли «Марта выпила 3 чашки»', (r, e) => lg(e, 'выпила 3 чашки')],
+    ],
+    hint: 'const cups = 3; console.log(`Марта выпила ${cups} чашки`);',
+    solution: LIB0 + SC(`  const cups = 3;\n  console.log(\`Марта выпила \${cups} чашки\`);`),
+  },
+  {
+    js: true,
+    title: 'Хватит ли рыбок?',
+    say: 'На ужин 10 рыбок, а котов семеро. Хватит ли каждому? JavaScript умеет сравнивать.',
+    learn: { t: 'Сравнения', p: '> < >= <= сравнивают числа. === проверяет, что значения равны, !== — что не равны. Ответ всегда true (да) или false (нет).', code: 'console.log(5 > 3);   // true\nconsole.log(2 === 7); // false' },
+    task: 'Выведи в консоль результат сравнения: `fish` больше или равно `cats`?',
+    starter: LIB0 + SC(`  let fish = 10;\n  let cats = 7;\n  // Хватит ли рыбок? Сравни fish и cats\n`),
+    checks: [
+      ['Сравниваются переменные fish и cats', (r, e) => has(e, /fish\s*(>=|>|<=|<|===|!==)\s*cats|cats\s*(>=|>|<=|<|===|!==)\s*fish/)],
+      ['В консоли true', (r, e) => lg(e, 'true')],
+      ['При 5 рыбках ответ false', (r, e) => lg(e.variant(c => c.replace(/let\s+fish\s*=\s*\d+/, 'let fish = 5')), 'false')],
+    ],
+    hint: 'console.log(fish >= cats);',
+    solution: LIB0 + SC(`  let fish = 10;\n  let cats = 7;\n  console.log(fish >= cats);`),
+  },
+  {
+    js: true,
+    title: 'Если рыбок много',
+    say: 'Если рыбок больше трёх — устраиваем пир! А если нет, тихо пьём чай.',
+    learn: { t: 'Условие if', p: 'if (условие) { ... } — код в фигурных скобках выполнится, только если условие true.', code: "let moon = 'полная';\nif (moon === 'полная') {\n  console.log('Колдуем!');\n}" },
+    task: 'Если `fish` больше 3, выведи «Пир!».',
+    starter: LIB0 + SC(`  let fish = 4;\n  // Если fish больше 3 — выведи «Пир!»\n`),
+    checks: [
+      ['Есть условие `if`', (r, e) => has(e, /\bif\s*\(/)],
+      ['При 4 рыбках в консоли «Пир!»', (r, e) => lg(e, 'Пир')],
+      ['При 2 рыбках пира нет', (r, e) => { const v = e.variant(c => c.replace(/let\s+fish\s*=\s*\d+/, 'let fish = 2')); return noErr(v) && !lg(v, 'Пир'); }],
+    ],
+    hint: "if (fish > 3) { console.log('Пир!'); }",
+    solution: LIB0 + SC(`  let fish = 4;\n  if (fish > 3) {\n    console.log('Пир!');\n  }`),
+  },
+  {
+    js: true,
+    title: 'Дождь или солнце',
+    say: 'Если на улице дождь, варим какао в зале. А если нет — все на террасу!',
+    learn: { t: 'else', p: 'else — что делать, если условие не выполнилось. Из двух веток всегда срабатывает ровно одна.', code: "if (fish > 0) {\n  console.log('Едим');\n} else {\n  console.log('Ловим');\n}" },
+    task: 'Если `weather` равно \'дождь\', выведи «Варим какао», иначе — «Идём на террасу».',
+    starter: LIB0 + SC(`  let weather = 'дождь';\n  // Дождь — «Варим какао», иначе — «Идём на террасу»\n`),
+    checks: [
+      ['Есть `else`', (r, e) => has(e, /\belse\b/)],
+      ['В дождь — «Варим какао»', (r, e) => lg(e, 'какао')],
+      ['В солнце — «Идём на террасу»', (r, e) => { const v = e.variant(c => c.replace(/let\s+weather\s*=\s*(['"`]).*?\1/, "let weather = 'солнце'")); return lg(v, 'террас') && !lg(v, 'какао'); }],
+    ],
+    hint: "if (weather === 'дождь') { ... } else { ... } — три знака равно.",
+    solution: LIB0 + SC(`  let weather = 'дождь';\n  if (weather === 'дождь') {\n    console.log('Варим какао');\n  } else {\n    console.log('Идём на террасу');\n  }`),
+  },
+  {
+    js: true,
+    title: 'Два условия сразу',
+    say: 'Колдовать можно только ночью и только при луне. Одного без другого мало!',
+    learn: { t: '&& и ||', p: '&& — «и»: true, только если оба условия true. || — «или»: хватит одного. ! переворачивает значение: !true это false.', code: "if (hungry && hasFish) {\n  console.log('Обед!');\n}" },
+    task: 'Если `isNight` и `hasMoon` оба true, выведи «Время колдовать».',
+    starter: LIB0 + SC(`  let isNight = true;\n  let hasMoon = true;\n  // Если ночь И луна — «Время колдовать»\n`),
+    checks: [
+      ['Используется `&&`', (r, e) => has(e, /&&/)],
+      ['Сейчас «Время колдовать»', (r, e) => lg(e, 'колдовать')],
+      ['Без луны колдовать нельзя', (r, e) => !lg(e.variant(c => c.replace(/let\s+hasMoon\s*=\s*\w+/, 'let hasMoon = false')), 'колдовать')],
+      ['Днём тоже нельзя', (r, e) => !lg(e.variant(c => c.replace(/let\s+isNight\s*=\s*\w+/, 'let isNight = false')), 'колдовать')],
+    ],
+    hint: "if (isNight && hasMoon) { console.log('Время колдовать'); }",
+    solution: LIB0 + SC(`  let isNight = true;\n  let hasMoon = true;\n  if (isNight && hasMoon) {\n    console.log('Время колдовать');\n  }`),
+  },
+  {
+    js: true,
+    title: 'Оценка зелья',
+    say: 'Гости ставят зельям звёзды. Пусть книга сама пишет отзыв: на каждую оценку свой.',
+    learn: { t: 'else if', p: 'else if добавляет ещё одну проверку между if и else. Условия проверяются сверху вниз, срабатывает первое подходящее.', code: "if (cups > 5) {\n  console.log('Много');\n} else if (cups > 2) {\n  console.log('Нормально');\n} else {\n  console.log('Мало');\n}" },
+    task: '3 звезды — «Отлично!», 2 — «Хорошо», меньше — «Попробуй ещё».',
+    starter: LIB0 + SC(`  let stars = 2;\n  // 3 — «Отлично!», 2 — «Хорошо», иначе — «Попробуй ещё»\n`),
+    checks: [
+      ['Есть `else if`', (r, e) => has(e, /else\s+if/)],
+      ['2 звезды — «Хорошо»', (r, e) => lg(e, 'Хорошо')],
+      ['3 звезды — «Отлично!»', (r, e) => { const v = e.variant(c => c.replace(/let\s+stars\s*=\s*\d+/, 'let stars = 3')); return lg(v, 'Отлично') && !lg(v, 'Хорошо'); }],
+      ['1 звезда — «Попробуй ещё»', (r, e) => lg(e.variant(c => c.replace(/let\s+stars\s*=\s*\d+/, 'let stars = 1')), 'Попробуй')],
+    ],
+    hint: "if (stars === 3) { ... } else if (stars === 2) { ... } else { ... }",
+    solution: LIB0 + SC(`  let stars = 2;\n  if (stars === 3) {\n    console.log('Отлично!');\n  } else if (stars === 2) {\n    console.log('Хорошо');\n  } else {\n    console.log('Попробуй ещё');\n  }`),
+  },
+  {
+    js: true, extra: true, chapter: 6,
+    title: 'Предсказатель погоды',
+    say: 'Гости каждое утро спрашивают: брать зонтик или шарф? Собери для библиотеки предсказатель погоды.',
+    learn: { t: 'Повторение главы 6', p: 'Переменные, шаблонные строки, сравнения и условия if, else if, else.', code: "console.log(`Сегодня ${temperature} градусов`);\nif (...) {\n  ...\n} else if (...) {\n  ...\n} else {\n  ...\n}" },
+    task: 'Собери предсказатель по чек-листу. Переменные `temperature` и `rain` уже есть.',
+    starter: `<h1>Предсказатель погоды</h1>` + SC(`  let temperature = 12;\n  let rain = true;\n  // Экстра-уровень: собери предсказатель по чек-листу слева\n`),
+    checks: [
+      ['«Сегодня 12 градусов» через `${temperature}`', (r, e) => lg(e, 'Сегодня 12 градусов') && has(e, /\$\{\s*temperature\s*\}/)],
+      ['В дождь — «Зонтик»', (r, e) => lg(e, 'Зонтик')],
+      ['Без дождя в мороз — «Шарф»', (r, e) => { const v = e.variant(c => c.replace(/let\s+rain\s*=\s*\w+/, 'let rain = false').replace(/let\s+temperature\s*=\s*-?\d+/, 'let temperature = -5')); return lg(v, 'Шарф') && !lg(v, 'Зонтик'); }],
+      ['Без дождя в тепло — «Терраса»', (r, e) => { const v = e.variant(c => c.replace(/let\s+rain\s*=\s*\w+/, 'let rain = false').replace(/let\s+temperature\s*=\s*-?\d+/, 'let temperature = 20')); return lg(v, 'Терраса') && !lg(v, 'Шарф'); }],
+      ['Есть `else if`', (r, e) => has(e, /else\s+if/)],
+      ['Температура сравнивается с нулём', (r, e) => has(e, /temperature\s*<=?\s*0|0\s*>=?\s*temperature/)],
+      ['Нет ошибок в консоли', (r, e) => noErr(e) && e.logs.length > 0],
+    ],
+    hint: 'Сначала console.log с шаблонной строкой, потом if (rain) { Зонтик } else if (temperature < 0) { Шарф } else { Терраса }.',
+    solution: `<h1>Предсказатель погоды</h1>` + SC(`  let temperature = 12;\n  let rain = true;\n  console.log(\`Сегодня \${temperature} градусов\`);\n  if (rain) {\n    console.log('Зонтик');\n  } else if (temperature < 0) {\n    console.log('Шарф');\n  } else {\n    console.log('Терраса');\n  }`),
+  },
+
+  /* ---------------- chapter 7 · clock workshop ---------------- */
+  {
+    js: true,
+    title: 'Пять оборотов',
+    say: 'В часовой мастерской всё повторяется: тик-так, тик-так. Писать одно и то же пять раз скучно — у магов есть цикл.',
+    learn: { t: 'Цикл for', p: 'for повторяет код несколько раз. В скобках три части: с чего начать, до каких пор повторять и что делать после каждого круга. i++ увеличивает i на 1.', code: "for (let i = 1; i <= 3; i++) {\n  console.log('Тик ' + i);\n}" },
+    task: 'Выведи числа от 1 до 5 циклом `for`. `console.log` должен быть написан один раз.',
+    starter: WS0 + SC(`  // Цикл for: выведи числа от 1 до 5\n`),
+    checks: [
+      ['Есть цикл `for`', (r, e) => has(e, /\bfor\s*\(/)],
+      ['В консоли 1, 2, 3, 4, 5 по порядку', (r, e) => lgSeq(e, ['1', '2', '3', '4', '5'])],
+      ['`console.log` написан один раз', (r, e) => cnt(e, /console\.log/g) === 1],
+    ],
+    hint: 'for (let i = 1; i <= 5; i++) { console.log(i); }',
+    solution: WS0 + SC(`  for (let i = 1; i <= 5; i++) {\n    console.log(i);\n  }`),
+  },
+  {
+    js: true,
+    title: 'Обратный отсчёт',
+    say: 'Перед запуском больших часов принято считать назад: три, два, один — старт!',
+    learn: { t: 'Счёт вниз', p: 'Цикл может идти вниз: начать с большого числа, повторять, пока i больше нуля, и уменьшать i через i--.', code: 'for (let i = 10; i >= 8; i--) {\n  console.log(i);\n}' },
+    task: 'Выведи 3, 2, 1 циклом, а после цикла — «Старт!».',
+    starter: WS0 + SC(`  // Отсчёт 3, 2, 1, а потом «Старт!»\n`),
+    checks: [
+      ['Счёт идёт вниз: `i--`', (r, e) => has(e, /--|-=\s*1/)],
+      ['В консоли 3, 2, 1, Старт!', (r, e) => lgSeq(e, ['3', '2', '1', 'Старт!'])],
+      ['«Старт!» выведен один раз', (r, e) => e.logs.filter(l => l.includes('Старт')).length === 1],
+    ],
+    hint: "for (let i = 3; i >= 1; i--) { console.log(i); } — а console.log('Старт!') после закрывающей }.",
+    solution: WS0 + SC(`  for (let i = 3; i >= 1; i--) {\n    console.log(i);\n  }\n  console.log('Старт!');`),
+  },
+  {
+    js: true,
+    title: 'Список котов',
+    say: 'В мастерской работают три кота. Запишем их в один список, а не в три переменные.',
+    learn: { t: 'Массивы', p: 'Массив — список значений в квадратных скобках через запятую. Номера элементов начинаются с нуля: cats[0] — первый. .length — сколько всего элементов.', code: "const owls = ['Ухта', 'Сыч'];\nconsole.log(owls[1]);     // Сыч\nconsole.log(owls.length); // 2" },
+    task: 'Выведи первого кота через `cats[0]` и количество котов через `cats.length`.',
+    starter: WS0 + SC(`  const cats = ['Барсик', 'Мурка', 'Пушок'];\n  // Выведи первого кота и сколько всего котов\n`),
+    checks: [
+      ['Первый кот через `cats[0]`', (r, e) => has(e, /cats\[\s*0\s*\]/) && lg(e, 'Барсик')],
+      ['Количество через `cats.length`', (r, e) => has(e, /cats\.length/) && lg(e, '3')],
+    ],
+    hint: 'console.log(cats[0]); console.log(cats.length);',
+    solution: WS0 + SC(`  const cats = ['Барсик', 'Мурка', 'Пушок'];\n  console.log(cats[0]);\n  console.log(cats.length);`),
+  },
+  {
+    js: true,
+    title: 'Новый ученик',
+    say: 'К нам пришёл новый ученик — рыжий кот Рыжик. Запишем его в список.',
+    learn: { t: 'push', p: '.push(значение) добавляет элемент в конец массива. Массив в const менять можно: const запрещает только заменить его целиком.', code: "const owls = ['Ухта'];\nowls.push('Сыч');\nconsole.log(owls); // ['Ухта', 'Сыч']" },
+    task: 'Добавь \'Рыжик\' в `cats` через `push` и выведи, сколько стало котов.',
+    starter: WS0 + SC(`  const cats = ['Барсик', 'Мурка', 'Пушок'];\n  // Добавь Рыжика и выведи количество\n`),
+    checks: [
+      ['Рыжик добавлен через `push`', (r, e) => has(e, /cats\.push\(\s*['"`]Рыжик/)],
+      ['В консоли 4', (r, e) => lg(e, '4')],
+    ],
+    hint: "cats.push('Рыжик'); console.log(cats.length);",
+    solution: WS0 + SC(`  const cats = ['Барсик', 'Мурка', 'Пушок'];\n  cats.push('Рыжик');\n  console.log(cats.length);`),
+  },
+  {
+    js: true,
+    title: 'Перебор зелий',
+    say: 'Нужно проверить каждое зелье на полке, одно за другим. Номера нам не нужны — только сами зелья.',
+    learn: { t: 'for...of', p: 'for (const x of список) по очереди кладёт в x каждый элемент массива. Счётчик i не нужен.', code: 'for (const owl of owls) {\n  console.log(owl);\n}' },
+    task: 'Выведи каждое зелье циклом `for...of`. `console.log` — один раз.',
+    starter: WS0 + SC(`  const potions = ['Звездопад', 'Комета', 'Полнолуние'];\n  // Выведи каждое зелье циклом for...of\n`),
+    checks: [
+      ['Цикл `for...of` по potions', (r, e) => has(e, /for\s*\(\s*(const|let)\s+\w+\s+of\s+potions\b/)],
+      ['Все три зелья по порядку', (r, e) => lgSeq(e, ['Звездопад', 'Комета', 'Полнолуние'])],
+      ['`console.log` написан один раз', (r, e) => cnt(e, /console\.log/g) === 1],
+    ],
+    hint: 'for (const potion of potions) { console.log(potion); }',
+    solution: WS0 + SC(`  const potions = ['Звездопад', 'Комета', 'Полнолуние'];\n  for (const potion of potions) {\n    console.log(potion);\n  }`),
+  },
+  {
+    js: true,
+    title: 'Сумма заказа',
+    say: 'Мастерская заказала детали. Посчитай общую сумму — и так, чтобы код работал для любых цен.',
+    learn: { t: 'Накопление', p: 'Чтобы сложить всё в массиве, заведи let total = 0 и в цикле прибавляй каждый элемент: total += x — это то же, что total = total + x.', code: 'let sum = 0;\nfor (const n of [1, 2, 3]) {\n  sum += n;\n}\nconsole.log(sum); // 6' },
+    task: 'Посчитай сумму `prices` циклом и выведи её.',
+    starter: WS0 + SC(`  const prices = [120, 150, 90];\n  // Посчитай сумму циклом и выведи её\n`),
+    checks: [
+      ['Есть цикл', (r, e) => has(e, /\bfor\s*\(/)],
+      ['В консоли 360', (r, e) => lg(e, '360')],
+      ['Число 360 не вписано вручную', (r, e) => !/360/.test(e.js)],
+      ['Работает и с другими ценами', (r, e) => lg(e.variant(c => c.replace(/const\s+prices\s*=\s*\[[^\]]*\]/, 'const prices = [100, 200]')), '300')],
+    ],
+    hint: 'let total = 0; for (const price of prices) { total += price; } console.log(total);',
+    solution: WS0 + SC(`  const prices = [120, 150, 90];\n  let total = 0;\n  for (const price of prices) {\n    total += price;\n  }\n  console.log(total);`),
+  },
+  {
+    js: true,
+    title: 'Своё заклинание',
+    say: 'Каждый вечер мастерская мурлычет одну и ту же песенку. Запишем её один раз и будем звать по имени.',
+    learn: { t: 'Функции', p: 'Функция — заклинание с именем. Её объявляют один раз через function, а вызывают сколько угодно раз: имя и круглые скобки.', code: "function meow() {\n  console.log('Мяу');\n}\nmeow();\nmeow();" },
+    task: 'Объяви функцию `purr`, которая выводит «Мур-мур», и вызови её 3 раза.',
+    starter: WS0 + SC(`  // Объяви функцию purr и вызови её трижды\n`),
+    checks: [
+      ['Объявлена функция `purr`', (r, e) => has(e, /function\s+purr\s*\(/)],
+      ['«Мур-мур» в консоли 3 раза', (r, e) => e.logs.filter(l => l.includes('Мур')).length === 3],
+      ['`console.log` написан один раз', (r, e) => cnt(e, /console\.log/g) === 1],
+    ],
+    hint: "function purr() { console.log('Мур-мур'); } purr(); purr(); purr();",
+    solution: WS0 + SC(`  function purr() {\n    console.log('Мур-мур');\n  }\n  purr();\n  purr();\n  purr();`),
+  },
+  {
+    js: true, exports: ['greet'],
+    title: 'Заклинание с параметром',
+    say: 'Хочу, чтобы мастерская здоровалась с каждым гостем по имени. Одна функция — для всех гостей.',
+    learn: { t: 'Параметры', p: 'В скобках функции можно принять значение — параметр. При вызове передают, чему он равен в этот раз.', code: "function feed(cat) {\n  console.log('Кормим ' + cat);\n}\nfeed('Барсика');" },
+    task: 'Напиши `greet(name)`, которая выводит «Привет, …!», и вызови её для «Марта» и «Ухта».',
+    starter: WS0 + SC(`  // Функция greet(name) и два вызова\n`),
+    checks: [
+      ['Функция `greet` с параметром', (r, e) => has(e, /function\s+greet\s*\(\s*\w+\s*\)/)],
+      ['Приветствует Марту и Ухту', (r, e) => lg(e, 'Привет, Марта') && lg(e, 'Привет, Ухта')],
+      ['Работает с любым именем', (r, e) => { if (typeof e.exports.greet !== 'function') return false; e.exports.greet('Пушок'); return lg(e, 'Привет, Пушок'); }],
+    ],
+    hint: "function greet(name) { console.log('Привет, ' + name + '!'); } greet('Марта'); greet('Ухта');",
+    solution: WS0 + SC(`  function greet(name) {\n    console.log('Привет, ' + name + '!');\n  }\n  greet('Марта');\n  greet('Ухта');`),
+  },
+  {
+    js: true, exports: ['price'],
+    title: 'Цена заказа',
+    say: 'Чашка кофе стоит 50 монет. Нужна функция, которая сама считает цену — а вывести её мы решим потом.',
+    learn: { t: 'return', p: 'return возвращает результат из функции. Его можно сохранить в переменную или сразу вывести.', code: 'function double(n) {\n  return n * 2;\n}\nconsole.log(double(4)); // 8' },
+    task: 'Напиши `price(cups)`, которая возвращает цену: 50 за чашку. Выведи `price(3)`.',
+    starter: WS0 + SC(`  // Функция price(cups) с return\n`),
+    checks: [
+      ['`price` возвращает результат через `return`', (r, e) => has(e, /function\s+price\s*\(/) && has(e, /\breturn\b/)],
+      ['price(3) = 150 в консоли', (r, e) => lg(e, '150')],
+      ['price(4) возвращает 200', (r, e) => typeof e.exports.price === 'function' && e.exports.price(4) === 200],
+    ],
+    hint: 'function price(cups) { return cups * 50; } console.log(price(3));',
+    solution: WS0 + SC(`  function price(cups) {\n    return cups * 50;\n  }\n  console.log(price(3));`),
+  },
+  {
+    js: true, exports: ['double'],
+    title: 'Стрелочная функция',
+    say: 'Старые мастера пишут функции коротко, одной стрелкой. Попробуй и ты.',
+    learn: { t: 'Стрелки =>', p: 'Короткая запись функции: const f = (x) => x * 2. Если тело в одну строку, return писать не нужно — результат вернётся сам.', code: 'const half = (n) => n / 2;\nconsole.log(half(10)); // 5' },
+    task: 'Создай стрелочную функцию `double`, которая удваивает число, и выведи `double(21)`.',
+    starter: WS0 + SC(`  // Стрелочная функция double\n`),
+    checks: [
+      ['`double` — стрелочная функция', (r, e) => has(e, /const\s+double\s*=\s*\(?\s*\w*\s*\)?\s*=>/)],
+      ['В консоли 42', (r, e) => lg(e, '42')],
+      ['double(5) возвращает 10', (r, e) => typeof e.exports.double === 'function' && e.exports.double(5) === 10],
+    ],
+    hint: 'const double = (n) => n * 2; console.log(double(21));',
+    solution: WS0 + SC(`  const double = (n) => n * 2;\n  console.log(double(21));`),
+  },
+  {
+    js: true, extra: true, chapter: 7, exports: ['cuckoo', 'total'],
+    title: 'Часы с кукушкой',
+    say: 'Главное сокровище мастерской — часы с кукушкой. Научи их куковать столько раз, сколько пробило часов!',
+    learn: { t: 'Повторение главы 7', p: 'Циклы for и for...of, массивы, push, функции с параметрами, return и стрелочные функции.', code: 'function cuckoo(hours) {\n  for (...) { ... }\n}\nconst total = (list) => { ... };' },
+    task: 'Собери часы по чек-листу на пустом месте.',
+    starter: `<h1>Часы с кукушкой</h1>` + SC(`  // Экстра-уровень: собери часы по чек-листу слева\n`),
+    checks: [
+      ['`cuckoo(hours)` кукует «Ку-ку!» нужное число раз', (r, e) => { if (typeof e.exports.cuckoo !== 'function') return false; const a = e.logs.length; e.exports.cuckoo(3); return e.logs.slice(a).filter(l => l.includes('Ку-ку')).length === 3; }],
+      ['Внутри работает цикл `for`', (r, e) => has(e, /\bfor\s*\(\s*let/)],
+      ['`total(list)` возвращает сумму', (r, e) => typeof e.exports.total === 'function' && e.exports.total([1, 2, 3]) === 6 && e.exports.total([10, 20]) === 30],
+      ['`total` — стрелочная функция', (r, e) => has(e, /const\s+total\s*=\s*\(?[^)=]*\)?\s*=>/)],
+      ['Массив часов пополнен через `push`', (r, e) => has(e, /\.push\(/)],
+      ['Часы перебираются циклом `for...of`', (r, e) => has(e, /for\s*\(\s*(const|let)\s+\w+\s+of\b/)],
+      ['В консоли «Всего ку-ку: 6»', (r, e) => lg(e, 'Всего ку-ку: 6')],
+    ],
+    hint: 'Массив hours = [1, 2], потом hours.push(3). Для каждого часа вызови cuckoo(h). В конце выведи «Всего ку-ку: » + total(hours).',
+    solution: `<h1>Часы с кукушкой</h1>` + SC(`  function cuckoo(hours) {\n    for (let i = 0; i < hours; i++) {\n      console.log('Ку-ку!');\n    }\n  }\n\n  const total = (list) => {\n    let sum = 0;\n    for (const n of list) {\n      sum += n;\n    }\n    return sum;\n  };\n\n  const hours = [1, 2];\n  hours.push(3);\n  for (const h of hours) {\n    cuckoo(h);\n  }\n  console.log('Всего ку-ку: ' + total(hours));`),
+  },
+
+  /* ---------------- chapter 8 · owl post ---------------- */
+  {
+    js: true,
+    title: 'Вывеска почты',
+    say: 'Пора научить сайт меняться прямо на глазах! На совиной почте вывеску меняют заклинанием, а не руками.',
+    learn: { t: 'querySelector и textContent', p: 'document.querySelector(селектор) находит элемент на странице — селекторы те же, что в CSS. textContent — текст внутри элемента, его можно прочитать и заменить.', code: "const p = document.querySelector('p');\np.textContent = 'Новый текст';" },
+    task: 'Не трогая HTML, замени текст заголовка `h1` на «Почта открыта!» через JavaScript.',
+    starter: PO0 + SC(`  // Найди h1 и поменяй его текст\n`),
+    checks: [
+      ['Заголовок теперь «Почта открыта!»', (r, e) => tx(e, 'h1').includes('Почта открыта')],
+      ['В HTML заголовок прежний', (r, e) => e.html.includes('<h1>Совиная почта</h1>')],
+      ['Используются `querySelector` и `textContent`', (r, e) => has(e, /querySelector/) && has(e, /textContent/)],
+    ],
+    hint: "document.querySelector('h1').textContent = 'Почта открыта!';",
+    solution: PO0 + SC(`  const title = document.querySelector('h1');\n  title.textContent = 'Почта открыта!';`),
+  },
+  {
+    js: true,
+    title: 'Алые чернила',
+    say: 'Совы пишут алыми чернилами. Покрасим заголовок прямо из заклинания.',
+    learn: { t: '.style', p: 'У каждого элемента есть .style — его стили из JavaScript. Названия свойств пишутся слитно: background-color превращается в backgroundColor.', code: "const p = document.querySelector('p');\np.style.backgroundColor = '#fde9c8';" },
+    task: 'Сделай заголовок `h1` алым через `.style.color` в JavaScript.',
+    starter: PO0 + SC(`  // Покрась h1 через .style.color\n`),
+    checks: [
+      ['Цвет `h1` изменился', (r, e) => { const h = q(e.root, 'h1'); return !!h && cs(h).color !== REF.h1color; }],
+      ['Цвет задан через `.style.color`', (r, e) => has(e, /\.style\.color\s*=/)],
+      ['В HTML нет атрибута style', (r, e) => !/\sstyle\s*=/.test(e.html)],
+    ],
+    hint: "document.querySelector('h1').style.color = '#b5151f';",
+    solution: PO0 + SC(`  const title = document.querySelector('h1');\n  title.style.color = '#b5151f';`),
+  },
+  {
+    js: true,
+    title: 'Сияние',
+    say: 'Писать стили в JavaScript неудобно. Лучше держать их в CSS, а из заклинания только включать.',
+    learn: { t: 'classList', p: "classList.add('имя') вешает класс на элемент, remove — снимает. Так JavaScript включает готовые стили из CSS.", code: "const p = document.querySelector('p');\np.classList.add('glow');" },
+    task: 'Добавь заголовку `h1` класс `glow` через `classList.add`. Стили `.glow` уже есть.',
+    starter: PCSS_G + PO0 + SC(`  // Добавь h1 класс glow\n`),
+    checks: [
+      ['У `h1` есть класс `glow`', (r, e) => !!q(e.root, 'h1.glow')],
+      ['Класс добавлен через `classList.add`', (r, e) => has(e, /classList\.add\(\s*['"`]glow/)],
+      ['В HTML класса нет', (r, e) => !/class\s*=\s*["'][^"']*glow/.test(e.html)],
+    ],
+    hint: "document.querySelector('h1').classList.add('glow');",
+    solution: PCSS_G + PO0 + SC(`  const title = document.querySelector('h1');\n  title.classList.add('glow');`),
+  },
+  {
+    js: true,
+    title: 'Позвать сову',
+    say: 'Гость нажимает кнопку — и сова летит! Пусть сайт отзывается на клики.',
+    learn: { t: 'События', p: "addEventListener('click', функция) значит «когда нажмут, сделай это». Функция выполнится при каждом клике.", code: "const btn = document.querySelector('button');\nbtn.addEventListener('click', () => {\n  console.log('Нажали!');\n});" },
+    task: 'По клику на кнопку `#call` пусть в `#status` появится «Сова летит!». Проверь, нажав кнопку в превью.',
+    starter: `<h1>Совиная почта</h1>\n<button id="call">Позвать сову</button>\n<p id="status">Совы нет.</p>` + SC(`  // По клику на #call пиши в #status «Сова летит!»\n`),
+    checks: [
+      ['До клика совы нет', (r, e) => !tx(e, '#status').includes('летит') && has(e, /addEventListener/)],
+      ['После клика «Сова летит!»', (r, e) => tx(e.click('#call'), '#status').includes('Сова летит')],
+      ['Используется `addEventListener` с click', (r, e) => has(e, /addEventListener\(\s*['"`]click/)],
+    ],
+    hint: "const btn = document.querySelector('#call'); btn.addEventListener('click', () => { document.querySelector('#status').textContent = 'Сова летит!'; });",
+    solution: `<h1>Совиная почта</h1>\n<button id="call">Позвать сову</button>\n<p id="status">Совы нет.</p>` + SC(`  const btn = document.querySelector('#call');\n  const status = document.querySelector('#status');\n  btn.addEventListener('click', () => {\n    status.textContent = 'Сова летит!';\n  });`),
+  },
+  {
+    js: true,
+    title: 'Счётчик писем',
+    say: 'Хочу знать, сколько писем мы отправили за день. Каждое нажатие — плюс одно письмо.',
+    learn: { t: 'Счётчик', p: 'Заведи let count = 0 снаружи обработчика, иначе он будет обнуляться. При клике увеличивай count и записывай его в textContent.', code: "let n = 0;\nbtn.addEventListener('click', () => {\n  n++;\n  out.textContent = n;\n});" },
+    task: 'Каждый клик по `#send` увеличивает число в `#count` на 1.',
+    starter: `<h1>Совиная почта</h1>\n<button id="send">Отправить письмо</button>\n<p>Писем отправлено: <span id="count">0</span></p>` + SC(`  // Счётчик кликов\n`),
+    checks: [
+      ['Сначала 0', (r, e) => tx(e, '#count') === '0' && has(e, /addEventListener/)],
+      ['После 3 кликов — 3', (r, e) => tx(e.click('#send', 3), '#count') === '3'],
+      ['После 5 кликов — 5', (r, e) => tx(e.click('#send', 5), '#count') === '5'],
+    ],
+    hint: "let count = 0; ... btn.addEventListener('click', () => { count++; countEl.textContent = count; });",
+    solution: `<h1>Совиная почта</h1>\n<button id="send">Отправить письмо</button>\n<p>Писем отправлено: <span id="count">0</span></p>` + SC(`  const btn = document.querySelector('#send');\n  const countEl = document.querySelector('#count');\n  let count = 0;\n  btn.addEventListener('click', () => {\n    count++;\n    countEl.textContent = count;\n  });`),
+  },
+  {
+    js: true,
+    title: 'Кому письмо?',
+    say: 'Гость пишет имя адресата, нажимает кнопку — и на почте появляется письмо для него.',
+    learn: { t: '.value', p: 'У поля ввода .value — то, что в нём напечатано. Читай его внутри обработчика клика, иначе возьмётся пустое поле, каким оно было при загрузке.', code: "const input = document.querySelector('input');\nconsole.log(input.value);" },
+    task: 'По клику на `#write` пиши в `#letter` «Письмо для …» с именем из поля `#name`.',
+    starter: `<h1>Совиная почта</h1>\n<input id="name" placeholder="Кому письмо?">\n<button id="write">Написать</button>\n<p id="letter"></p>` + SC(`  // По клику пиши «Письмо для» + имя из поля\n`),
+    checks: [
+      ['Барсик → «Письмо для Барсик»', (r, e) => tx(e.type('#name', 'Барсик').click('#write'), '#letter').includes('Письмо для Барсик')],
+      ['Мурка → «Письмо для Мурка»', (r, e) => tx(e.type('#name', 'Мурка').click('#write'), '#letter').includes('Письмо для Мурка')],
+      ['Используется `.value`', (r, e) => has(e, /\.value/)],
+    ],
+    hint: "Внутри обработчика: letter.textContent = 'Письмо для ' + input.value;",
+    solution: `<h1>Совиная почта</h1>\n<input id="name" placeholder="Кому письмо?">\n<button id="write">Написать</button>\n<p id="letter"></p>` + SC(`  const input = document.querySelector('#name');\n  const letter = document.querySelector('#letter');\n  document.querySelector('#write').addEventListener('click', () => {\n    letter.textContent = 'Письмо для ' + input.value;\n  });`),
+  },
+  {
+    js: true,
+    title: 'Список адресатов',
+    say: 'Одного письма мало. Пусть каждое новое имя добавляется в список адресатов.',
+    learn: { t: 'createElement', p: "document.createElement('li') создаёт новый элемент. Задай ему текст и добавь на страницу: список.append(элемент).", code: "const li = document.createElement('li');\nli.textContent = 'Новое';\nlist.append(li);" },
+    task: 'По клику на `#add` добавляй в `#list` новый пункт с именем из поля.',
+    starter: `<h1>Совиная почта</h1>\n<input id="name" placeholder="Кому письмо?">\n<button id="add">В список</button>\n<ul id="list"></ul>` + SC(`  // По клику создавай li и добавляй в #list\n`),
+    checks: [
+      ['Клик добавляет пункт с именем', (r, e) => { e.type('#name', 'Ухта').click('#add'); const li = qa(e.root, '#list li'); return li.length === 1 && txt(li[0]).includes('Ухта'); }],
+      ['Второй клик — второй пункт', (r, e) => { e.type('#name', 'Ухта').click('#add').type('#name', 'Мурка').click('#add'); return qa(e.root, '#list li').length === 2; }],
+      ['Пункты создаются через `createElement`', (r, e) => has(e, /createElement\(\s*['"`]li/)],
+      ['В HTML список пустой', (r, e) => !/<li/.test(e.html)],
+    ],
+    hint: "const li = document.createElement('li'); li.textContent = input.value; list.append(li);",
+    solution: `<h1>Совиная почта</h1>\n<input id="name" placeholder="Кому письмо?">\n<button id="add">В список</button>\n<ul id="list"></ul>` + SC(`  const input = document.querySelector('#name');\n  const list = document.querySelector('#list');\n  document.querySelector('#add').addEventListener('click', () => {\n    const li = document.createElement('li');\n    li.textContent = input.value;\n    list.append(li);\n  });`),
+  },
+  {
+    js: true,
+    title: 'День и ночь',
+    say: 'Совы любят ночь. Сделаем переключатель: одно нажатие — ночь, второе — снова день.',
+    learn: { t: 'toggle', p: "classList.toggle('класс') — переключатель: если класса нет, добавит, а если есть — уберёт.", code: "btn.addEventListener('click', () => {\n  box.classList.toggle('glow');\n});" },
+    task: 'По клику на `#night` переключай класс `dark` у `document.body`.',
+    starter: PCSS_D + `<h1>Совиная почта</h1>\n<button id="night">День / ночь</button>\n<p>Совы любят ночь.</p>` + SC(`  // По клику переключай класс dark у document.body\n`),
+    checks: [
+      ['Первый клик включает ночь', (r, e) => e.click('#night').root.classList.contains('dark')],
+      ['Второй клик выключает', (r, e) => { e.click('#night', 2); return has(e, /addEventListener/) && !e.root.classList.contains('dark'); }],
+      ['Используется `classList.toggle`', (r, e) => has(e, /classList\.toggle/)],
+    ],
+    hint: "document.querySelector('#night').addEventListener('click', () => { document.body.classList.toggle('dark'); });",
+    solution: PCSS_D + `<h1>Совиная почта</h1>\n<button id="night">День / ночь</button>\n<p>Совы любят ночь.</p>` + SC(`  document.querySelector('#night').addEventListener('click', () => {\n    document.body.classList.toggle('dark');\n  });`),
+  },
+  {
+    js: true,
+    title: 'Прочитано — убрать',
+    say: 'Прочитанные письма копятся горой. Пусть письмо исчезает, как только на него нажмёшь.',
+    learn: { t: 'querySelectorAll и remove', p: 'querySelectorAll находит все подходящие элементы — их перебирают циклом for...of. element.remove() удаляет элемент со страницы.', code: "for (const p of document.querySelectorAll('p')) {\n  p.addEventListener('click', () => p.remove());\n}" },
+    task: 'Клик по любому письму `li` удаляет его со страницы.',
+    starter: `<h1>Совиная почта</h1>\n<p>Нажми на письмо, чтобы убрать его.</p>\n<ul>\n  <li>Письмо от Барсика</li>\n  <li>Письмо от Мурки</li>\n  <li>Письмо от Ухты</li>\n</ul>` + SC(`  // Клик по письму удаляет его\n`),
+    checks: [
+      ['Клик по письму убирает его', (r, e) => { e.click('li'); const li = qa(e.root, 'li'); return li.length === 2 && !li.some(x => txt(x).includes('Барсика')); }],
+      ['Работает для каждого письма', (r, e) => qa(e.click('li', 3).root, 'li').length === 0],
+      ['Используется `querySelectorAll`', (r, e) => has(e, /querySelectorAll/)],
+    ],
+    hint: "for (const li of document.querySelectorAll('li')) { li.addEventListener('click', () => li.remove()); }",
+    solution: `<h1>Совиная почта</h1>\n<p>Нажми на письмо, чтобы убрать его.</p>\n<ul>\n  <li>Письмо от Барсика</li>\n  <li>Письмо от Мурки</li>\n  <li>Письмо от Ухты</li>\n</ul>` + SC(`  for (const li of document.querySelectorAll('li')) {\n    li.addEventListener('click', () => li.remove());\n  }`),
+  },
+  {
+    js: true,
+    title: 'Живой предпросмотр',
+    say: 'Телеграммы оплачиваются по буквам. Пусть гость сразу видит текст и сколько в нём символов.',
+    learn: { t: 'Событие input', p: 'Событие input срабатывает при каждом изменении текста в поле. Длина строки — .length.', code: "field.addEventListener('input', () => {\n  console.log(field.value.length);\n});" },
+    task: 'При вводе в `#msg` показывай текст в `#preview`, а число символов — в `#len`.',
+    starter: `<h1>Совиная почта</h1>\n<input id="msg" placeholder="Текст телеграммы">\n<p>Предпросмотр: <span id="preview"></span></p>\n<p>Символов: <span id="len">0</span></p>` + SC(`  // На каждое изменение поля обновляй #preview и #len\n`),
+    checks: [
+      ['Текст появляется в предпросмотре', (r, e) => tx(e.type('#msg', 'Мяу!'), '#preview') === 'Мяу!'],
+      ['Считаются символы', (r, e) => tx(e.type('#msg', 'Мяу!'), '#len') === '4'],
+      ['Используется событие `input`', (r, e) => has(e, /addEventListener\(\s*['"`]input/)],
+    ],
+    hint: "msg.addEventListener('input', () => { preview.textContent = msg.value; len.textContent = msg.value.length; });",
+    solution: `<h1>Совиная почта</h1>\n<input id="msg" placeholder="Текст телеграммы">\n<p>Предпросмотр: <span id="preview"></span></p>\n<p>Символов: <span id="len">0</span></p>` + SC(`  const msg = document.querySelector('#msg');\n  const preview = document.querySelector('#preview');\n  const len = document.querySelector('#len');\n  msg.addEventListener('input', () => {\n    preview.textContent = msg.value;\n    len.textContent = msg.value.length;\n  });`),
+  },
+  {
+    js: true, extra: true, chapter: 8,
+    title: 'Почтовое окошко',
+    say: 'Сова Ухта просит настоящее почтовое окошко: с проверкой имени, списком писем и счётчиком. Собери его сам!',
+    learn: { t: 'Повторение главы 8', p: 'querySelector, textContent, value, события click, createElement и условия.', code: "button.addEventListener('click', () => {\n  if (input.value === '') {\n    ...\n  }\n  ...\n});" },
+    task: 'Оживи почтовое окошко по чек-листу. HTML уже готов.',
+    starter: `<h1>Почтовое окошко</h1>\n<input id="to" placeholder="Кому письмо?">\n<button id="send">Отправить</button>\n<p id="error"></p>\n<p>Отправлено писем: <span id="count">0</span></p>\n<ul id="letters"></ul>` + SC(`  // Экстра-уровень: оживи окошко по чек-листу слева\n`),
+    checks: [
+      ['Пустое поле — просьба в `#error`, письмо не добавляется', (r, e) => { e.click('#send'); return !!tx(e, '#error') && qa(e.root, '#letters li').length === 0; }],
+      ['В списке «Письмо для …»', (r, e) => { e.type('#to', 'Мурка').click('#send'); const li = qa(e.root, '#letters li'); return li.length === 1 && txt(li[0]).includes('Письмо для Мурка'); }],
+      ['Счётчик растёт', (r, e) => tx(e.type('#to', 'Мурка').click('#send').type('#to', 'Ухта').click('#send'), '#count') === '2'],
+      ['Поле очищается после отправки', (r, e) => { e.type('#to', 'Мурка').click('#send'); return has(e, /addEventListener/) && q(e.root, '#to').value === '' && qa(e.root, '#letters li').length === 1; }],
+      ['Ошибка пропадает после удачной отправки', (r, e) => { e.click('#send'); const had = !!tx(e, '#error'); e.type('#to', 'Ухта').click('#send'); return had && tx(e, '#error') === ''; }],
+      ['Письма создаются через `createElement`', (r, e) => has(e, /createElement\(/)],
+      ['Есть шаблонная строка', (r, e) => has(e, /`[^`]*\$\{/)],
+    ],
+    hint: 'В обработчике: если input.value пустое — пиши ошибку и return. Иначе очисти ошибку, создай li с `Письмо для ${name}`, увеличь счётчик и очисти поле.',
+    solution: `<h1>Почтовое окошко</h1>\n<input id="to" placeholder="Кому письмо?">\n<button id="send">Отправить</button>\n<p id="error"></p>\n<p>Отправлено писем: <span id="count">0</span></p>\n<ul id="letters"></ul>` + SC(`  const input = document.querySelector('#to');\n  const error = document.querySelector('#error');\n  const countEl = document.querySelector('#count');\n  const letters = document.querySelector('#letters');\n  let sent = 0;\n\n  document.querySelector('#send').addEventListener('click', () => {\n    const name = input.value;\n    if (name === '') {\n      error.textContent = 'Напиши, кому письмо';\n      return;\n    }\n    error.textContent = '';\n    const li = document.createElement('li');\n    li.textContent = \`Письмо для \${name}\`;\n    letters.append(li);\n    sent++;\n    countEl.textContent = sent;\n    input.value = '';\n  });`),
+  },
+
+  /* ---------------- chapter 9 · kitchen ---------------- */
+  {
+    js: true,
+    title: 'Карточка напитка',
+    say: 'На кухне у каждого напитка есть название и цена. Хранить их по отдельности неудобно — соберём в одну карточку.',
+    learn: { t: 'Объекты', p: "Объект хранит несколько значений под именами: { name: 'Латте', price: 150 }. Значение достают через точку: coffee.name.", code: "const cat = { name: 'Барсик', age: 3 };\nconsole.log(cat.name); // Барсик" },
+    task: 'Создай объект `coffee` с полями `name: \'Латте\'` и `price: 150`. Выведи название и цену.',
+    starter: KIT0 + SC(`  // Объект coffee и вывод его полей\n`),
+    checks: [
+      ['Создан объект `coffee`', (r, e) => has(e, /const\s+coffee\s*=\s*\{/)],
+      ['Название через `coffee.name`', (r, e) => has(e, /coffee\.name/) && lg(e, 'Латте')],
+      ['Цена через `coffee.price`', (r, e) => has(e, /coffee\.price/) && lg(e, '150')],
+    ],
+    hint: "const coffee = { name: 'Латте', price: 150 }; console.log(coffee.name); console.log(coffee.price);",
+    solution: KIT0 + SC(`  const coffee = { name: 'Латте', price: 150 };\n  console.log(coffee.name);\n  console.log(coffee.price);`),
+  },
+  {
+    js: true,
+    title: 'Новая цена',
+    say: 'Молоко подорожало. Поднимем цену латте и отметим, что он горячий.',
+    learn: { t: 'Изменение полей', p: 'Поле объекта меняют присваиванием: coffee.price = 170. Если такого поля не было, оно появится.', code: "cat.age = 4;\ncat.color = 'рыжий';" },
+    task: 'Поменяй `coffee.price` на 170, добавь поле `hot` со значением true и выведи оба поля.',
+    starter: KIT0 + SC(`  const coffee = { name: 'Латте', price: 150 };\n  // Цена 170, новое поле hot: true, выведи оба\n`),
+    checks: [
+      ['Цена изменена на 170', (r, e) => has(e, /coffee\.price\s*=\s*170/) && lg(e, '170')],
+      ['Добавлено поле `hot`', (r, e) => has(e, /coffee\.hot\s*=\s*true/) && lg(e, 'true')],
+      ['Сам объект не переписан', (r, e) => has(e, /const\s+coffee\s*=\s*\{\s*name:\s*'Латте',\s*price:\s*150\s*\}/)],
+    ],
+    hint: 'coffee.price = 170; coffee.hot = true; console.log(coffee.price); console.log(coffee.hot);',
+    solution: KIT0 + SC(`  const coffee = { name: 'Латте', price: 150 };\n  coffee.price = 170;\n  coffee.hot = true;\n  console.log(coffee.price);\n  console.log(coffee.hot);`),
+  },
+  {
+    js: true,
+    title: 'Меню по строчкам',
+    say: 'Всё меню кухни — это список карточек. Прочитаем его вслух, строчка за строчкой.',
+    learn: { t: 'Массив объектов', p: 'Обычно данные — это массив объектов. Цикл for...of даёт каждый объект, а у него берём поля.', code: 'for (const cat of cats) {\n  console.log(cat.name);\n}' },
+    task: 'Выведи каждую позицию меню в виде «Эспрессо — 100 руб.». `console.log` — один раз.',
+    starter: KIT0 + SC(MENUJS + `\n  // Выведи каждую позицию: «Название — цена руб.»\n`),
+    checks: [
+      ['Цикл по `menu`', (r, e) => has(e, /for\s*\(\s*(const|let)\s+\w+\s+of\s+menu\b/)],
+      ['Строки вида «Эспрессо — 100 руб.»', (r, e) => e.logs.some(l => /Эспрессо\s*[—–-]\s*100\s*руб/.test(l)) && e.logs.some(l => /Лимонад\s*[—–-]\s*120\s*руб/.test(l))],
+      ['`console.log` написан один раз', (r, e) => cnt(e, /console\.log/g) === 1],
+    ],
+    hint: 'for (const item of menu) { console.log(`${item.name} — ${item.price} руб.`); }',
+    solution: KIT0 + SC(MENUJS + `\n  for (const item of menu) {\n    console.log(\`\${item.name} — \${item.price} руб.\`);\n  }`),
+  },
+  {
+    js: true,
+    title: 'Нумерованное меню',
+    say: 'У массивов есть свои встроенные заклинания. Первое — перебрать всё и заодно узнать номер.',
+    learn: { t: 'forEach', p: 'menu.forEach((item, i) => {...}) вызывает функцию для каждого элемента. Второй параметр i — номер, начиная с 0.', code: 'cats.forEach((cat, i) => {\n  console.log(i, cat.name);\n});' },
+    task: 'Выведи меню через `forEach` в виде «1. Эспрессо», «2. Латте» и так далее.',
+    starter: KIT0 + SC(MENUJS + `\n  // forEach: «1. Эспрессо», «2. Латте», ...\n`),
+    checks: [
+      ['Используется `menu.forEach`', (r, e) => has(e, /menu\.forEach\(/)],
+      ['«1. Эспрессо» … «4. Лимонад»', (r, e) => lg(e, '1. Эспрессо') && lg(e, '2. Латте') && lg(e, '4. Лимонад')],
+    ],
+    hint: 'menu.forEach((item, i) => { console.log(`${i + 1}. ${item.name}`); });',
+    solution: KIT0 + SC(MENUJS + `\n  menu.forEach((item, i) => {\n    console.log(\`\${i + 1}. \${item.name}\`);\n  });`),
+  },
+  {
+    js: true,
+    title: 'Недорогие напитки',
+    say: 'Котята приходят с маленькими кошельками. Отберём напитки дешевле 150.',
+    learn: { t: 'filter', p: 'filter оставляет только элементы, для которых функция вернула true. Получается новый массив, а старый не меняется.', code: 'const big = [3, 8, 12].filter(n => n > 5);\nconsole.log(big); // [8, 12]' },
+    task: 'Отбери в `cheap` напитки дешевле 150 и выведи, сколько их.',
+    starter: KIT0 + SC(MENUJS + `\n  // const cheap = menu.filter(...); выведи cheap.length\n`),
+    checks: [
+      ['Используется `filter`', (r, e) => has(e, /menu\.filter\(/)],
+      ['В консоли 2', (r, e) => lg(e, '2')],
+      ['Число не вписано вручную', (r, e) => !/console\.log\(\s*2\s*\)/.test(e.js) && has(e, /\.length/)],
+    ],
+    hint: 'const cheap = menu.filter((item) => item.price < 150); console.log(cheap.length);',
+    solution: KIT0 + SC(MENUJS + `\n  const cheap = menu.filter((item) => item.price < 150);\n  console.log(cheap.length);`),
+  },
+  {
+    js: true,
+    title: 'Только названия',
+    say: 'Для вывески нужны только названия напитков, через запятую.',
+    learn: { t: 'map и join', p: 'map превращает каждый элемент в новый и возвращает новый массив той же длины. join склеивает массив в строку.', code: "const ages = cats.map(cat => cat.age);\nconsole.log(ages.join(', '));" },
+    task: 'Получи массив названий через `map` и выведи его через `join(\', \')`.',
+    starter: KIT0 + SC(MENUJS + `\n  // Названия через map и join\n`),
+    checks: [
+      ['Используется `map`', (r, e) => has(e, /menu\.map\(/)],
+      ['Используется `join`', (r, e) => has(e, /\.join\(/)],
+      ['«Эспрессо, Латте, Раф, Лимонад»', (r, e) => lg(e, 'Эспрессо, Латте, Раф, Лимонад')],
+    ],
+    hint: "const names = menu.map((item) => item.name); console.log(names.join(', '));",
+    solution: KIT0 + SC(MENUJS + `\n  const names = menu.map((item) => item.name);\n  console.log(names.join(', '));`),
+  },
+  {
+    js: true,
+    title: 'Итог за всё',
+    say: 'Сколько стоит попробовать всё меню? Свернём массив в одно число.',
+    learn: { t: 'reduce', p: 'reduce сворачивает массив в одно значение. (sum, item) => sum + item.price — к сумме по очереди прибавляется цена, начиная с 0.', code: 'const total = [1, 2, 3].reduce((sum, n) => sum + n, 0);\nconsole.log(total); // 6' },
+    task: 'Посчитай сумму всех цен через `reduce` и выведи её.',
+    starter: KIT0 + SC(MENUJS + `\n  // Сумма всех цен через reduce\n`),
+    checks: [
+      ['Используется `reduce`', (r, e) => has(e, /menu\.reduce\(/)],
+      ['В консоли 550', (r, e) => lg(e, '550')],
+      ['Число 550 не вписано вручную', (r, e) => !/550/.test(e.js)],
+    ],
+    hint: 'const total = menu.reduce((sum, item) => sum + item.price, 0); console.log(total);',
+    solution: KIT0 + SC(MENUJS + `\n  const total = menu.reduce((sum, item) => sum + item.price, 0);\n  console.log(total);`),
+  },
+  {
+    js: true,
+    title: 'Меню на стене',
+    say: 'Хватит писать меню в консоль! Пусть оно появится на странице — прямо из данных.',
+    learn: { t: 'Данные → страница', p: 'Сайты рисуют списки из данных: перебирают массив и для каждого объекта создают элемент.', code: "for (const cat of cats) {\n  const li = document.createElement('li');\n  li.textContent = cat.name;\n  list.append(li);\n}" },
+    task: 'Для каждого напитка создай `li` вида «Латте — 150 руб.» и добавь в `#menu`.',
+    starter: KITL + SC(MENUJS + `\n  // Нарисуй меню в #menu\n`),
+    checks: [
+      ['В `#menu` 4 пункта', (r, e) => qa(e.root, '#menu li').length === 4],
+      ['Пункты вида «Латте — 150 руб.»', (r, e) => qa(e.root, '#menu li').some(li => /Латте\s*[—–-]\s*150\s*руб/.test(txt(li)))],
+      ['В HTML список пустой', (r, e) => !/<li/.test(e.html)],
+    ],
+    hint: "const list = document.querySelector('#menu'); for (const item of menu) { const li = document.createElement('li'); li.textContent = `${item.name} — ${item.price} руб.`; list.append(li); }",
+    solution: KITL + SC(MENUJS + `\n` + RENDER8),
+  },
+  {
+    js: true,
+    title: 'Корзина',
+    say: 'Гости хотят собирать заказ. У каждого напитка — своя кнопка «В корзину», а внизу — общая сумма.',
+    learn: { t: 'Кнопка в каждом пункте', p: 'Внутри цикла можно создать кнопку и сразу повесить на неё обработчик. Функция «помнит» свой item, поэтому знает, какую цену прибавить.', code: "const btn = document.createElement('button');\nbtn.textContent = 'Хочу';\nbtn.addEventListener('click', () => {\n  console.log(cat.name);\n});\nli.append(btn);" },
+    task: 'Добавь в каждый пункт кнопку «В корзину»: по клику прибавляй цену напитка к `#total`.',
+    starter: KITC + SC(MENUJS + `\n` + RENDER8.replace('    list.append(li);', '    // Создай кнопку «В корзину» и прибавляй цену к #total\n    list.append(li);')),
+    checks: [
+      ['В каждом пункте кнопка', (r, e) => qa(e.root, '#menu li button').length === 4],
+      ['Эспрессо в корзину — 100', (r, e) => tx(e.click('#menu li button', 1, 0), '#total') === '100'],
+      ['Плюс латте — 250', (r, e) => tx(e.click('#menu li button', 1, 0).click('#menu li button', 1, 1), '#total') === '250'],
+    ],
+    hint: 'Снаружи цикла: let total = 0. Внутри: создай button, повесь click → total += item.price; totalEl.textContent = total; и li.append(btn).',
+    solution: KITC + SC(MENUJS + `\n` + CART9),
+  },
+  {
+    js: true,
+    title: 'Память корзины',
+    say: 'Гость обновил страницу — и корзина пропала! Научим сайт запоминать сумму.',
+    learn: { t: 'localStorage', p: 'localStorage — память сайта в браузере. setItem(ключ, значение) сохраняет, getItem(ключ) читает. Значения хранятся строками, поэтому число возвращают через Number(). Кнопка «Перезапустить» над превью — как обновление страницы.', code: "localStorage.setItem('cups', 3);\nconst cups = Number(localStorage.getItem('cups')) || 0;" },
+    task: 'Сохраняй `total` в localStorage при каждом добавлении, а при запуске читай его и показывай в `#total`.',
+    starter: KITC + SC(MENUJS + `\n` + CART9.replace('  let total = 0;', '  // Читай total из localStorage, а при клике сохраняй\n  let total = 0;')),
+    checks: [
+      ['Сначала корзина пустая', (r, e) => tx(e, '#total') === '0' && has(e, /localStorage/)],
+      ['После перезагрузки сумма сохраняется', (r, e) => tx(e.click('#menu li button', 1, 0).reload(), '#total') === '100'],
+      ['Используются `setItem` и `getItem`', (r, e) => has(e, /localStorage\.setItem/) && has(e, /localStorage\.getItem/)],
+    ],
+    hint: "let total = Number(localStorage.getItem('total')) || 0; totalEl.textContent = total; а в обработчике — localStorage.setItem('total', total);",
+    solution: KITC + SC(MENUJS + `\n` + CART10),
+  },
+  {
+    js: true, extra: true, chapter: 9,
+    title: 'Меню дня',
+    say: 'Сегодня холодно, и Марта хочет меню дня только из горячих напитков. Собери его из данных!',
+    learn: { t: 'Повторение главы 9', p: 'Объекты, filter, forEach или map, reduce, отрисовка списка из данных и кнопки.', code: 'function render(items) {\n  list.textContent = \'\';\n  items.forEach(...);\n}' },
+    task: 'Собери меню дня по чек-листу. Данные и HTML уже есть.',
+    starter: `<h1>Меню дня</h1>\n<p>Горячих напитков: <span id="count"></span></p>\n<ul id="hot"></ul>\n<p>Если взять всё горячее: <span id="sum"></span> руб.</p>\n<button id="cheap">Только до 150 руб.</button>` + SC(MENUJS + `\n  // Экстра-уровень: собери меню дня по чек-листу слева\n`),
+    checks: [
+      ['В `#hot` только горячие напитки', (r, e) => { const li = qa(e.root, '#hot li'); return li.length === 3 && !li.some(x => txt(x).includes('Лимонад')); }],
+      ['Пункты вида «Раф — 180 руб.»', (r, e) => qa(e.root, '#hot li').some(li => /Раф\s*[—–-]\s*180\s*руб/.test(txt(li)))],
+      ['`#count` — сколько горячих', (r, e) => tx(e, '#count') === '3'],
+      ['`#sum` — сумма через `reduce`', (r, e) => tx(e, '#sum') === '430' && has(e, /\.reduce\(/)],
+      ['Кнопка оставляет напитки до 150 руб.', (r, e) => { e.click('#cheap'); const li = qa(e.root, '#hot li'); return li.length === 2 && !li.some(x => txt(x).includes('Раф')); }],
+      ['Список рисует функция `render`', (r, e) => has(e, /function\s+render\s*\(|const\s+render\s*=/)],
+      ['Используется `filter`', (r, e) => has(e, /\.filter\(/)],
+    ],
+    hint: "Функция render(items) очищает список (list.textContent = '') и рисует li. Сначала render(hot), где hot = menu.filter(item => item.hot). Кнопка вызывает render с ещё одним filter.",
+    solution: `<h1>Меню дня</h1>\n<p>Горячих напитков: <span id="count"></span></p>\n<ul id="hot"></ul>\n<p>Если взять всё горячее: <span id="sum"></span> руб.</p>\n<button id="cheap">Только до 150 руб.</button>` + SC(MENUJS + `\n  const list = document.querySelector('#hot');\n\n  function render(items) {\n    list.textContent = '';\n    items.forEach((item) => {\n      const li = document.createElement('li');\n      li.textContent = \`\${item.name} — \${item.price} руб.\`;\n      list.append(li);\n    });\n  }\n\n  const hot = menu.filter((item) => item.hot);\n  render(hot);\n  document.querySelector('#count').textContent = hot.length;\n  document.querySelector('#sum').textContent = hot.reduce((sum, item) => sum + item.price, 0);\n\n  document.querySelector('#cheap').addEventListener('click', () => {\n    render(hot.filter((item) => item.price <= 150));\n  });`),
+  },
+
+  /* ---------------- chapter 10 · garden ---------------- */
+  {
+    js: true,
+    title: 'Бутон',
+    say: 'В волшебном саду время течёт по-особенному. Цветы распускаются не сразу, а чуть погодя.',
+    learn: { t: 'setTimeout', p: 'setTimeout(функция, мс) выполнит функцию один раз через заданное время. 1000 мс — одна секунда.', code: "setTimeout(() => {\n  console.log('Прошла секунда');\n}, 1000);" },
+    task: 'Через 2 секунды после запуска пусть в `#flower` будет «Цветок распустился!».',
+    starter: `<h1>Волшебный сад</h1>\n<p id="flower">Бутон закрыт.</p>` + SC(`  // Через 2 секунды поменяй текст #flower\n`),
+    checks: [
+      ['Сразу бутон закрыт', (r, e) => !tx(e, '#flower').includes('распустил') && has(e, /setTimeout/)],
+      ['Через секунду ещё рано', (r, e) => !tx(e.tick(1000), '#flower').includes('распустил') && has(e, /setTimeout/)],
+      ['Через 2 секунды распустился', (r, e) => tx(e.tick(2100), '#flower').includes('распустил')],
+    ],
+    hint: "setTimeout(() => { document.querySelector('#flower').textContent = 'Цветок распустился!'; }, 2000);",
+    solution: `<h1>Волшебный сад</h1>\n<p id="flower">Бутон закрыт.</p>` + SC(`  const flower = document.querySelector('#flower');\n  setTimeout(() => {\n    flower.textContent = 'Цветок распустился!';\n  }, 2000);`),
+  },
+  {
+    js: true,
+    title: 'Садовые секунды',
+    say: 'Садовник хочет знать, сколько времени прошло с открытия сада. Нужен секундомер.',
+    learn: { t: 'setInterval', p: 'setInterval(функция, мс) повторяет функцию снова и снова через равные промежутки.', code: "setInterval(() => {\n  console.log('Тик');\n}, 1000);" },
+    task: 'Каждую секунду увеличивай число в `#sec` на 1.',
+    starter: `<h1>Волшебный сад</h1>\n<p>Прошло секунд: <span id="sec">0</span></p>` + SC(`  // Каждую секунду +1 в #sec\n`),
+    checks: [
+      ['Через 3 секунды — 3', (r, e) => tx(e.tick(3000), '#sec') === '3'],
+      ['Через 5 секунд — 5', (r, e) => tx(e.tick(5000), '#sec') === '5'],
+      ['Используется `setInterval`', (r, e) => has(e, /setInterval\(/)],
+    ],
+    hint: "let sec = 0; setInterval(() => { sec++; secEl.textContent = sec; }, 1000);",
+    solution: `<h1>Волшебный сад</h1>\n<p>Прошло секунд: <span id="sec">0</span></p>` + SC(`  const secEl = document.querySelector('#sec');\n  let sec = 0;\n  setInterval(() => {\n    sec++;\n    secEl.textContent = sec;\n  }, 1000);`),
+  },
+  {
+    js: true,
+    title: 'Полить пять грядок',
+    say: 'Поливалка работает сама, но грядок всего пять. Пусть остановится, когда польёт последнюю.',
+    learn: { t: 'clearInterval', p: 'setInterval возвращает номер таймера. clearInterval(номер) его останавливает.', code: 'const id = setInterval(() => {\n  n++;\n  if (n === 3) clearInterval(id);\n}, 1000);' },
+    task: 'Каждые полсекунды поливай одну грядку (+1 в `#beds`), а на пятой останови таймер.',
+    starter: `<h1>Волшебный сад</h1>\n<p>Полито грядок: <span id="beds">0</span></p>` + SC(`  // Каждые 500 мс +1, на пятой грядке — стоп\n`),
+    checks: [
+      ['Через секунду полито 2', (r, e) => tx(e.tick(1000), '#beds') === '2'],
+      ['Остановка на 5', (r, e) => tx(e.tick(10000), '#beds') === '5'],
+      ['Используется `clearInterval`', (r, e) => has(e, /clearInterval\(/)],
+    ],
+    hint: 'const timer = setInterval(() => { beds++; ...; if (beds === 5) clearInterval(timer); }, 500);',
+    solution: `<h1>Волшебный сад</h1>\n<p>Полито грядок: <span id="beds">0</span></p>` + SC(`  const bedsEl = document.querySelector('#beds');\n  let beds = 0;\n  const timer = setInterval(() => {\n    beds++;\n    bedsEl.textContent = beds;\n    if (beds === 5) {\n      clearInterval(timer);\n    }\n  }, 500);`),
+  },
+  {
+    js: true,
+    title: 'Камень удачи',
+    say: 'У старого дуба лежит камень удачи. Бросаешь его — и выпадает число от одного до шести.',
+    learn: { t: 'Math.random', p: 'Math.random() даёт случайное число от 0 до 1 (не включая 1). Целое от 1 до 6: Math.floor(Math.random() * 6) + 1. Math.floor отбрасывает дробную часть.', code: 'const coin = Math.floor(Math.random() * 2); // 0 или 1' },
+    task: 'По клику на `#roll` показывай в `#result` случайное целое число от 1 до 6.',
+    starter: `<h1>Волшебный сад</h1>\n<button id="roll">Бросить камень удачи</button>\n<p id="result">?</p>` + SC(`  // По клику — случайное число от 1 до 6\n`),
+    checks: [
+      ['Выпадают целые числа от 1 до 6', (r, e) => many(40, () => tx(e.click('#roll'), '#result')).every(v => /^[1-6]$/.test(v))],
+      ['Числа меняются', (r, e) => new Set(many(40, () => tx(e.click('#roll'), '#result'))).size >= 3],
+      ['Используется `Math.random`', (r, e) => has(e, /Math\.random\(\)/)],
+    ],
+    hint: "result.textContent = Math.floor(Math.random() * 6) + 1;",
+    solution: `<h1>Волшебный сад</h1>\n<button id="roll">Бросить камень удачи</button>\n<p id="result">?</p>` + SC(`  const result = document.querySelector('#result');\n  document.querySelector('#roll').addEventListener('click', () => {\n    result.textContent = Math.floor(Math.random() * 6) + 1;\n  });`),
+  },
+  {
+    js: true,
+    title: 'Колодец желаний',
+    say: 'Бросаешь монетку в колодец — и он шепчет случайное желание из своего списка.',
+    learn: { t: 'Случайный элемент', p: 'Случайный номер элемента: Math.floor(Math.random() * массив.length). Так код работает со списком любой длины.', code: 'const i = Math.floor(Math.random() * cats.length);\nconsole.log(cats[i]);' },
+    task: 'По клику на `#wish` показывай в `#answer` случайное желание из `wishes`.',
+    starter: `<h1>Волшебный сад</h1>\n<button id="wish">Бросить монетку в колодец</button>\n<p id="answer"></p>` + SC(`  const wishes = ['Будет много рыбы', 'Тебя ждёт клубок', 'Скоро полнолуние'];\n  // По клику показывай случайное желание\n`),
+    checks: [
+      ['Показываются желания из списка', (r, e) => many(30, () => tx(e.click('#wish'), '#answer')).every(v => ['Будет много рыбы', 'Тебя ждёт клубок', 'Скоро полнолуние'].includes(v))],
+      ['Желания меняются', (r, e) => new Set(many(30, () => tx(e.click('#wish'), '#answer'))).size >= 2],
+      ['Номер считается от `wishes.length`', (r, e) => has(e, /wishes\.length/)],
+    ],
+    hint: 'const i = Math.floor(Math.random() * wishes.length); answer.textContent = wishes[i];',
+    solution: `<h1>Волшебный сад</h1>\n<button id="wish">Бросить монетку в колодец</button>\n<p id="answer"></p>` + SC(`  const wishes = ['Будет много рыбы', 'Тебя ждёт клубок', 'Скоро полнолуние'];\n  const answer = document.querySelector('#answer');\n  document.querySelector('#wish').addEventListener('click', () => {\n    const i = Math.floor(Math.random() * wishes.length);\n    answer.textContent = wishes[i];\n  });`),
+  },
+  {
+    js: true,
+    title: 'Кот на тропинке',
+    say: 'Пусть по садовой тропинке гуляет кот, а управлять им можно стрелками на клавиатуре.',
+    learn: { t: 'Клавиши', p: 'Событие keydown срабатывает при нажатии клавиши. В event.key лежит её название: ArrowLeft, ArrowRight, Enter. В превью сначала кликни по странице, потом нажимай клавиши.', code: "document.addEventListener('keydown', (event) => {\n  console.log(event.key);\n});" },
+    task: 'Стрелка вправо прибавляет 10 шагов, влево — отнимает 10. Показывай число в `#pos` и сдвигай `#cat` через `style.marginLeft`.',
+    starter: `<h1>Волшебный сад</h1>\n<p>Кликни по превью и нажимай стрелки ← →</p>\n<p>Шагов от дома: <span id="pos">0</span></p>\n<div id="cat">=^.^=</div>` + SC(`  // keydown: ArrowRight +10, ArrowLeft −10\n`),
+    checks: [
+      ['→ → даёт 20', (r, e) => tx(e.key('ArrowRight').key('ArrowRight'), '#pos') === '20'],
+      ['← возвращает назад', (r, e) => tx(e.key('ArrowRight').key('ArrowRight').key('ArrowLeft'), '#pos') === '10'],
+      ['Кот сдвигается', (r, e) => posOf(q(e.key('ArrowRight').key('ArrowRight').root, '#cat')).includes('20')],
+      ['Используется `event.key`', (r, e) => has(e, /\.key\b/)],
+    ],
+    hint: "let x = 0; document.addEventListener('keydown', (event) => { if (event.key === 'ArrowRight') x += 10; if (event.key === 'ArrowLeft') x -= 10; pos.textContent = x; cat.style.marginLeft = x + 'px'; });",
+    solution: `<h1>Волшебный сад</h1>\n<p>Кликни по превью и нажимай стрелки ← →</p>\n<p>Шагов от дома: <span id="pos">0</span></p>\n<div id="cat">=^.^=</div>` + SC(`  const pos = document.querySelector('#pos');\n  const cat = document.querySelector('#cat');\n  let x = 0;\n  document.addEventListener('keydown', (event) => {\n    if (event.key === 'ArrowRight') {\n      x += 10;\n    }\n    if (event.key === 'ArrowLeft') {\n      x -= 10;\n    }\n    pos.textContent = x;\n    cat.style.marginLeft = x + 'px';\n  });`),
+  },
+  {
+    js: true,
+    title: 'Садовые часы',
+    say: 'Фонари в саду зажигаются по часам. Повесим на ворота часы с настоящим временем.',
+    learn: { t: 'Дата и время', p: "new Date() — текущий момент. getHours() и getMinutes() дают часы и минуты. String(7).padStart(2, '0') дописывает ноль слева: получится '07'.", code: 'const now = new Date();\nconsole.log(now.getHours());' },
+    task: 'Покажи в `#clock` текущее время в виде «21:05».',
+    starter: `<h1>Волшебный сад</h1>\n<p>Сейчас в саду: <span id="clock"></span></p>` + SC(`  // Текущее время в #clock: часы:минуты\n`),
+    checks: [
+      ['Время в формате ЧЧ:ММ', (r, e) => /^\d{1,2}:\d{2}$/.test(tx(e, '#clock'))],
+      ['Часы совпадают с настоящими', (r, e) => Number(tx(e, '#clock').split(':')[0]) === new Date().getHours() && tx(e, '#clock') !== ''],
+      ['Используется `new Date()`', (r, e) => has(e, /new\s+Date\(\)/)],
+    ],
+    hint: "const now = new Date(); clock.textContent = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');",
+    solution: `<h1>Волшебный сад</h1>\n<p>Сейчас в саду: <span id="clock"></span></p>` + SC(`  const now = new Date();\n  const minutes = String(now.getMinutes()).padStart(2, '0');\n  document.querySelector('#clock').textContent = now.getHours() + ':' + minutes;`),
+  },
+  {
+    js: true,
+    title: 'Поймай светлячка',
+    say: 'Над прудом летают светлячки. Сделаем из этого игру: поймал — получи очко, а светлячок улетит в другое место.',
+    learn: { t: 'Состояние игры', p: 'Игра — это переменные (счёт, позиция) и обработчики, которые их меняют. После каждого изменения обновляем страницу.', code: "let score = 0;\nbtn.addEventListener('click', () => {\n  score++;\n  out.textContent = score;\n});" },
+    task: 'По клику на `#firefly` прибавляй очко в `#score` и переноси светлячка в случайное место через `style.left` и `style.top`.',
+    starter: GCSS + G8H + SC(`  // Клик: +1 очко и светлячок прыгает в случайное место\n`),
+    checks: [
+      ['3 клика — 3 очка', (r, e) => tx(e.click('#firefly', 3), '#score') === '3'],
+      ['Светлячок прыгает', (r, e) => new Set(many(6, () => posOf(q(e.click('#firefly').root, '#firefly')))).size >= 2],
+      ['Используется `Math.random`', (r, e) => has(e, /Math\.random\(\)/)],
+    ],
+    hint: "fly.style.left = Math.floor(Math.random() * 200) + 'px'; — и так же для top.",
+    solution: GCSS + G8H + SC(FIRE8),
+  },
+  {
+    js: true,
+    title: 'Десять секунд',
+    say: 'Без таймера игра бесконечная. Дадим охотнику десять секунд!',
+    learn: { t: 'Конец игры', p: 'Таймер уменьшает время каждую секунду. Когда время вышло, останавливаем таймер и выключаем кнопку: button.disabled = true.', code: 'if (time === 0) {\n  clearInterval(timer);\n  btn.disabled = true;\n}' },
+    task: 'Отсчитывай время в `#time` от 10 до 0. На нуле останови таймер, выключи светлячка и напиши в `#msg` «Время вышло!».',
+    starter: GCSS + G9H + SC(FIRE8 + `\n\n  // Таймер на 10 секунд: #time, #msg и fly.disabled\n`),
+    checks: [
+      ['Через 3 секунды осталось 7', (r, e) => tx(e.tick(3000), '#time') === '7'],
+      ['На нуле — «Время вышло!»', (r, e) => { e.tick(11000); return tx(e, '#time') === '0' && tx(e, '#msg').includes('Время вышло'); }],
+      ['После конца очки не идут', (r, e) => { e.tick(11000); const a = tx(e, '#score'); e.click('#firefly'); return has(e, /setInterval/) && tx(e, '#score') === a; }],
+      ['Время не уходит в минус', (r, e) => tx(e.tick(20000), '#time') === '0'],
+    ],
+    hint: 'let time = 10; const timer = setInterval(() => { time--; ...; if (time === 0) { clearInterval(timer); fly.disabled = true; msg.textContent = \'Время вышло!\'; } }, 1000);',
+    solution: GCSS + G9H + SC(FIRE9),
+  },
+  {
+    js: true,
+    title: 'Рекорд',
+    say: 'Охотники спорят, кто поймал больше. Пусть сад помнит лучший счёт, даже если закрыть страницу.',
+    learn: { t: 'Рекорд в памяти', p: 'Лучший счёт храним в localStorage. При запуске читаем его, а в конце игры сохраняем, если новый счёт больше.', code: "if (score > best) {\n  best = score;\n  localStorage.setItem('best', best);\n}" },
+    task: 'Показывай рекорд в `#best`. В конце игры сохраняй его в localStorage, если счёт больше. При запуске читай.',
+    starter: GCSS + G10H + SC(FIRE9 + `\n\n  // Рекорд: читай из localStorage при запуске и сохраняй в конце игры\n`),
+    checks: [
+      ['Сначала рекорд 0', (r, e) => tx(e, '#best') === '0' && has(e, /localStorage/)],
+      ['Новый рекорд виден в конце игры', (r, e) => tx(e.click('#firefly', 2).tick(11000), '#best') === '2'],
+      ['Рекорд сохраняется после перезагрузки', (r, e) => tx(e.click('#firefly', 2).tick(11000).reload(), '#best') === '2'],
+      ['Меньший счёт рекорд не портит', (r, e) => tx(e.click('#firefly', 3).tick(11000).reload().click('#firefly', 1).tick(11000), '#best') === '3'],
+    ],
+    hint: "let best = Number(localStorage.getItem('best')) || 0; bestEl.textContent = best; а в конце игры: if (score > best) { best = score; localStorage.setItem('best', best); bestEl.textContent = best; }",
+    solution: GCSS + G10H + SC(FIRE10),
+  },
+  {
+    js: true, extra: true, chapter: 10,
+    title: 'Финал сезона: Звездопад',
+    say: 'Ты прошёл весь второй сезон! Последнее испытание — своя мини-игра «Звездопад». Покажи гильдии всё, что умеешь.',
+    learn: { t: 'Повторение главы 10 и всего сезона', p: 'Переменные, условия, события, таймеры, случайные числа и localStorage — всё в одной игре.', code: "let playing = false;\nstartBtn.addEventListener('click', () => { ... });\nstar.addEventListener('click', () => {\n  if (!playing) return;\n  ...\n});" },
+    task: 'Сделай игру по чек-листу. HTML и стили уже готовы.',
+    starter: STARCSS + STARH + SC(`  // Финал сезона: собери игру по чек-листу слева\n`),
+    checks: [
+      ['До старта звезда не даёт очков', (r, e) => tx(e.click('#star'), '#score') === '0' && has(e, /addEventListener/)],
+      ['«Начать» запускает отсчёт', (r, e) => tx(e.click('#start').tick(1000), '#time') === '14'],
+      ['Клик по звезде — очко', (r, e) => tx(e.click('#start').click('#star', 2), '#score') === '2'],
+      ['Звезда прыгает в случайное место', (r, e) => { e.click('#start'); return new Set(many(6, () => posOf(q(e.click('#star').root, '#star')))).size >= 2; }],
+      ['Через 15 секунд — «Игра окончена» со счётом', (r, e) => { e.click('#start').click('#star').tick(16000); return tx(e, '#time') === '0' && tx(e, '#msg').includes('Счёт'); }],
+      ['После конца очки не идут', (r, e) => { e.click('#start').click('#star').tick(16000); const a = tx(e, '#score'); e.click('#star'); return a === '1' && tx(e, '#score') === '1'; }],
+      ['Рекорд сохраняется после перезагрузки', (r, e) => tx(e.click('#start').click('#star', 3).tick(16000).reload(), '#best') === '3'],
+      ['Есть `setInterval`, `clearInterval` и `Math.random`', (r, e) => has(e, /setInterval\(/) && has(e, /clearInterval\(/) && has(e, /Math\.random\(\)/)],
+    ],
+    hint: 'Переменные: score, time, playing, timer, best. «Начать» обнуляет счёт и запускает setInterval. Звезда работает только при playing. На нуле — clearInterval, playing = false, сообщение и рекорд.',
+    solution: STARCSS + STARH + SC(STARJS),
+  },
 ];
 
 /* ---------- café rewards: one new thing per level ---------- */
@@ -1352,6 +2306,61 @@ const CAFE = [
   { name: 'Воздушный змей', d: 'Летает по небу по ключевым кадрам.' },
   { name: 'Марта на крыше', d: 'Пьёт кофе и не сходит с места.' },
   { name: 'Северное сияние', d: 'Награда за весь первый сезон!' },
+  { name: 'Говорящий свиток', d: 'Сам пишет буквы на пюпитре.' },
+  { name: 'Счёты', d: 'Костяшки сами считают чашки.' },
+  { name: 'Каталог-ящички', d: 'В каждом ящичке хранится своя переменная.' },
+  { name: 'Каменная табличка', d: 'Что высечено — не изменить, как const.' },
+  { name: 'Книжный шкаф', d: 'Тома заклинаний до самого потолка.' },
+  { name: 'Весы сравнений', d: 'Покачиваются, решая, что больше.' },
+  { name: 'Лампа для чтения', d: 'Горит, только если темно.' },
+  { name: 'Указатель-развилка', d: 'Одна дорога — if, другая — else.' },
+  { name: 'Сундук с двумя замками', d: 'Откроется, только если подойдут оба ключа.' },
+  { name: 'Лестница к верхним полкам', d: 'Ступенька за ступенькой, как else if.' },
+  { name: 'Глобус погоды', d: 'Награда за повторение шестой главы.' },
+  { name: 'Шестерёнки', d: 'Крутятся без остановки, как цикл.' },
+  { name: 'Песочные часы', d: 'Отсчитывают время назад.' },
+  { name: 'Ящик с инструментами', d: 'Инструменты лежат по порядку, как в массиве.' },
+  { name: 'Полка с часами', d: 'Сюда добавляют новые часы.' },
+  { name: 'Конвейер', d: 'Детали проезжают по одной, как в for...of.' },
+  { name: 'Кассовый аппарат', d: 'Складывает цены в общий итог.' },
+  { name: 'Музыкальная шкатулка', d: 'Играет свою мелодию по первому зову.' },
+  { name: 'Тиски', d: 'Зажимают любую деталь, которую им передали.' },
+  { name: 'Маятник', d: 'Всегда возвращается обратно.' },
+  { name: 'Компас', d: 'Короткая стрелка, как у стрелочной функции.' },
+  { name: 'Часы с кукушкой', d: 'Награда за повторение седьмой главы.' },
+  { name: 'Вывеска «ПОЧТА»', d: 'Надпись сменили заклинанием.' },
+  { name: 'Цветные конверты', d: 'Каждому письму свой цвет.' },
+  { name: 'Фонарь над стойкой', d: 'Светится, когда на него повесили класс.' },
+  { name: 'Колокольчик вызова', d: 'Звенит на каждое нажатие.' },
+  { name: 'Стопка писем', d: 'Растёт с каждым отправленным письмом.' },
+  { name: 'Чернильница с пером', d: 'Пишет имя адресата.' },
+  { name: 'Ячейки для писем', d: 'Новые письма появляются сами.' },
+  { name: 'Окно день-ночь', d: 'Переключается, как toggle.' },
+  { name: 'Корзина для бумаг', d: 'Сюда уходят прочитанные письма.' },
+  { name: 'Сургучная печать', d: 'Ставится прямо по ходу письма.' },
+  { name: 'Полёт совы Ухты', d: 'Награда за повторение восьмой главы.' },
+  { name: 'Плита', d: 'Готовит всё по рецепту-объекту.' },
+  { name: 'Кофемолка', d: 'Ручка крутится сама.' },
+  { name: 'Полка с чашками', d: 'Чашки стоят рядком, как массив объектов.' },
+  { name: 'Сковородки на рейке', d: 'Висят по очереди, как в forEach.' },
+  { name: 'Сито', d: 'Пропускает только нужное, как filter.' },
+  { name: 'Книга рецептов', d: 'Каждый рецепт превращается в блюдо, как в map.' },
+  { name: 'Миска с тестом', d: 'Всё смешано в одно, как в reduce.' },
+  { name: 'Меню на стене', d: 'Нарисовано прямо из данных.' },
+  { name: 'Поднос с заказами', d: 'Корзина гостя уже собрана.' },
+  { name: 'Ледник', d: 'Хранит запасы, даже если закрыть дверь.' },
+  { name: 'Кот-повар', d: 'Награда за повторение девятой главы.' },
+  { name: 'Распускающийся цветок', d: 'Раскрывается не сразу, а чуть погодя.' },
+  { name: 'Поливалка', d: 'Брызгает через равные промежутки.' },
+  { name: 'Солнечные часы', d: 'Знают, когда остановиться.' },
+  { name: 'Грибной круг', d: 'Светятся то одни грибы, то другие.' },
+  { name: 'Колодец желаний', d: 'Каждый раз шепчет случайное желание.' },
+  { name: 'Садовая тропинка', d: 'Ведёт туда, куда нажмёшь.' },
+  { name: 'Фонари по расписанию', d: 'Зажигаются в своё время.' },
+  { name: 'Светлячки', d: 'Попробуй поймать хотя бы одного.' },
+  { name: 'Качели', d: 'Раскачиваются, пока идёт игра.' },
+  { name: 'Кубок рекорда', d: 'Помнит лучший счёт.' },
+  { name: 'Фейерверк', d: 'Награда за весь второй сезон!' },
 ];
 const BOX = [[60,3,44,13],[56,33,66,39],[62,37,12,11],[98,18,24,20],[130,32,22,40],[104,43,13,5],[8,7,48,48],[6,66,50,24],[57,19,30,13],[6,0,140,90],[102,3,16,13]];
 
@@ -1401,7 +2410,7 @@ const TOWER = ['......yy......','.....yrry.....','....yrrrry....','...yrrrrrry..
   '..bbbbbbbbbb..','..bBBBkkBBBb..','..bBBBkkBBBb..','..bbbbbbbbbb..'];
 const FLAG = ['syyY','sYyy','syyY','s...','s...'];
 const MINI = ['...NN...','..NnnN..','.NnnnnN.','yyyyyyyy','.oooooo.','.okooko.','..occo..'];
-const FONT = { 'П':['1111','1001','1001','1001','1001'], 'И':['1001','1001','1011','1101','1001'], 'К':['1001','1010','1100','1010','1001'],
+const FONT = { 'О':['0110','1001','1001','1001','0110'], 'Ч':['1001','1001','0111','0001','0001'], 'Т':['1111','0110','0110','0110','0110'], 'А':['0110','1001','1111','1001','1001'], 'П':['1111','1001','1001','1001','1001'], 'И':['1001','1001','1011','1101','1001'], 'К':['1001','1010','1100','1010','1001'],
   'С':['0111','1000','1000','1000','0111'], 'Е':['1111','1000','1110','1000','1111'], 'Л':['0111','0101','0101','0101','1101'], 'Ь':['1000','1000','1110','1001','1110'] };
 function text(x, y, s, c) { [...s].forEach((ch, k) => (FONT[ch] || []).forEach((row, j) => { for (let i = 0; i < 4; i++) if (row[i] === '1') R(x + k * 5 + i, y + j, 1, 1, c); })); }
 function arch(x, y, w, h, c) { const ins = [9, 6, 4, 3, 2, 1, 1]; for (let j = 0; j < h; j++) { const k = j < ins.length ? ins[j] : 0; R(x + k, y + j, w - 2 * k, 1, c); } }
@@ -1413,7 +2422,7 @@ let T = 0, freshSet = new Set();
 const have = i => !!st.stars[i];
 
 function drawCafe() {
-  const alt = { terrace: drawTerrace, lab: drawLab, cellar: drawCellar, roof: drawRoof }[cafeScene]; if (alt) { alt(); return; }
+  const alt = { terrace: drawTerrace, lab: drawLab, cellar: drawCellar, roof: drawRoof, library: drawLibrary, workshop: drawWorkshop, post: drawPost, kitchen: drawKitchen, garden: drawGarden }[cafeScene]; if (alt) { alt(); return; }
   cx = $('cafec').getContext('2d');
   const t = T;
   // wall with bricks
@@ -1795,6 +2804,154 @@ function drawRoof() {
   sparkleFresh(ROOFBOX);
 }
 
+function disc(ox, oy, r, c) { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (dx * dx + dy * dy <= r * r + r * 0.6) R(ox + dx, oy + dy, 1, 1, c); }
+
+/* library */
+const LIBBOX = { 55: [68, 44, 24, 32], 56: [6, 12, 26, 20], 57: [8, 46, 28, 31], 58: [137, 8, 20, 25], 59: [98, 8, 28, 70], 60: [36, 44, 26, 32], 61: [72, 0, 16, 14], 62: [38, 78, 22, 20], 63: [98, 80, 26, 18], 64: [122, 18, 14, 62], 65: [138, 52, 20, 30] };
+function drawLibrary() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 56, '#4a2a1e'); for (let x = 0; x < 160; x += 20) R(x, 0, 1, 56, '#3b2016');
+  R(0, 56, 160, 20, '#5e3424'); R(0, 56, 160, 1, '#8a4a22'); for (let x = 6; x < 160; x += 20) R(x, 60, 14, 12, '#4a2a1e');
+  R(0, 76, 160, 24, '#3b2418'); for (let y = 76; y < 100; y += 5) { R(0, y, 160, 1, '#2e1a10'); for (let x = (y % 10) ? 8 : 0; x < 160; x += 16) R(x, y, 1, 5, '#2e1a10'); }
+  arch(38, 6, 26, 36, '#8a4a22');
+  const ins = [9, 6, 4, 3, 2, 1, 1];
+  for (let j = 0; j < 32; j++) { const k = j < ins.length ? ins[j] : 0; R(40 + k, 8 + j, 22 - 2 * k, 1, '#0f2a3b'); }
+  [[44, 16], [56, 14], [46, 30], [58, 26], [52, 22]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k) % 6 < 3 ? '#ffd27a' : '#f4ac3c'));
+  R(54, 17, 4, 4, '#fde9c8'); R(53, 16, 4, 4, '#0f2a3b'); R(50, 8, 2, 32, '#8a4a22'); R(36, 42, 30, 2, '#b0662e');
+  if (H(56)) { R(6, 12, 26, 20, '#8a4a22'); R(8, 14, 22, 16, '#2a1a12'); const bc = ['#b5151f', '#f4ac3c', '#7fd1c7', '#c3a0ec']; for (let r = 0; r < 4; r++) { const y = 16 + r * 4, split = (r + Math.floor(t / 12)) % 6; R(8, y, 22, 1, '#bdb0a6'); for (let b = 0; b < 5; b++) R(9 + b * 2 + (b >= split ? 7 : 0), y - 1, 2, 3, bc[r]); } }
+  if (H(57)) { R(8, 46, 28, 30, '#8a4a22'); for (let c = 0; c < 3; c++) for (let r = 0; r < 4; r++) { const x = 10 + c * 8, y = 48 + r * 7; R(x, y, 7, 6, '#a0602a'); R(x + 1, y + 1, 5, 1, '#fde9c8'); R(x + 3, y + 3, 2, 1, '#f4ac3c'); } }
+  if (H(59)) { R(98, 8, 28, 70, '#5e2f15'); R(100, 10, 24, 66, '#2a1a12'); const pal = ['#b5151f', '#1c4a55', '#f4ac3c', '#7a48b5', '#4f8a4a', '#c99a3a', '#7e0e15']; for (let sI = 0; sI < 5; sI++) { const y = 10 + sI * 13; R(100, y + 12, 24, 1, '#8a4a22'); let x = 101; let k = 0; while (x < 122) { const w = 2 + Math.floor(hash(x, sI) * 2), hgt = 8 + Math.floor(hash(sI, x) * 4); R(x, y + 12 - hgt, w, hgt, pal[(k + sI * 3) % pal.length]); R(x, y + 14 - hgt, w, 1, '#fde9c8'); x += w + (hash(x + 3, sI) < 0.2 ? 1 : 0); k++; } } }
+  if (H(64)) { R(124, 20, 1, 58, '#b0662e'); R(133, 20, 1, 58, '#b0662e'); for (let y = 24; y < 76; y += 6) R(124, y, 10, 1, '#8a4a22'); }
+  if (H(58)) { R(138, 10, 18, 22, '#8a7a70'); R(139, 9, 16, 1, '#8a7a70'); R(140, 12, 14, 18, '#a8968a'); [14, 18, 22, 26].forEach((y, k) => { R(142, y, 4 + k * 2, 1, '#5e5468'); R(147 + k, y + 2, 4, 1, '#5e5468'); }); }
+  if (H(61)) { R(79, 0, 1, 6, '#8a7a70'); R(75, 6, 9, 3, '#1c4a55'); const on = (t % 40) < 34; R(78, 9, 3, 2, on ? '#ffd27a' : '#5e5468'); if (on) { cx.fillStyle = 'rgba(255,210,122,0.10)'; cx.beginPath(); cx.moveTo(76, 10); cx.lineTo(83, 10); cx.lineTo(94, 52); cx.lineTo(66, 52); cx.closePath(); cx.fill(); } }
+  if (H(60)) { R(38, 62, 22, 2, '#8a4a22'); R(40, 64, 2, 12, '#5e2f15'); R(56, 64, 2, 12, '#5e2f15'); R(48, 48, 2, 14, '#c99a3a'); const tl = Math.round(2 * Math.sin(t / 12)); line(42, 50 + tl, 56, 50 - tl, '#c99a3a'); R(40, 55 + tl, 6, 1, '#c99a3a'); R(52, 55 - tl, 6, 1, '#c99a3a'); R(42, 53 + tl, 2, 2, '#f4ac3c'); R(54, 53 - tl, 3, 2, '#7fd1c7'); }
+  if (H(55)) { R(77, 58, 6, 18, '#5e2f15'); R(72, 74, 16, 2, '#5e2f15'); R(70, 52, 20, 6, '#8a4a22'); R(71, 46, 18, 7, '#fde9c8'); R(70, 46, 1, 7, '#d9c9a8'); R(89, 46, 1, 7, '#d9c9a8'); const n = (t >> 1) % 16; for (let k = 0; k < Math.min(n, 14); k++) R(73 + k, 48 + (k % 3 === 2 ? 2 : 0), 1, 1, '#7a48b5'); if (t % 10 < 5) sparkle(88, 45, '#c3a0ec'); }
+  if (H(62)) { R(48, 80, 2, 17, '#5e2f15'); R(40, 82, 9, 3, '#b0662e'); R(39, 83, 1, 1, '#b0662e'); R(50, 88, 9, 3, '#b0662e'); R(59, 89, 1, 1, '#b0662e'); R(42, 83, 5, 1, '#5e2f15'); R(52, 89, 5, 1, '#5e2f15'); }
+  if (H(63)) { R(100, 86, 22, 10, '#8a4a22'); R(100, 82, 22, 4, '#a0602a'); R(100, 85, 22, 1, '#5e2f15'); const g = t % 30 < 15 ? '#ffd27a' : '#f4ac3c'; R(104, 86, 3, 4, g); R(115, 86, 3, 4, g); R(105, 88, 1, 1, '#120a07'); R(116, 88, 1, 1, '#120a07'); }
+  if (H(65)) { R(146, 74, 4, 6, '#8a7a70'); R(142, 79, 12, 2, '#5e5468'); for (let dy = -8; dy <= 8; dy++) for (let dx = -8; dx <= 8; dx++) { if (dx * dx + dy * dy > 66) continue; const cloud = ((dx + 8 + Math.floor(t / 2)) % 9 < 3) && ((dy + 8) % 4 < 2); R(148 + dx, 64 + dy, 1, 1, cloud ? '#fde9c8' : (dx + dy + 16) % 5 ? '#1c4a55' : '#3a8a8f'); } ring(148, 64, 9, 9, '#c99a3a'); if (t % 37 < 2) { R(150, 66, 1, 3, '#ffd27a'); R(149, 69, 2, 1, '#ffd27a'); } }
+  sparkleFresh(LIBBOX);
+}
+
+/* clock workshop */
+const WSBOX = { 66: [16, 20, 46, 32], 67: [68, 44, 12, 18], 68: [10, 78, 28, 18], 69: [88, 8, 64, 22], 70: [38, 80, 84, 16], 71: [128, 40, 24, 22], 72: [110, 40, 18, 22], 73: [44, 46, 20, 16], 74: [68, 0, 28, 36], 75: [2, 50, 16, 16], 76: [90, 28, 20, 34] };
+function gear(ox, oy, r, teeth, ang, c) { disc(ox, oy, r - 2, c); disc(ox, oy, 2, '#3a3f4a'); for (let k = 0; k < teeth; k++) { const a = ang + k * Math.PI * 2 / teeth; R(Math.round(ox + r * Math.cos(a)) - 1, Math.round(oy + r * Math.sin(a)) - 1, 2, 2, c); } }
+function drawWorkshop() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 78, '#3a3f4a'); for (let y = 0; y < 78; y += 6) { R(0, y, 160, 1, '#30343e'); for (let x = (y / 6) % 2 ? 0 : 7; x < 160; x += 14) R(x, y, 1, 6, '#30343e'); }
+  R(0, 78, 160, 22, '#2a2d35'); for (let k = 0; k < 30; k++) R(Math.floor(hash(k, 4) * 156), 80 + Math.floor(hash(4, k) * 18), 4, 1, '#33363f');
+  if (H(66)) { gear(28, 32, 10, 10, t / 8, '#8a7a70'); gear(47, 44, 7, 7, -t / 8 * 10 / 7, '#c99a3a'); }
+  if (H(69)) { R(88, 26, 64, 2, '#8a4a22'); [92, 106, 120, 134].forEach((x, k) => { disc(x + 5, 20, 5, '#c99a3a'); disc(x + 5, 20, 4, '#fde9c8'); const a = t / (6 + k * 3) + k; line(x + 5, 20, Math.round(x + 5 + 3 * Math.cos(a)), Math.round(20 + 3 * Math.sin(a)), '#120a07'); R(x + 5, 17, 1, 3, '#120a07'); }); }
+  if (H(74)) { const a = 0.4 * Math.sin(t / 6), bx = Math.round(82 + 26 * Math.sin(a)), by = Math.round(26 * Math.cos(a)); R(81, 0, 3, 2, '#5e5468'); line(82, 1, bx, by, '#c99a3a'); disc(bx, by + 2, 3, '#f4ac3c'); }
+  if (H(75)) { disc(10, 58, 6, '#c99a3a'); disc(10, 58, 5, '#fde9c8'); const a = -Math.PI / 2 + 0.35 * Math.sin(t / 10); line(10, 58, Math.round(10 + 4 * Math.cos(a)), Math.round(58 + 4 * Math.sin(a)), '#b5151f'); line(10, 58, Math.round(10 - 4 * Math.cos(a)), Math.round(58 - 4 * Math.sin(a)), '#5e5468'); }
+  if (H(76)) {
+    for (let j = 0; j < 6; j++) R(100 - j - 2, 30 + j, 2 * j + 4, 1, '#5e2f15');
+    R(93, 36, 14, 16, '#8a4a22'); disc(100, 45, 4, '#fde9c8'); line(100, 45, 100, 42, '#120a07'); line(100, 45, 102, 46, '#120a07');
+    R(98, 37, 4, 3, '#2a1a12'); if (t % 50 < 10) { R(97, 35, 5, 3, '#f4ac3c'); R(96, 36, 1, 1, '#ef7b2b'); R(100, 35, 1, 1, '#120a07'); }
+    R(96, 52, 1, 8, '#8a7a70'); R(104, 52, 1, 10, '#8a7a70'); R(95, 59, 3, 3, '#5e2f15'); R(103, 61, 3, 3, '#5e2f15');
+    const pa = Math.round(2 * Math.sin(t / 4)); line(100, 52, 100 + pa, 58, '#c99a3a'); R(99 + pa, 58, 3, 2, '#f4ac3c');
+  }
+  R(40, 60, 118, 3, '#8a4a22'); R(40, 60, 118, 1, '#b0662e'); R(40, 63, 118, 2, '#5e2f15'); R(42, 63, 2, 15, '#5e2f15'); R(154, 63, 2, 15, '#5e2f15');
+  if (H(73)) { R(44, 58, 18, 2, '#5e5468'); R(46, 50, 6, 8, '#8a7a70'); R(55, 50, 6, 8, '#8a7a70'); R(51, 52, 4, 4, '#c99a3a'); R(61, 54, 4, 1, '#5e2f15'); R(52, 47, 1, 3, '#bdb0a6'); }
+  if (H(67)) {
+    R(69, 45, 10, 1, '#8a4a22'); R(69, 59, 10, 1, '#8a4a22'); R(69, 45, 1, 15, '#5e2f15'); R(78, 45, 1, 15, '#5e2f15');
+    const ph = (t % 60) / 60, top = Math.round(5 * (1 - ph)), bot = Math.round(5 * ph);
+    for (let j = 0; j < 6; j++) { const w = 7 - j; R(74 - Math.ceil(w / 2), 46 + j, w, 1, '#cfe3e8'); R(74 - Math.ceil(w / 2), 58 - j, w, 1, '#cfe3e8'); }
+    for (let j = 0; j < top; j++) { const w = 2 + j; R(74 - Math.ceil(w / 2), 51 - j, w, 1, '#f4ac3c'); }
+    for (let j = 0; j < bot; j++) { const w = 7 - j; R(74 - Math.ceil(w / 2), 58 - j, w, 1, '#f4ac3c'); }
+    if (ph < 0.95) R(73, 52, 1, 6 - Math.min(5, bot), '#f4ac3c');
+  }
+  if (H(72)) { R(112, 52, 14, 8, '#7a48b5'); R(112, 52, 14, 1, '#c3a0ec'); R(112, 47, 14, 2, '#5a2f8a'); R(126, 55, 2, 1, '#c99a3a'); for (let k = 0; k < 2; k++) { const ph = (t + k * 10) % 20; R(116 + k * 5 + ((ph >> 2) % 2), 46 - (ph >> 1), 1, 3, '#fde9c8'); R(115 + k * 5 + ((ph >> 2) % 2), 48 - (ph >> 1), 2, 1, '#fde9c8'); } }
+  if (H(71)) { R(130, 48, 20, 12, '#c99a3a'); R(134, 42, 12, 6, '#1c4a55'); R(136, 44, 8, 2, t % 20 < 10 ? '#7fd1c7' : '#93dad1'); for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) R(132 + c * 4, 51 + r * 3, 3, 2, '#8a7a70'); R(130, 58, 20, 1, '#8a4a22'); }
+  if (H(70)) { R(40, 88, 80, 3, '#2a2a2a'); disc(41, 89, 2, '#5e5468'); disc(119, 89, 2, '#5e5468'); for (let x = 0; x < 80; x += 6) R(40 + ((x + t) % 80), 89, 2, 1, '#5e5468'); for (let k = 0; k < 3; k++) { const bx = 40 + ((k * 27 + t) % 76); R(bx, 84, 4, 4, ['#c99a3a', '#b5151f', '#7fd1c7'][k]); } R(44, 91, 2, 6, '#5e2f15'); R(114, 91, 2, 6, '#5e2f15'); }
+  if (H(68)) { R(10, 86, 26, 10, '#b5151f'); R(10, 84, 26, 2, '#7e0e15'); R(19, 81, 8, 1, '#120a07'); R(19, 81, 1, 3, '#120a07'); R(26, 81, 1, 3, '#120a07'); R(12, 82, 2, 4, '#bdb0a6'); R(30, 81, 2, 5, '#8a4a22'); R(14, 89, 18, 1, '#7e0e15'); }
+  sparkleFresh(WSBOX);
+}
+
+/* owl post */
+const POSTBOX = { 77: [56, 2, 48, 14], 78: [6, 18, 34, 22], 79: [76, 14, 10, 18], 80: [57, 48, 10, 10], 81: [87, 42, 14, 16], 82: [106, 40, 14, 18], 83: [120, 10, 36, 36], 84: [44, 18, 28, 26], 85: [9, 78, 14, 18], 86: [121, 44, 16, 14], 87: [60, 22, 40, 18] };
+function drawPost() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 58, '#2f4a52'); for (let x = 3; x < 160; x += 6) R(x, 0, 1, 58, '#2a424a');
+  R(0, 76, 160, 24, '#3b2a20'); for (let y = 76; y < 100; y += 6) for (let x = ((y - 76) / 6) % 2 ? 0 : 6; x < 160; x += 12) R(x, y, 6, 6, '#4a3a2a');
+  // window (night), board, sign
+  R(44, 18, 28, 26, '#8a4a22');
+  const day = H(84) && Math.floor(t / 60) % 2 === 1;
+  R(46, 20, 24, 22, day ? '#7fc4e8' : '#0f2a3b'); if (day) { disc(62, 27, 3, '#ffd27a'); R(48, 36, 10, 3, '#fff3e0'); } else { R(62, 24, 3, 3, '#fde9c8'); R(61, 23, 3, 3, '#0f2a3b'); R(50, 26, 1, 1, '#f4ac3c'); R(55, 34, 1, 1, '#f4ac3c'); }
+  R(57, 20, 2, 22, '#8a4a22'); R(46, 30, 24, 1, '#8a4a22');
+  if (H(84)) { const drop = day ? 3 : 10; R(46, 20, 24, drop, '#b5151f'); R(46, 20 + drop, 24, 1, '#7e0e15'); R(57, 21 + drop, 2, 2, '#f4ac3c'); }
+  if (H(77)) { R(56, 3, 48, 12, '#8a4a22'); R(57, 4, 46, 10, '#1c3a2a'); text(68, 6, 'ПОЧТА', t % 12 === 0 ? '#ffd27a' : '#f4ac3c'); }
+  if (H(78)) { R(6, 18, 34, 22, '#b89a78'); R(6, 18, 34, 1, '#8a4a22'); R(6, 39, 34, 1, '#8a4a22'); [[9, 21, '#fde9c8'], [22, 22, '#c3a0ec'], [12, 30, '#f4ac3c'], [26, 31, '#7fd1c7']].forEach(([x, y, c]) => { R(x, y, 10, 7, c); line(x, y, x + 5, y + 3, '#8a7a70'); line(x + 9, y, x + 5, y + 3, '#8a7a70'); R(x + 4, y - 1, 2, 2, '#b5151f'); }); }
+  if (H(83)) { R(120, 10, 36, 36, '#5e2f15'); for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) { const x = 122 + c * 8, y = 12 + r * 8; R(x, y, 7, 7, '#2a1a12'); if (hash(r, c) > 0.35) R(x + 1, y + 3, 5, 3, ['#fde9c8', '#c3a0ec', '#f4ac3c'][(r + c) % 3]); } }
+  if (H(79)) { R(80, 15, 1, 6, '#120a07'); spr(78, 21, LANTERN, t % 4 < 2 ? null : { Y: 'y', y: 'Y' }); cx.fillStyle = 'rgba(255,210,122,0.08)'; cx.fillRect(66, 28, 30, 30); }
+  // counter
+  R(0, 58, 160, 4, '#b0662e'); R(0, 62, 160, 14, '#8a4a22'); for (let x = 4; x < 160; x += 26) R(x, 64, 22, 10, '#7a3e1c');
+  if (H(80)) { const ring = t % 40 < 8; R(61, 50, 2, 1, '#f4ac3c'); R(60, 51, 4, 3, '#f4ac3c'); R(59, 54, 6, 2, '#f4ac3c'); R(58, 56, 8, 2, '#5e2f15'); if (ring) { R(56, 50, 1, 2, '#ffd27a'); R(67, 50, 1, 2, '#ffd27a'); R(55, 48, 1, 1, '#ffd27a'); R(68, 48, 1, 1, '#ffd27a'); } }
+  if (H(81)) for (let k = 0; k < 7; k++) R(88 + (k % 2), 56 - k * 2, 12, 2, k % 2 ? '#fde9c8' : '#e8dcc8');
+  if (H(82)) { R(108, 53, 6, 5, '#1c3a4a'); R(109, 52, 4, 1, '#120a07'); line(112, 52, 118, 42, '#fff3e0'); R(116, 42, 2, 4, '#fff3e0'); R(117, 41, 2, 3, '#fde9c8'); }
+  if (H(86)) { R(122, 56, 14, 2, '#fde9c8'); R(126, 53, 7, 4, '#b5151f'); R(129, 47, 2, 6, '#5e2f15'); R(128, 45, 4, 2, '#8a4a22'); if (t % 30 < 4) sparkle(134, 50, '#ffd27a'); }
+  if (H(85)) { R(11, 84, 10, 12, '#8a7a70'); for (let x = 12; x < 21; x += 2) R(x, 85, 1, 10, '#6f6460'); R(10, 83, 12, 1, '#a8968a'); R(12, 81, 4, 3, '#fde9c8'); R(16, 80, 3, 3, '#e8dcc8'); }
+  if (H(87)) { const ox = Math.round((t * 1.2) % 200) - 20, oy = 26 + Math.round(4 * Math.sin(t / 5)); spr(ox, oy, OWL); const f = t % 4 < 2 ? -1 : 1; R(ox - 2, oy + 5 + f, 2, 3, '#5e2f15'); R(ox + 9, oy + 5 + f, 2, 3, '#5e2f15'); R(ox + 3, oy + 10, 4, 3, '#fde9c8'); }
+  sparkleFresh(POSTBOX);
+}
+
+/* kitchen */
+const KITBOX = { 88: [60, 38, 32, 38], 89: [96, 42, 14, 16], 90: [8, 20, 44, 12], 91: [100, 3, 52, 20], 92: [54, 18, 18, 14], 93: [37, 46, 17, 12], 94: [16, 46, 18, 12], 95: [117, 22, 36, 24], 96: [125, 48, 28, 10], 97: [1, 60, 18, 38], 98: [66, 26, 22, 22] };
+function drawKitchen() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 58, '#e8dcc8'); for (let y = 0; y < 58; y += 6) R(0, y, 160, 1, '#cbbca8'); for (let x = 0; x < 160; x += 6) R(x, 0, 1, 58, '#cbbca8');
+  R(0, 76, 160, 24, '#a0522d'); for (let y = 76; y < 100; y += 6) { R(0, y, 160, 1, '#8a4626'); for (let x = ((y - 76) / 6) % 2 ? 0 : 6; x < 160; x += 12) R(x, y, 1, 6, '#8a4626'); }
+  if (H(90)) { R(8, 30, 44, 2, '#8a4a22'); for (let k = 0; k < 5; k++) { const x = 10 + k * 8; R(x, 24, 5, 6, ['#fff3e0', '#7fd1c7', '#fff3e0', '#c3a0ec', '#fff3e0'][k]); R(x + 5, 26, 1, 2, '#bdb0a6'); } }
+  if (H(91)) { R(100, 4, 52, 1, '#5e5468'); [106, 119, 132, 145].forEach((x, k) => { const sw = Math.round(Math.sin((t + k * 5) / 9)); R(x, 5, 1, 4, '#5e5468'); disc(x + sw, 14, 4 + (k % 2), '#3b3238'); disc(x + sw, 14, 2 + (k % 2), '#5e5468'); }); }
+  if (H(92)) { ring(60, 25, 5, 5, '#8a7a70'); for (let dy = -3; dy <= 3; dy += 2) for (let dx = -3; dx <= 3; dx += 2) R(60 + dx, 25 + dy, 1, 1, '#a8968a'); R(65, 25, 6, 1, '#8a7a70'); }
+  if (H(95)) { R(117, 22, 36, 24, '#8a4a22'); R(119, 24, 32, 20, '#1f2e28'); R(122, 26, 18, 1, '#f4ac3c'); for (let k = 0; k < 4; k++) { R(122, 30 + k * 3, 14 + (k % 2) * 3, 1, '#d9d2c3'); R(144, 30 + k * 3, 4, 1, '#d9d2c3'); } }
+  // counter
+  R(0, 58, 160, 3, '#8a4a22'); R(0, 58, 160, 1, '#b0662e'); R(0, 61, 160, 15, '#7a3e1c'); for (let x = 2; x < 160; x += 20) { R(x, 63, 18, 11, '#8a4a22'); R(x + 8, 68, 2, 1, '#f4ac3c'); }
+  if (H(97)) { R(2, 60, 16, 36, '#9fb3c0'); R(2, 60, 16, 1, '#cfe3e8'); R(2, 76, 16, 1, '#7d8f9a'); R(15, 66, 1, 6, '#5e5468'); R(15, 80, 1, 6, '#5e5468'); if (t % 24 < 12) sparkle(7, 66, '#ffffff'); else sparkle(10, 86, '#ffffff'); }
+  if (H(98)) { spr(70, 36, GUEST, { g: 'O', G: 'c', y: 'k' }); R(70, 32, 10, 4, '#fff3e0'); R(72, 29, 6, 3, '#fff3e0'); const sx = Math.round(2 * Math.sin(t / 3)); line(69, 40, 66 + sx, 34, '#8a7a70'); }
+  if (H(88)) {
+    R(60, 46, 32, 30, '#3b3238'); R(60, 46, 32, 2, '#5e5468'); R(66, 60, 20, 10, '#1b1013'); R(67, 61, 18, 8, t % 6 < 3 ? '#7a2a10' : '#8a3a14'); R(66, 52, 20, 2, '#8a7a70');
+    R(64, 45, 8, 1, '#120a07'); R(80, 45, 8, 1, '#120a07'); const f = t % 3 ? '#ef7b2b' : '#f4ac3c'; R(65, 43, 6, 2, f); R(81, 43, 6, 2, f);
+    if (H(98)) { R(63, 38, 11, 7, '#5e5468'); R(62, 38, 13, 1, '#8a7a70'); for (let k = 0; k < 3; k++) { const j = (t + k * 4) % 10; R(65 + k * 3, 36 - j, 1, 1, j < 6 ? '#fff3e0' : '#cbbca8'); } }
+  }
+  if (H(89)) { R(98, 50, 8, 8, '#8a4a22'); R(99, 47, 6, 3, '#c99a3a'); const a = t / 3; line(102, 46, Math.round(102 + 4 * Math.cos(a)), Math.round(45 + 2 * Math.sin(a)), '#5e5468'); R(Math.round(102 + 4 * Math.cos(a)), Math.round(45 + 2 * Math.sin(a)) - 1, 1, 2, '#b5151f'); R(100, 54, 4, 1, '#5e2f15'); }
+  if (H(93)) { R(43, 54, 4, 4, '#5e2f15'); R(38, 50, 14, 4, '#fff3e0'); R(44, 50, 1, 4, '#a8968a'); R(39, 51, 4, 1, '#a8968a'); R(46, 51, 5, 1, '#a8968a'); R(46, 53, 4, 1, '#a8968a'); }
+  if (H(94)) { R(18, 52, 14, 6, '#1c4a55'); R(17, 52, 16, 1, '#3a8a8f'); const hh = 2 + Math.round(Math.sin(t / 8)); R(20, 52 - hh, 10, hh, '#f7e7c8'); R(22, 51 - hh, 6, 1, '#f7e7c8'); }
+  if (H(96)) { R(126, 55, 26, 3, '#c99a3a'); [129, 137, 145].forEach((x, k) => { R(x, 51, 4, 4, '#fff3e0'); R(x + 4, 52, 1, 2, '#fff3e0'); if ((t + k * 3) % 12 < 6) R(x + 1, 49 - ((t >> 1) % 2), 1, 1, '#cbbca8'); }); }
+  sparkleFresh(KITBOX);
+}
+
+/* garden */
+const GARBOX = { 99: [58, 56, 14, 22], 100: [78, 56, 18, 22], 101: [99, 64, 16, 18], 102: [118, 82, 34, 14], 103: [129, 50, 26, 32], 104: [62, 70, 26, 30], 105: [44, 46, 76, 22], 106: [40, 20, 110, 50], 107: [33, 30, 20, 30], 108: [22, 68, 16, 26], 109: [20, 2, 120, 30] };
+function drawGarden() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 66, '#0b1a2a'); R(0, 24, 160, 20, '#0f2a3b'); R(0, 44, 160, 22, '#143246');
+  for (let k = 0; k < 30; k++) { const x = Math.floor(hash(k, 31) * 160), y = Math.floor(hash(31, k) * 40); R(x, y, 1, 1, (t + k) % 9 < 2 ? '#ffd27a' : '#c8d4dc'); }
+  R(128, 6, 10, 10, '#fde9c8'); R(126, 5, 10, 10, '#0b1a2a');
+  if (H(109)) { for (let k = 0; k < 3; k++) { const ph = (t + k * 17) % 40, ox = 40 + k * 40, oy = 12 + k * 4, col = ['#f4ac3c', '#c3a0ec', '#7fd1c7'][k]; if (ph < 5) R(ox, 34 - ph * 4, 1, 3, '#fde9c8'); else if (ph < 18) { const rr = ph - 4; for (let a = 0; a < 10; a++) { const an = a * Math.PI / 5; R(Math.round(ox + rr * Math.cos(an)), Math.round(oy + rr * Math.sin(an) * 0.8), 1, 1, ph < 14 ? col : '#5e5468'); } } } }
+  for (let x = 0; x < 160; x++) { const hgt = 54 + Math.round(4 * Math.sin(x / 17) + 2 * Math.sin(x / 7)); R(x, hgt, 1, 66 - hgt, '#1b3a2a'); }
+  R(0, 66, 160, 34, '#2f5d3a'); for (let k = 0; k < 50; k++) { const x = Math.floor(hash(k, 7) * 158), y = 68 + Math.floor(hash(7, k) * 30); R(x, y, 1, 2, '#4f8a4a'); R(x + 1, y + 1, 1, 1, '#4f8a4a'); }
+  for (let x = 0; x < 160; x += 8) R(x, 58, 2, 9, '#8a7a70'); R(0, 60, 160, 1, '#8a7a70'); R(0, 64, 160, 1, '#8a7a70');
+  // big tree with a branch
+  R(16, 28, 6, 42, '#5e2f15'); R(22, 30, 32, 2, '#5e2f15');
+  [[18, 14, 12], [8, 22, 9], [30, 20, 10], [20, 26, 8]].forEach(([x, y, r], k) => disc(x, y, r, k % 2 ? '#1f4a2a' : '#2f5d3a'));
+  if (H(104)) { for (let k = 0; k < 7; k++) { const y = 98 - k * 4, x = 72 + Math.round(6 * Math.sin(k / 1.5)); R(x, y, 6, 2, '#8a7a70'); R(x + 1, y, 4, 1, '#a8968a'); } }
+  if (H(107)) { const dx = Math.round(4 * Math.sin(t / 8)); line(38, 32, 38 + dx, 56, '#bdb0a6'); line(48, 32, 48 + dx, 56, '#bdb0a6'); spr(38 + dx, 47, GUEST, { g: 'g', G: 'G' }); R(36 + dx, 56, 14, 2, '#8a4a22'); }
+  if (H(105)) { const on = Math.floor(t / 50) % 2 === 0; [48, 118].forEach(x => { R(x, 50, 1, 16, '#120a07'); R(x - 1, 47, 3, 3, on ? '#ffd27a' : '#5e5468'); if (on) { cx.fillStyle = 'rgba(255,210,122,0.12)'; cx.fillRect(x - 6, 44, 13, 12); } }); }
+  if (H(99)) { R(64, 64, 1, 12, '#4f8a4a'); R(62, 70, 2, 1, '#4f8a4a'); R(65, 72, 2, 1, '#4f8a4a'); const st_ = Math.floor(t / 20) % 4; if (st_ === 0) R(63, 61, 3, 3, '#c3a0ec'); else { const rr = st_; for (let a = 0; a < 6; a++) { const an = a * Math.PI / 3; R(Math.round(64 + rr * 1.5 * Math.cos(an)) - 1, Math.round(62 + rr * 1.5 * Math.sin(an)) - 1, 2, 2, '#c3a0ec'); } R(63, 61, 2, 2, '#f4ac3c'); } }
+  if (H(100)) { R(85, 72, 3, 4, '#8a7a70'); R(84, 75, 5, 1, '#5e5468'); for (let k = 0; k < 8; k++) { const ph = (t + k * 3) % 18, dir = k % 2 ? 1 : -1; R(Math.round(86 + dir * ph / 2), 71 - Math.round(ph * (18 - ph) / 14), 1, 1, '#7fd1c7'); } }
+  if (H(101)) { R(105, 72, 4, 8, '#8a7a70'); R(100, 70, 14, 2, '#bdb0a6'); R(106, 66, 1, 4, '#5e5468'); const a = Math.PI + (t / 40) % Math.PI; line(107, 71, Math.round(107 + 5 * Math.cos(a)), Math.round(71 + 1.5 * Math.sin(a)), '#5e5468'); }
+  if (H(103)) { R(132, 68, 20, 12, '#8a7a70'); for (let y = 70; y < 80; y += 3) R(132, y, 20, 1, '#6f6460'); R(131, 67, 22, 2, '#a8968a'); R(134, 56, 2, 12, '#5e2f15'); R(148, 56, 2, 12, '#5e2f15'); R(130, 52, 24, 4, '#b5151f'); R(132, 50, 20, 2, '#7e0e15'); R(141, 56, 1, 5, '#bdb0a6'); R(139, 61, 5, 4, '#8a4a22'); if (t % 30 < 4) sparkle(142, 66, '#ffd27a'); }
+  if (H(102)) { for (let k = 0; k < 8; k++) { const an = k * Math.PI / 4, x = Math.round(134 + 14 * Math.cos(an)), y = Math.round(89 + 4 * Math.sin(an)); const lit = hash(k, Math.floor(t / 8)) > 0.5; R(x + 1, y + 1, 1, 2, '#e8dcc8'); R(x, y, 3, 1, lit ? '#93dad1' : '#4f8a80'); R(x + 1, y - 1, 1, 1, lit ? '#c8f0ea' : '#4f8a80'); } }
+  if (H(108)) { R(24, 82, 12, 10, '#5e2f15'); R(24, 82, 12, 1, '#8a4a22'); R(27, 72, 6, 6, '#f4ac3c'); R(25, 73, 2, 3, '#f4ac3c'); R(33, 73, 2, 3, '#f4ac3c'); R(29, 78, 2, 2, '#c99a3a'); R(26, 80, 8, 2, '#c99a3a'); if (t % 24 < 5) sparkle(31, 73, '#ffffff'); }
+  if (H(106)) for (let k = 0; k < 12; k++) { const x = 40 + ((k * 37 + Math.round(18 * Math.sin((t + k * 9) / 15))) % 110 + 110) % 110, y = 22 + (k * 13) % 44 + Math.round(4 * Math.sin((t + k * 5) / 9)); if ((t + k * 3) % 10 < 7) R(x, y, 1, 1, '#e3f59a'); }
+  sparkleFresh(GARBOX);
+}
+
 /* map */
 const CH = [
   { learn: ['первые теги: заголовки и абзацы', 'выделение текста', 'списки и ссылки', 'кнопки и классы', 'первые стили: цвет и выравнивание', 'фон, отступы и скругления', 'flexbox: элементы в ряд'], from: 0, short: '1 · Зал', blurb: 'Тропа ведёт от городских ворот к башне-кофейне.', title: 'Глава 1 · Зал', stops: [[14,96],[36,90],[56,98],[76,90],[70,72],[46,66],[24,54],[34,36],[60,40],[94,24],[106,58]], ground: ['#5c3d22', '#62422a', '#573a20', '#7a5a2a'], tree: null, dome: null },
@@ -1802,7 +2959,13 @@ const CH = [
   { learn: ['id и несколько классов сразу', 'селекторы «внутри» и :nth-child', 'меню без маркеров', 'центрирование блока', 'круги, тени и градиенты', 'position: absolute'], from: 22, short: '3 · Лаборатория', blurb: 'Зимняя тропа петляет по заснеженному лесу к башне-лаборатории.', title: 'Глава 3 · Лаборатория', stops: [[106,96],[84,90],[64,98],[44,90],[50,72],[74,66],[96,54],[86,36],[60,40],[26,24],[14,58]], ground: ['#c9d6e3', '#d3dee9', '#bfcedc', '#ffffff'], tree: { O: '#2c4a52', o: '#e8f0f6', y: '#ffffff' }, dome: { r: 'p' } },
   { learn: ['сетку CSS Grid', 'repeat, gap и span', 'перенос и столбики во flexbox', 'проценты и rem', 'адаптив: сайт для телефона и компьютера'], from: 33, short: '4 · Погреб', blurb: 'Подземная тропа вьётся между кристаллами к старому погребу.', title: 'Глава 4 · Погреб', stops: [[106,14],[84,22],[62,12],[40,22],[48,42],[72,48],[96,60],[86,80],[60,86],[28,94],[12,72]], ground: ['#2f2a33', '#352f3a', '#2a2530', '#4a4252'], tree: { O: '#5a2f8a', o: '#8a5cc4', y: '#c3a0ec', s: '#3b2a4a' }, dome: { r: 'B' } },
   { learn: ['CSS-переменные', 'прозрачность и свечение текста', 'плавные переходы transition', 'transform: рост и поворот', 'псевдоэлемент ::before', 'анимации @keyframes', 'липкую шапку sticky'], from: 44, short: '5 · Обсерватория', blurb: 'Звёздная тропа поднимается по ночному лугу к обсерватории.', title: 'Глава 5 · Обсерватория', stops: [[16,100],[40,96],[64,100],[88,92],[82,72],[56,70],[30,64],[22,42],[48,34],[76,30],[100,52]], ground: ['#1d2b4a', '#22325a', '#1a2744', '#33477a'], tree: { O: '#1f3a5a', o: '#2f5d8a', y: '#f4ac3c' }, dome: { r: 'n', y: 'Y' } },
+  { learn: ['console.log и консоль', 'числа и арифметика', 'переменные let и const', 'строки и шаблонные строки', 'сравнения', 'условия if, else, else if', 'логические && и ||'], from: 55, short: '6 · Библиотека', blurb: 'Сиреневая тропа ведёт через цветущие вишни к библиотеке заклинаний.', title: 'Глава 6 · Библиотека', stops: [[14,96],[36,90],[56,98],[76,90],[70,72],[46,66],[24,54],[34,36],[60,40],[94,24],[106,58]], ground: ['#4a3a5a', '#524164', '#433452', '#6a5a7a'], tree: { O: '#7a3a5a', o: '#b5527a', y: '#f4ac3c' }, dome: { r: 'T' } },
+  { learn: ['цикл for', 'массивы', 'push и length', 'цикл for...of', 'свои функции', 'параметры и return', 'стрелочные функции'], from: 66, short: '7 · Мастерская', blurb: 'Песчаная тропа петляет среди кактусов к часовой мастерской.', title: 'Глава 7 · Часовая мастерская', stops: [[14,14],[36,22],[58,12],[80,22],[72,42],[48,48],[24,60],[34,80],[60,86],[92,94],[108,72]], ground: ['#b89a6a', '#c2a474', '#ad8f60', '#d6bb8a'], tree: { O: '#4f7a3a', o: '#6fa856', y: '#f4ac3c', s: '#4f7a3a' }, dome: { r: 'y' } },
+  { learn: ['поиск элементов querySelector', 'textContent и style', 'классы через classList', 'клики addEventListener', 'поля ввода и value', 'создание и удаление элементов', 'событие input'], from: 77, short: '8 · Почта', blurb: 'Дождливая лесная тропа ведёт к совиной почте.', title: 'Глава 8 · Совиная почта', stops: [[106,96],[84,90],[64,98],[44,90],[50,72],[74,66],[96,54],[86,36],[60,40],[26,24],[14,58]], ground: ['#2d4a3a', '#33523f', '#284234', '#4a6a50'], tree: { O: '#1f3a2a', o: '#2f5d3a', y: '#7fd1c7' }, dome: { r: 'P' } },
+  { learn: ['объекты', 'массивы объектов', 'forEach, filter, map, reduce', 'список на странице из данных', 'корзина заказа', 'localStorage: память сайта'], from: 88, short: '9 · Кухня', blurb: 'Тропа через апельсиновую рощу ведёт к кухне кофейни.', title: 'Глава 9 · Кухня', stops: [[106,14],[84,22],[62,12],[40,22],[48,42],[72,48],[96,60],[86,80],[60,86],[28,94],[12,72]], ground: ['#7a8a3a', '#829340', '#717f34', '#a0b050'], tree: { O: '#2f5d3a', o: '#4f8a4a', y: '#ef7b2b' }, dome: { r: 'O' } },
+  { learn: ['setTimeout и setInterval', 'clearInterval', 'случайные числа Math.random', 'нажатия клавиш', 'дата и время', 'состояние игры', 'своя мини-игра'], from: 99, short: '10 · Сад', blurb: 'Светящаяся тропа уводит в ночной сад, где время течёт по-особенному.', title: 'Глава 10 · Волшебный сад', stops: [[16,100],[40,96],[64,100],[88,92],[82,72],[56,70],[30,64],[22,42],[48,34],[76,30],[100,52]], ground: ['#1a3a3a', '#1f4242', '#173434', '#2f5a5a'], tree: { O: '#2a5a5a', o: '#3a8a8f', y: '#c8f0ea' }, dome: { r: 'p', y: 'Y' } },
 ];
+const SEASON_END = [CH[5].from - 1, LEVELS.length - 1];
 const REG = LEVELS.filter(l => !l.extra).length;
 const displayNum = i => LEVELS.slice(0, i + 1).filter(l => !l.extra).length;
 const levelLabel = i => LEVELS[i].extra ? '★' : String(displayNum(i));
@@ -1843,15 +3006,18 @@ function drawMap() {
 }
 
 function renderMapSide() {
-  const c = CH[mapCh];
+  const c = CH[mapCh], season = mapCh < 5 ? 1 : 2;
   $('stops').innerHTML = c.stops.map(([x, y], k) => {
     const i = c.from + k, cls = (i === st.cur ? 'cur' : have(i) ? 'done' : '') + (LEVELS[i].extra ? ' extra' : '');
     return `<button class="stop ${cls}" type="button" data-i="${i}" ${i > st.unlocked ? 'disabled' : ''} style="left:${x / 160 * 100}%;top:${(y + 6) / 110 * 100}%" aria-label="${LEVELS[i].extra ? 'Экстра-уровень' : 'Уровень ' + displayNum(i)}: ${esc(LEVELS[i].title)}">${levelLabel(i)}</button>`;
   }).join('');
+  $('foglabel').innerHTML = season === 1 ? 'СЕЗОН 2<br>JAVA<br>SCRIPT<br>за рекой' : 'СЕЗОН 3<br>скоро';
   const doneIn = ch => { const a = CH[ch].from, b = CH[ch + 1] ? CH[ch + 1].from : LEVELS.length; let n = 0; for (let i = a; i < b; i++) if (have(i)) n++; return [n, b - a]; };
+  const group = (s0, s1, label) => `<div class="seasgroup"><span>${label}</span><div class="helpers" role="group" aria-label="${label}">${CH.slice(s0, s1).map((ch, j) => { const k = s0 + j; return `<button class="btn${k === mapCh ? ' primary' : ''}" type="button" data-ch="${k}">${esc(ch.short)}</button>`; }).join('')}</div></div>`;
   const L = LEVELS[st.cur];
+  const sum = (s0, s1) => { let d = 0, n = 0; for (let k = s0; k < s1; k++) { const [a, b] = doneIn(k); d += a; n += b; } return `${d}/${n}`; };
   $('mapside').innerHTML = `<h2>Карта гильдии</h2>
-    <div class="helpers" role="group" aria-label="Глава">${CH.map((ch, k) => `<button class="btn${k === mapCh ? ' primary' : ''}" type="button" data-ch="${k}">${esc(ch.short)}</button>`).join('')}</div>
+    ${group(0, 5, 'Сезон 1 · HTML и CSS')}${group(5, 10, 'Сезон 2 · JavaScript')}
     <p>${esc(c.blurb)}</p>
     <div><b style="font-size:14px">Тропа научит тебя:</b></div>
     <ul class="topics">${c.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
@@ -1861,8 +3027,8 @@ function renderMapSide() {
     ${testOpen(mapCh) ? `<div class="skip"><span><b>Знаешь тему главы?</b> ${QN} вопросов, нужно ${QPASS} правильных. Сдашь — глава засчитается.</span><button class="btn" type="button" data-test="${mapCh}">Сдать тест главы ${mapCh + 1}</button></div>`
       : chapterDone(mapCh) ? '' : `<div class="skip"><span>Тест этой главы откроется, когда дойдёшь до неё или сдашь тест предыдущей.</span></div>`}
     <ul class="seasons">
-      ${CH.map((ch, k) => { const [d, n] = doneIn(k); return `<li class="${k === mapCh ? 'on' : ''}">${esc(ch.title)} <em>${d}/${n}</em></li>`; }).join('')}
-      <li>Сезон 2 · JavaScript <em>за рекой</em></li>
+      ${CH.slice(season === 1 ? 0 : 5, season === 1 ? 5 : 10).map((ch, j) => { const k = (season === 1 ? 0 : 5) + j, [d, n] = doneIn(k); return `<li class="${k === mapCh ? 'on' : ''}">${esc(ch.title)} <em>${d}/${n}</em></li>`; }).join('')}
+      <li>${season === 1 ? 'Сезон 2 · JavaScript' : 'Сезон 1 · HTML и CSS'} <em>${season === 1 ? sum(5, 10) : sum(0, 5)}</em></li>
     </ul>`;
 }
 
@@ -1872,6 +3038,11 @@ const SCENES = [
   { key: 'lab', name: 'Лаборатория', from: 22, to: 32, plate: 'ЛАБОРАТОРИЯ МАРТЫ' },
   { key: 'cellar', name: 'Погреб', from: 33, to: 43, plate: 'ПОГРЕБ ГИЛЬДИИ' },
   { key: 'roof', name: 'Обсерватория', from: 44, to: 54, plate: 'ОБСЕРВАТОРИЯ' },
+  { key: 'library', name: 'Библиотека', from: 55, to: 65, plate: 'БИБЛИОТЕКА ЗАКЛИНАНИЙ' },
+  { key: 'workshop', name: 'Мастерская', from: 66, to: 76, plate: 'ЧАСОВАЯ МАСТЕРСКАЯ' },
+  { key: 'post', name: 'Почта', from: 77, to: 87, plate: 'СОВИНАЯ ПОЧТА' },
+  { key: 'kitchen', name: 'Кухня', from: 88, to: 98, plate: 'КУХНЯ КОФЕЙНИ' },
+  { key: 'garden', name: 'Сад', from: 99, to: 109, plate: 'ВОЛШЕБНЫЙ САД' },
 ];
 const sceneOf = i => (SCENES.find(sc => i >= sc.from && i <= sc.to) || SCENES[0]).key;
 function renderCafeSide() {
@@ -1881,7 +3052,7 @@ function renderCafeSide() {
   const lockText = i => LEVELS[i].extra ? 'Откроется после экстра-уровня' : 'Откроется после уровня ' + displayNum(i);
   const chap = SCENES.indexOf(S) + 1;
   $('cafeside').innerHTML = `<h2>Окно в кофейню</h2>
-    <div class="helpers" role="group" aria-label="Помещение">${SCENES.map(sc => `<button class="btn${sc.key === cafeScene ? ' primary' : ''}" type="button" data-scene="${sc.key}">${esc(sc.name)}</button>`).join('')}</div>
+    ${[[0, 5, 'Сезон 1'], [5, 10, 'Сезон 2']].map(([a, b, lab]) => `<div class="seasgroup"><span>${lab}</span><div class="helpers" role="group" aria-label="Помещения: ${lab}">${SCENES.slice(a, b).map(sc => `<button class="btn${sc.key === cafeScene ? ' primary' : ''}" type="button" data-scene="${sc.key}">${esc(sc.name)}</button>`).join('')}</div></div>`).join('')}
     <p>${S.key === 'hall' && !n ? 'Пока здесь пусто. Пройди первый уровень, и над прилавком появится вывеска.'
       : n ? `${esc(S.name)}: собрано ${n} из ${ids.length}. За каждый уровень появляется что-то новое.`
       : `Здесь пока пусто. Это помещение обустраивается в главе ${chap}, начиная с уровня ${displayNum(S.from)}.`}</p>
@@ -2038,7 +3209,7 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&
 const fmt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 const SPARK = '<svg aria-hidden="true"><use href="#spark"/></svg>';
 
-function highlight(src) {
+function hlHTML(src) {
   let out = '';
   const re = /(<\!--[\s\S]*?(?:-->|$)|\/\*[\s\S]*?(?:\*\/|$))|(<\/?)([a-zA-Z][\w-]*)([^<>]*?)(\/?>)|([^<\/]+|<|\/)/g;
   let m;
@@ -2051,7 +3222,226 @@ function highlight(src) {
     } else out += esc(m[6]);
     if (m.index === re.lastIndex) re.lastIndex++;
   }
+  return out;
+}
+const JSKW = new Set('const let var function return if else for of in while do new true false null undefined class this typeof break continue switch case default try catch finally async await'.split(' '));
+function hlJS(src) {
+  let out = '', m;
+  const re = /(\/\/[^\n]*|\/\*[\s\S]*?(?:\*\/|$))|('(?:\\.|[^'\\\n])*'?|"(?:\\.|[^"\\\n])*"?|`(?:\\.|[^`\\])*`?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g;
+  while ((m = re.exec(src))) {
+    if (m[1]) out += `<span class="t-c">${esc(m[1])}</span>`;
+    else if (m[2]) out += `<span class="t-v">${esc(m[2])}</span>`;
+    else if (m[3]) out += `<span class="t-a">${m[3]}</span>`;
+    else if (m[4]) out += JSKW.has(m[4]) ? `<span class="t-n">${m[4]}</span>` : src[re.lastIndex] === '(' ? `<span class="t-f">${m[4]}</span>` : esc(m[4]);
+    else out += esc(m[5]);
+  }
+  return out;
+}
+function highlight(src) {
+  let out = '', last = 0, m;
+  const re = /(<script\b[^>]*>)([\s\S]*?)(?=<\/script>|$)/gi;
+  while ((m = re.exec(src))) { out += hlHTML(src.slice(last, m.index) + m[1]) + hlJS(m[2]); last = m.index + m[0].length; if (!m[0].length) re.lastIndex++; }
+  out += hlHTML(src.slice(last));
   return out + (src.endsWith('\n') ? ' ' : '');
+}
+
+/* ---------- JavaScript runner: student code runs against the preview, with fake timers in tests ---------- */
+const PQ = { active: null, capture: null };
+(function () {
+  const add = EventTarget.prototype.addEventListener, rem = EventTarget.prototype.removeEventListener;
+  EventTarget.prototype.addEventListener = function (type, fn, opts) {
+    const env = PQ.active;
+    if (env && typeof fn === 'function') { const w = function (ev) { return callIn(env, fn, [ev], this); }; fn.__pqw = w; return add.call(this, type, w, opts); }
+    return add.call(this, type, fn, opts);
+  };
+  EventTarget.prototype.removeEventListener = function (type, fn, opts) { return rem.call(this, type, fn && fn.__pqw ? fn.__pqw : fn, opts); };
+})();
+function callIn(env, fn, args, self) {
+  if (env.dead) return;
+  const prev = PQ.active; PQ.active = env; env.g = 0;
+  try { return fn.apply(self, args); } catch (err) { env.report(err); } finally { PQ.active = prev; }
+}
+window.addEventListener('error', e => {
+  const env = PQ.capture; if (!env) return;
+  e.preventDefault();
+  const b = /pq-student-(\d+)\.js/.exec(e.filename || '');
+  env.report(e.error || { message: String(e.message || '').replace(/^Uncaught \w*:\s*/, '') }, e.lineno, b ? +b[1] : env.curBlock);
+}, true);
+function fmtVal(v, d) {
+  if (typeof v === 'string') return d ? `'${v}'` : v;
+  if (v === null || v === undefined || typeof v !== 'object' && typeof v !== 'function') return String(v);
+  if (typeof v === 'function') return `ƒ ${v.name || ''}()`;
+  if (v instanceof Element) return `<${v.tagName.toLowerCase()}${v.id ? '#' + v.id : ''}>`;
+  if (d > 2) return Array.isArray(v) ? '[…]' : '{…}';
+  if (Array.isArray(v)) return `[${v.slice(0, 30).map(x => fmtVal(x, d + 1)).join(', ')}${v.length > 30 ? ', …' : ''}]`;
+  if (typeof v.length === 'number' && typeof v.item === 'function') return `NodeList(${v.length})`;
+  try { return `{${Object.keys(v).slice(0, 12).map(k => `${k}: ${fmtVal(v[k], d + 1)}`).join(', ')}}`; } catch (e) { return String(v); }
+}
+function guardLoops(src) {
+  const G = 'if(++__pq.g>200000)throw new Error("__LOOP__");';
+  const n = src.length;
+  const skipStr = j => { const qch = src[j]; j++; while (j < n && src[j] !== qch) { if (src[j] === '\\') j++; j++; } return Math.min(j + 1, n); };
+  let out = '', i = 0;
+  while (i < n) {
+    const c = src[i], prev = src[i - 1] || '';
+    if (c === '/' && src[i + 1] === '/') { const e = src.indexOf('\n', i); const end = e < 0 ? n : e; out += src.slice(i, end); i = end; continue; }
+    if (c === '/' && src[i + 1] === '*') { const e = src.indexOf('*/', i + 2); const end = e < 0 ? n : e + 2; out += src.slice(i, end); i = end; continue; }
+    if (c === '"' || c === "'" || c === '`') { const e = skipStr(i); out += src.slice(i, e); i = e; continue; }
+    const m = /^(for|while)\b\s*\(/.exec(src.slice(i, i + 14));
+    if (m && !/[\w$.]/.test(prev)) {
+      let j = i + m[0].length, depth = 1;
+      while (j < n && depth) { const ch = src[j]; if (ch === '"' || ch === "'" || ch === '`') { j = skipStr(j); continue; } if (ch === '(') depth++; else if (ch === ')') depth--; j++; }
+      let k = j; while (k < n && /[ \t]/.test(src[k])) k++;
+      if (src[k] === '{') { out += src.slice(i, k + 1) + G; i = k + 1; continue; }
+      if (src[k] === ';' || k >= n || src[k] === '\n') { out += src.slice(i, j); i = j; continue; }
+      let e = k, d = 0;
+      while (e < n) { const ch = src[e]; if (ch === '"' || ch === "'" || ch === '`') { e = skipStr(e); continue; } if ('([{'.includes(ch)) d++; else if (')]}'.includes(ch)) d--; else if ((ch === ';' || ch === '\n') && d <= 0) break; e++; }
+      const end = src[e] === ';' ? e + 1 : e;
+      out += src.slice(i, k) + '{' + G + src.slice(k, end) + '}'; i = end; continue;
+    }
+    if (/^do\b\s*\{/.test(src.slice(i, i + 8)) && !/[\w$.]/.test(prev)) { const k = src.indexOf('{', i); out += src.slice(i, k + 1) + G; i = k + 1; continue; }
+    out += c; i++;
+  }
+  return out;
+}
+const testHost = document.createElement('div');
+testHost.setAttribute('aria-hidden', 'true');
+testHost.style.cssText = 'position:absolute;left:-10000px;top:0;width:600px;pointer-events:none';
+document.body.appendChild(testHost);
+const testShadow = testHost.attachShadow({ mode: 'open' });
+let visEnv = null;
+const visStores = {};
+function killEnv(env) { if (!env) return; env.dead = true; env.timers.forEach(id => { clearTimeout(id); clearInterval(id); }); env.timers.clear(); }
+function runCode(code, mode, L, store) {
+  const sh = mode === 'test' ? testShadow : shadow;
+  if (mode === 'visible') { killEnv(visEnv); }
+  sh.innerHTML = BASE + '<div class="__root" tabindex="-1">' + prep(code) + '</div>';
+  const root = sh.querySelector('.__root');
+  const env = { code, mode, root, L, logs: [], lines: [], errors: [], exports: {}, store: store || {}, timers: new Set(), queue: [], clock: 0, seq: 1, g: 0, blocks: [], dead: false };
+  const blocks = [...code.matchAll(/<script\b[^>]*>([\s\S]*?)(?:<\/script>|$)/gi)].map(m => { const at = m.index + m[0].indexOf('>') + 1; return { src: m[1], start: code.slice(0, at).split('\n').length }; });
+  env.blocks = blocks;
+  env.js = blocks.map(b => b.src).join('\n');
+  env.jsc = env.js.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
+  env.html = code.replace(/<script\b[^>]*>[\s\S]*?(?:<\/script>|$)/gi, '');
+  env.names = [...env.js.matchAll(/\b(?:let|const|var|function)\s+([A-Za-z_$][\w$]*)/g)].map(m => m[1]);
+  env.changed = () => { if (env === visEnv) scheduleConsole(); };
+  env.print = (k, args) => { const line = args.map(a => fmtVal(a, 0)).join(' '); if (k !== 'note') env.logs.push(line); if (env.lines.length < 300) env.lines.push({ k, s: line }); env.changed(); };
+  env.report = (err, lineno, block) => {
+    const msg = String(err && err.message || err);
+    let line = null;
+    if (lineno && block !== undefined && blocks[block]) line = blocks[block].start + lineno - 2;
+    else if (err && err.stack) { const m = /pq-student-(\d+)\.js:(\d+):\d+/.exec(err.stack); if (m && blocks[+m[1]]) line = blocks[+m[1]].start + (+m[2]) - 2; }
+    const er = { msg, line, names: env.names };
+    env.errors.push(er);
+    if (env.lines.length < 300) env.lines.push({ k: 'err', s: jsErrText(er) });
+    env.changed();
+  };
+  const S = env.store;
+  const storage = { getItem: k => Object.prototype.hasOwnProperty.call(S, k) ? S[k] : null, setItem: (k, v) => { S[k] = String(v); }, removeItem: k => { delete S[k]; }, clear: () => { for (const k in S) delete S[k]; }, key: i => Object.keys(S)[i] ?? null, get length() { return Object.keys(S).length; } };
+  const out = k => (...a) => env.print(k, a);
+  const con = { log: out('log'), info: out('log'), debug: out('log'), table: out('log'), warn: out('warn'), error: out('err') };
+  const alertF = m => env.print('note', ['alert: ' + fmtVal(m, 0) + ' (в квесте окна не всплывают, поэтому сообщение здесь)']);
+  const promptF = () => { env.print('note', ['prompt в квесте не работает — используй поле input']); return null; };
+  const confirmF = () => { env.print('note', ['confirm в квесте не работает — используй кнопки']); return false; };
+  const sT = (fn, ms, ...a) => {
+    if (typeof fn !== 'function') return 0;
+    if (mode === 'test') { const id = env.seq++; env.queue.push({ id, at: env.clock + Math.max(0, +ms || 0), fn, a, every: 0 }); return id; }
+    const id = setTimeout(() => { env.timers.delete(id); callIn(env, fn, a); }, ms); env.timers.add(id); return id;
+  };
+  const sI = (fn, ms, ...a) => {
+    if (typeof fn !== 'function') return 0;
+    const every = Math.max(mode === 'test' ? 1 : 16, +ms || 0);
+    if (mode === 'test') { const id = env.seq++; env.queue.push({ id, at: env.clock + every, fn, a, every }); return id; }
+    const id = setInterval(() => callIn(env, fn, a), every); env.timers.add(id); return id;
+  };
+  const cT = id => { if (mode === 'test') env.queue = env.queue.filter(t => t.id !== id); else { clearTimeout(id); clearInterval(id); env.timers.delete(id); } };
+  const loc = { reload: () => env.print('note', ['reload в квесте не нужен — нажми «Перезапустить» над превью']), href: 'https://kofeynya-piksel.local/' };
+  const fakeDoc = new Proxy(document, { get(t, p) {
+    switch (p) {
+      case 'querySelector': return sel => root.querySelector(sel);
+      case 'querySelectorAll': return sel => root.querySelectorAll(sel);
+      case 'getElementById': return id => root.querySelector('#' + CSS.escape(String(id)));
+      case 'getElementsByClassName': return c => root.getElementsByClassName(c);
+      case 'getElementsByTagName': return n => root.getElementsByTagName(n);
+      case 'body': case 'documentElement': return root;
+      case 'addEventListener': return (ty, fn, o) => root.addEventListener(ty, fn, o);
+      case 'removeEventListener': return (ty, fn, o) => root.removeEventListener(ty, fn, o);
+      case 'write': case 'writeln': case 'open': case 'close': return () => env.print('note', ['document.write в квесте не работает — используй textContent или append']);
+      case 'location': return loc;
+      case 'title': return 'Кофейня «Пиксель»';
+    }
+    const v = Reflect.get(t, p, t); return typeof v === 'function' ? v.bind(t) : v;
+  }, set() { return true; } });
+  const over = { document: fakeDoc, console: con, alert: alertF, prompt: promptF, confirm: confirmF, setTimeout: sT, setInterval: sI, clearTimeout: cT, clearInterval: cT, localStorage: storage, location: loc,
+    open: () => null, addEventListener: (ty, fn, o) => root.addEventListener(ty, fn, o), removeEventListener: (ty, fn, o) => root.removeEventListener(ty, fn, o) };
+  const fakeWin = new Proxy(window, { get(t, p) { if (Object.prototype.hasOwnProperty.call(over, p)) return over[p]; const v = Reflect.get(t, p); return typeof v === 'function' && !/^[A-Z]/.test(String(p)) ? v.bind(t) : v; }, set() { return true; } });
+  const args = [env, fakeDoc, fakeWin, con, alertF, promptF, confirmF, sT, sI, cT, cT, storage];
+  const exportsCode = (L.exports || []).map(nm => `try{__pq.exports['${nm}']=${nm}}catch(_e){}`).join('');
+  blocks.forEach((b, k) => {
+    const body = guardLoops(b.src);
+    env.started = false; env.curBlock = k;
+    window.__pqArgs = args;
+    PQ.capture = env; PQ.active = env;
+    try {
+      const el = document.createElement('script');
+      el.textContent = '(function(__pq,document,window,console,alert,prompt,confirm,setTimeout,setInterval,clearTimeout,clearInterval,localStorage){__pq.started=true;\n' + body + '\n;' + exportsCode + '\n}).apply(null, window.__pqArgs);\n//# sourceURL=pq-student-' + k + '.js';
+      (document.head || document.body).appendChild(el); el.remove();
+    } finally { PQ.capture = null; PQ.active = null; }
+    if (!env.started && !env.errors.length) {
+      PQ.active = env;
+      try { new Function('__pq', 'document', 'window', 'console', 'alert', 'prompt', 'confirm', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'localStorage', '__pq.started=true;\n' + body + '\n;' + exportsCode).apply(null, args); }
+      catch (err) { if (err instanceof EvalError) env.print('note', ['Браузер не дал запустить JavaScript на этой странице.']); else env.report(err); }
+      finally { PQ.active = null; }
+    }
+  });
+  env.click = (sel, n = 1, idx = 0) => { for (let k = 0; k < n; k++) { const el = root.querySelectorAll(sel)[idx]; if (el) el.click(); } return env; };
+  env.type = (sel, v) => { const el = root.querySelector(sel); if (el) { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } return env; };
+  env.key = k => { root.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })); root.dispatchEvent(new KeyboardEvent('keyup', { key: k, bubbles: true })); return env; };
+  env.tick = ms => {
+    const end = env.clock + ms; let guard = 0;
+    while (guard++ < 20000) {
+      let due = null; for (const tm of env.queue) if (tm.at <= end && (!due || tm.at < due.at || tm.at === due.at && tm.id < due.id)) due = tm;
+      if (!due) break;
+      env.clock = due.at;
+      if (due.every) due.at += due.every; else env.queue = env.queue.filter(tm => tm !== due);
+      callIn(env, due.fn, due.a);
+    }
+    env.clock = end; return env;
+  };
+  env.reload = () => runCode(env.code, 'test', L, env.store);
+  env.variant = fn => runCode(fn(env.code), 'test', L);
+  return env;
+}
+const JSGLOBALS = ['console', 'document', 'window', 'Math', 'Number', 'String', 'Boolean', 'Array', 'Object', 'JSON', 'Date', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'localStorage', 'parseInt', 'parseFloat', 'alert'];
+const JSMETHODS = ['querySelector', 'querySelectorAll', 'getElementById', 'addEventListener', 'createElement', 'appendChild', 'append', 'remove', 'setItem', 'getItem', 'toggle', 'add', 'push', 'forEach', 'filter', 'map', 'reduce', 'join', 'includes', 'log', 'floor', 'random', 'getHours', 'getMinutes', 'padStart', 'contains'];
+function jsErrText(er) {
+  const m = er.msg, where = er.line ? ` (строка ${er.line})` : ''; let r;
+  if (/__LOOP__/.test(m)) return `Похоже на бесконечный цикл${where}: условие никогда не становится ложным. Проверь, что счётчик меняется.`;
+  if ((r = m.match(/^(\S+) is not defined/))) { const c = closest(r[1], JSGLOBALS.concat(er.names || [])); return `\`${r[1]}\` не найдено${where}.` + (c && c !== r[1] ? ` Может быть, \`${c}\`?` : ' Проверь написание и что переменная объявлена выше.'); }
+  if ((r = m.match(/Cannot (?:read|set) properties of (null|undefined) \((?:reading|setting) '(.+?)'\)/))) return r[1] === 'null' ? `Элемент не найден${where}: querySelector вернул null, поэтому \`.${r[2]}\` взять не у чего. Проверь селектор: точка для класса, решётка для id.` : `Нельзя взять \`.${r[2]}\` у undefined${where}. Проверь имя переменной или поля.`;
+  if ((r = m.match(/^(.+?) is not a function/))) { const last = r[1].split('.').pop(); const c = closest(last, JSMETHODS); return `\`${r[1]}\` — не функция${where}.` + (c && c !== last ? ` Может быть, \`${c}\`?` : ' Проверь название и скобки.'); }
+  if (/Assignment to constant/.test(m)) return `Нельзя перезаписать переменную из \`const\`${where}. Если значение меняется, объяви её через \`let\`.`;
+  if ((r = m.match(/Identifier '(.+?)' has already been declared/))) return `Переменная \`${r[1]}\` объявлена дважды${where}. Убери второй \`let\` или \`const\`.`;
+  if ((r = m.match(/Cannot access '(.+?)' before initialization/))) return `Переменная \`${r[1]}\` используется раньше, чем объявлена${where}. Перенеси объявление выше.`;
+  if (/missing \) after argument list/.test(m)) return `Не хватает закрывающей скобки \`)\`${where}.`;
+  if (/Unexpected end of input/.test(m)) return `Код обрывается${where}: не хватает закрывающей \`}\` или \`)\`.`;
+  if (/Invalid or unexpected token/.test(m)) return `Непонятный символ${where}. Часто это незакрытая кавычка или «ёлочки» вместо обычных кавычек.`;
+  if ((r = m.match(/Unexpected token '?(.+?)'?$/))) return `Синтаксическая ошибка${where}: неожиданный \`${r[1]}\`. Проверь скобки, кавычки и запятые.`;
+  if (/Unexpected identifier/.test(m)) return `Синтаксическая ошибка${where}: между словами не хватает точки, запятой, оператора или скобки.`;
+  if (/Unexpected (string|number)/.test(m)) return `Синтаксическая ошибка${where}: значение стоит не на месте. Может, не хватает \`+\` или запятой?`;
+  if (/Maximum call stack/.test(m)) return `Функция вызывает сама себя без конца${where}.`;
+  return `Ошибка${where}: ${m}`;
+}
+let conTimer = 0;
+function scheduleConsole() { if (conTimer) return; conTimer = setTimeout(() => { conTimer = 0; if (visEnv) renderConsole(visEnv); }, 60); }
+function renderConsole(env) {
+  const box = $('console'), pv = document.querySelector('.preview');
+  $('rerun').hidden = !env;
+  if (!env) { box.hidden = true; pv.classList.remove('js'); return; }
+  box.hidden = false; pv.classList.add('js');
+  const lines = env.lines.slice(-200);
+  $('clines').innerHTML = lines.length ? lines.map(l => `<div class="cl ${l.k}">${l.k === 'err' ? fmt(l.s) : esc(l.s)}</div>`).join('') : '<div class="cl note">Пока пусто. Напиши console.log(...), и ответ появится здесь.</div>';
+  $('clines').scrollTop = 1e9;
 }
 
 /* ---------- typo helper: browsers ignore unknown CSS/HTML silently, so we point it out ---------- */
@@ -2062,13 +3452,16 @@ const CSS_PROPS = ['list-style-type','text-shadow','animation','animation-name',
 const CSS_VALUES = { position: ['static', 'relative', 'absolute', 'fixed', 'sticky'], 'flex-direction': ['row', 'column', 'row-reverse', 'column-reverse'], 'flex-wrap': ['wrap', 'nowrap', 'wrap-reverse'], 'text-transform': ['uppercase', 'lowercase', 'capitalize', 'none'], 'justify-content': ['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end', 'left', 'right', 'stretch', 'normal'], 'align-items': ['flex-start', 'flex-end', 'center', 'stretch', 'baseline', 'start', 'end', 'normal'], 'text-align': ['left', 'right', 'center', 'justify', 'start', 'end'], display: ['flex', 'block', 'inline', 'inline-block', 'inline-flex', 'grid', 'none'],
   cursor: ['pointer', 'default', 'text', 'move', 'not-allowed'], 'font-weight': ['bold', 'normal', 'lighter', 'bolder'] };
 const COLORS = ['red','blue','green','white','black','orange','yellow','purple','pink','brown','gray','grey','gold','crimson','navy','teal','violet','tomato','coral','beige','transparent','maroon','olive','silver','lime','cyan','magenta','indigo','salmon','chocolate','tan','ivory','khaki','orchid','plum','sienna','wheat','darkred','darkblue','darkgreen','lightblue','lightgreen','skyblue','hotpink','firebrick','peru','linen','lavender','turquoise','aqua','fuchsia','inherit','currentcolor'];
-const TAGS = ['h1','h2','h3','h4','h5','h6','p','strong','em','b','i','u','ul','ol','li','a','button','div','span','style','br','hr','img','section','header','footer','nav','main','article','small','mark','code','pre','label','input','form','table','tr','td','th','blockquote'];
+const TAGS = ['script','textarea','select','option','h1','h2','h3','h4','h5','h6','p','strong','em','b','i','u','ul','ol','li','a','button','div','span','style','br','hr','img','section','header','footer','nav','main','article','small','mark','code','pre','label','input','form','table','tr','td','th','blockquote'];
 function lev(a, b) { const d = Array.from({ length: a.length + 1 }, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
   for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; }
 function closest(w, list) { let best = null, bd = 3; list.forEach(x => { const v = lev(w, x); if (v < bd) { bd = v; best = x; } }); return bd <= Math.max(1, Math.min(2, Math.floor(w.length / 3))) ? best : null; }
 function lint(code) {
   const out = [], seen = new Set();
   const add = m => { if (!seen.has(m)) { seen.add(m); out.push(m); } };
+  const jsSrc = [...code.matchAll(/<script\b[^>]*>([\s\S]*?)(?:<\/script>|$)/gi)].map(m => m[1]).join('\n');
+  code = code.replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>|$)/gi, '$1$2');
+  if (/<[a-z][^>]*\son[a-z]+\s*=/i.test(code)) add('Обработчики вроде `onclick="..."` в квесте не работают. Повесь событие через `addEventListener` в теге script.');
   const tags = code.replace(/<\!--[\s\S]*?-->/g, '').matchAll(/<\/?([a-zA-Z][a-zA-Z0-9-]*)/g);
   for (const [, t] of tags) { const tl = t.toLowerCase(); if (!TAGS.includes(tl)) { const c = closest(tl, TAGS); add(c ? `Тег \`${t}\` — похоже на опечатку. Может быть, \`${c}\`?` : `Браузер не знает тега \`${t}\`.`); } }
   // attribute typos like clas= / hre=
@@ -2076,6 +3469,8 @@ function lint(code) {
     const nl = n.toLowerCase(); if (!['class', 'href', 'id', 'style', 'src', 'alt', 'type', 'title', 'target', 'for', 'placeholder', 'name', 'value', 'width', 'height'].includes(nl)) { const c = closest(nl, ['class', 'href', 'id', 'src', 'alt']); if (c) add(`Атрибут \`${n}\` — опечатка? Правильно: \`${c}\`.`); }
   }
   const htmlClasses = new Set(); for (const [, v] of code.replace(/<style[\s\S]*?(<\/style>|$)/gi, '').matchAll(/class\s*=\s*["']([^"']*)["']/gi)) v.split(/\s+/).filter(Boolean).forEach(c => htmlClasses.add(c));
+  for (const [, c] of jsSrc.matchAll(/classList\.(?:add|toggle|remove|contains)\(\s*['"`]([\w-]+)/g)) htmlClasses.add(c);
+  for (const [, v] of jsSrc.matchAll(/className\s*=\s*['"`]([^'"`]*)/g)) v.split(/\s+/).filter(Boolean).forEach(c => htmlClasses.add(c));
   for (const [, css] of code.matchAll(/<style[^>]*>([\s\S]*?)(?:<\/style>|$)/gi)) {
     const clean = css.replace(/\/\*[\s\S]*?\*\//g, '');
     const stack = []; let nested = null;
@@ -2086,7 +3481,7 @@ function lint(code) {
     if (nested) add(`Правило \`${nested}\` оказалось внутри другого правила. Проверь, что у предыдущего правила есть закрывающая скобка \`}\`.`);
     else if (depth > 0) add('В стилях не хватает закрывающей скобки `}`.');
     for (const [, sel] of clean.matchAll(/(?:^|[}\s,])\.([a-zA-Z][\w-]*)(?=[^{}]*\{)/g)) {
-      if (!htmlClasses.has(sel)) { const c = closest(sel, [...htmlClasses]); add(c ? `В стилях есть \`.${sel}\`, а в HTML класс называется \`${c}\`. Названия должны совпадать.` : `Правило \`.${sel}\` не находит ни одного элемента: в HTML нет тега с \`class="${sel}"\`.`); }
+      if (!htmlClasses.has(sel) && !/<script/i.test(jsSrc + code)) { const c = closest(sel, [...htmlClasses]); add(c ? `В стилях есть \`.${sel}\`, а в HTML класс называется \`${c}\`. Названия должны совпадать.` : `Правило \`.${sel}\` не находит ни одного элемента: в HTML нет тега с \`class="${sel}"\`.`); }
     }
     for (const [, body] of clean.matchAll(/\{([^{}]*)\}?/g)) {
       body.split(';').forEach(decl => {
@@ -2116,7 +3511,7 @@ function renderTop() {
     const s = st.stars[i];
     const cls = i === st.cur ? 'cur' : (s ? 'done' : '');
     const chHere = CH.findIndex(ch => ch.from === i);
-    return (chHere >= 0 ? `<span class="chap">Глава ${chHere + 1}</span>` : '<span class="dash" aria-hidden="true"></span>') +
+    return (chHere >= 0 ? `<span class="chap">${chHere === 5 ? 'Сезон 2 · ' : ''}Глава ${chHere + 1}</span>` : '<span class="dash" aria-hidden="true"></span>') +
       `<button class="node ${cls}${L.extra ? ' extra' : ''}" data-i="${i}" ${i > st.unlocked ? 'disabled' : ''} title="${esc(L.title)}" aria-label="${L.extra ? 'Экстра-уровень' : 'Уровень ' + displayNum(i)}: ${esc(L.title)}">${levelLabel(i)}${s ? `<small>${'★'.repeat(s)}</small>` : ''}</button>`;
   }).join('');
 }
@@ -2127,6 +3522,7 @@ function renderBrief(results) {
   const passed = results.every(Boolean);
   const stars = st.stars[i];
   const warns = lint(ta.value);
+  const jsWarns = L.js && visEnv ? [...new Set(visEnv.errors.map(jsErrText))].slice(0, 2) : [];
   let helper = '';
   if (st.sol[i]) helper = `<div class="tip"><b>Готовое заклинание</b><pre>${esc(L.solution)}</pre><button class="btn" id="useSol" type="button">Вставить в книгу</button></div>`;
   else if (st.hint[i]) helper = `<div class="tip"><b>Подсказка от совы.</b> ${esc(L.hint)}</div>`;
@@ -2135,17 +3531,18 @@ function renderBrief(results) {
     <div><div class="eyebrow">${L.extra ? 'Экстра-уровень · повторение главы ' + L.chapter : 'Уровень ' + displayNum(i) + ' из ' + REG}</div><h2>${esc(L.title)}</h2></div>
     ${(() => { const k = CH.findIndex(ch => ch.from === i); if (k < 0) return ''; const ch = CH[k]; return `<div class="chapintro"><b>Начинается ${esc(ch.title)}</b><p>${esc(ch.blurb)} Тропа научит тебя:</p><ul class="topics">${ch.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`; })()}
     <div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>Марта, кошка-магиня</b>${esc(L.say)}</div></div>
-    <div class="learn"><h3>${SPARK}${esc(L.learn.t)}</h3><p>${esc(L.learn.p)}</p><pre>${highlight(L.learn.code)}</pre></div>
+    <div class="learn"><h3>${SPARK}${esc(L.learn.t)}</h3><p>${esc(L.learn.p)}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></div>
     ${L.extra ? '<div class="xtra-note"><b>Экстра-уровень.</b> Новой теории нет, только то, что ты уже знаешь. Награда двойная.</div>' : ''}
     <div class="task"><h3>${SPARK}Задание</h3><p>${fmt(L.task)}</p>
-      <ul class="checks">${L.checks.map((c, k) => `<li class="${results[k] ? 'pass' : ''}">${fmt(c[0])}</li>`).join('')}</ul>
+      <ul class="checks">${L.checks.map((c, k) => `<li class="${results[k] ? 'pass' : ''}"><span>${fmt(c[0])}</span></li>`).join('')}</ul>
       ${warns.length ? `<div class="warn"><b>Сова заметила опечатку</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+      ${jsWarns.length ? `<div class="warn"><b>Сова заметила ошибку в JavaScript</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
     </div>
-    ${passed && stars ? `<div class="win"><h3>${i === LEVELS.length - 1 ? 'Сайт наколдован!' : 'Заклинание сработало'}</h3>
+    ${passed && stars ? `<div class="win"><h3>${SEASON_END.includes(i) ? 'Сезон пройден!' : 'Заклинание сработало'}</h3>
       <div class="stars" aria-label="${stars} из 3 звёзд">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
       <p>+${stars * xpPer(i)} магической силы.${stars < 3 ? ' Пройди без подсказок, чтобы собрать все три звезды.' : ' Марта довольно мурлычет.'}</p>
       <div class="newitem">В кофейне появилось: <b>${esc(CAFE[i].name)}</b>${FURN[i] ? `, <b>${esc(FURN[i].name)}</b>` : ''}${PLANTS[i] ? ` и растение <b>${esc(PLANTS[i].name)}</b>` : ''}</div>
-      <div class="helpers">${i < LEVELS.length - 1 ? '<button class="btn primary" id="next" type="button">Следующий уровень →</button>' : '<button class="btn primary" id="fin" type="button">Завершить сезон</button>'}<button class="btn" id="peek" type="button">Заглянуть в окно</button></div></div>` : `
+      <div class="helpers">${SEASON_END.includes(i) ? '<button class="btn primary" id="fin" type="button">Завершить сезон</button>' : '<button class="btn primary" id="next" type="button">Следующий уровень →</button>'}<button class="btn" id="peek" type="button">Заглянуть в окно</button></div></div>` : `
     <div class="helpers">
       ${!st.hint[i] ? '<button class="btn" id="hint" type="button">Подсказка</button>' : ''}
       ${st.hint[i] && !st.sol[i] ? '<button class="btn" id="sol" type="button">Показать решение</button>' : ''}
@@ -2157,16 +3554,28 @@ function renderBrief(results) {
 
 function prep(code) { return code.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>|$)/gi, (m, a, b, c) => a + b.replace(/:root\b/g, ':host').replace(/(^|[\s,}])(html|body)(?=\s*[,{:.#\[])/g, (mm, p1, tag) => p1 + (tag === 'html' ? ':host' : '.__root')) + c); }
 function check(code) {
-  shadow.innerHTML = BASE + '<div class="__root">' + prep(code) + '</div>';
-  const root = shadow.querySelector('.__root');
-  return LEVELS[st.cur].checks.map(c => { try { return !!c[1](root); } catch (e) { return false; } });
+  const L = LEVELS[st.cur];
+  if (!L.js) {
+    if (visEnv) { killEnv(visEnv); visEnv = null; }
+    renderConsole(null);
+    shadow.innerHTML = BASE + '<div class="__root">' + prep(code) + '</div>';
+    const root = shadow.querySelector('.__root');
+    return L.checks.map(c => { try { return !!c[1](root); } catch (e) { return false; } });
+  }
+  const res = L.checks.map(c => { try { const env = runCode(code, 'test', L); return !!c[1](env.root, env); } catch (e) { return false; } });
+  testShadow.innerHTML = '';
+  visEnv = runCode(code, 'visible', L, visStores[st.cur] = visStores[st.cur] || {});
+  renderConsole(visEnv);
+  return res;
 }
 
 function update(fromInput) {
   const code = ta.value;
   hl.innerHTML = highlight(code);
   st.code[st.cur] = code;
+  const hadFocus = document.activeElement === ta, s0 = ta.selectionStart, s1 = ta.selectionEnd, sc = ta.scrollTop;
   const res = check(code);
+  if (hadFocus && document.activeElement !== ta) { ta.focus({ preventScroll: true }); ta.setSelectionRange(s0, s1); ta.scrollTop = sc; }
   const i = st.cur;
   const passed = res.every(Boolean);
   if (passed && fromInput && (!st.stars[i] || (st.tested && st.tested[i]))) {
@@ -2205,7 +3614,8 @@ ta.addEventListener('keydown', e => {
   }
 });
 $('map').addEventListener('click', e => { const b = e.target.closest('.node'); if (b && !b.disabled) openLevel(+b.dataset.i); });
-$('reset').addEventListener('click', () => { ta.value = LEVELS[st.cur].starter; update(false); toast('Страница книги очищена'); });
+$('reset').addEventListener('click', () => { ta.value = LEVELS[st.cur].starter; delete visStores[st.cur]; update(false); toast('Страница книги очищена'); });
+$('rerun').addEventListener('click', () => { update(false); toast('Превью перезапущено, как после обновления страницы'); });
 brief.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   const id = t.id, i = st.cur;
@@ -2213,7 +3623,7 @@ brief.addEventListener('click', e => {
   if (id === 'sol') { st.sol[i] = true; update(false); }
   if (id === 'useSol') { ta.value = LEVELS[i].solution; update(true); }
   if (id === 'next') openLevel(i + 1);
-  if (id === 'fin') finale();
+  if (id === 'fin') finale(i < CH[5].from ? 1 : 2);
   if (id === 'peek') show('cafe');
   if (id === 'quiz') openQuiz(chapterOf(st.cur));
 });
@@ -2286,6 +3696,51 @@ const QUIZ = [
     { q: 'Что такое `twinkle`?', c: '.star {\n  animation: twinkle 1s infinite alternate;\n}', o: ['Имя @keyframes', 'Название класса', 'Встроенный эффект браузера', 'Цвет звезды'], a: 0, e: 'Первое слово в animation — имя кадров из @keyframes.' },
     { q: 'Что делает `position: sticky; top: 0`?', o: ['Прилипает к верху при прокрутке', 'Всегда стоит в верху окна, даже до прокрутки', 'Прячет элемент при прокрутке', 'Ставит элемент в начало страницы'], a: 0, e: 'sticky едет со страницей, пока не упрётся в верх, и там прилипает.' },
   ],
+  [
+    { q: 'Что выведет код?', c: 'console.log(2 + 3 * 4);', o: ['14', '20', '234', '2 + 3 * 4'], a: 0, e: 'Сначала умножение: 3 × 4 = 12, потом 2 + 12.' },
+    { q: 'Чем `let` отличается от `const`?', o: ['let можно перезаписать, const — нет', 'const можно перезаписать, let — нет', 'Ничем', 'let только для чисел'], a: 0, e: 'const защищает переменную от перезаписи.' },
+    { q: 'Что выведет код?', c: "const cat = 'Барсик';\nconsole.log(`Привет, ${cat}!`);", o: ['Привет, Барсик!', 'Привет, ${cat}!', 'Привет, cat!', 'Ошибку'], a: 0, e: 'В обратных кавычках ${cat} заменяется значением переменной.' },
+    { q: "Что вернёт `5 === '5'`?", o: ['false', 'true', '5', 'Ошибку'], a: 0, e: '=== сравнивает и значение, и тип: число не равно строке.' },
+    { q: 'Когда выполнится код внутри `if (fish > 3) { ... }`?', o: ['Только если fish больше 3', 'Всегда', 'Только если fish равно 3', 'Никогда'], a: 0, e: 'Код в if работает, только когда условие true.' },
+    { q: 'Что значит `a && b`?', o: ['true, только если и a, и b true', 'true, если хотя бы одно true', 'Сначала a, потом b', 'a плюс b'], a: 0, e: '&& — «и», || — «или».' },
+    { q: 'Что выведет код?', c: "let n = 5;\nif (n > 10) {\n  console.log('A');\n} else if (n > 3) {\n  console.log('B');\n} else {\n  console.log('C');\n}", o: ['B', 'A', 'C', 'B и C'], a: 0, e: 'Срабатывает первое подходящее условие: 5 > 3.' },
+  ],
+  [
+    { q: 'Сколько раз выполнится цикл?', c: 'for (let i = 0; i < 4; i++) {\n  console.log(i);\n}', o: ['4', '3', '5', 'Бесконечно'], a: 0, e: 'i = 0, 1, 2, 3 — четыре раза.' },
+    { q: "Что выведет `cats[0]` для `const cats = ['Барсик', 'Мурка']`?", o: ['Барсик', 'Мурка', 'undefined', '0'], a: 0, e: 'Номера в массиве начинаются с нуля.' },
+    { q: "Что делает `cats.push('Рыжик')`?", o: ['Добавляет Рыжика в конец массива', 'Удаляет последнего кота', 'Добавляет Рыжика в начало', 'Заменяет весь массив'], a: 0, e: 'push добавляет в конец.' },
+    { q: 'Что выведет код?', c: 'const a = [1, 2, 3];\nconsole.log(a.length);', o: ['3', '2', '4', '[1, 2, 3]'], a: 0, e: 'length — количество элементов.' },
+    { q: 'Что делает `return` в функции?', o: ['Возвращает результат из функции', 'Выводит значение в консоль', 'Перезапускает функцию', 'Объявляет переменную'], a: 0, e: 'Результат return можно сохранить или вывести.' },
+    { q: 'Что выведет код?', c: 'function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 5));', o: ['7', '25', 'a + b', 'undefined'], a: 0, e: 'add вернула 2 + 5.' },
+    { q: 'Что такое `(n) => n * 2`?', o: ['Короткая стрелочная функция', 'Сравнение', 'Цикл', 'Массив'], a: 0, e: 'Стрелочная функция: параметр, стрелка и результат.' },
+  ],
+  [
+    { q: "Что найдёт `document.querySelector('#call')`?", o: ['Элемент с id="call"', 'Элемент с class="call"', 'Все кнопки', 'Тег <call>'], a: 0, e: 'Селекторы как в CSS: # — id, точка — класс.' },
+    { q: 'Как поменять текст элемента?', o: ["`el.textContent = 'Текст'`", "`el.setText('Текст')`", "`el.style = 'Текст'`", "`el.classList.add('Текст')`"], a: 0, e: 'textContent — текст внутри элемента.' },
+    { q: "Что делает `el.classList.toggle('dark')`?", o: ['Добавляет класс, если его нет, и убирает, если есть', 'Всегда добавляет класс', 'Всегда убирает класс', 'Красит элемент в тёмный'], a: 0, e: 'toggle — переключатель.' },
+    { q: "Когда сработает функция в `btn.addEventListener('click', fn)`?", o: ['При каждом клике по кнопке', 'Сразу при загрузке', 'Только при первом клике', 'При наведении'], a: 0, e: 'Обработчик вызывается на каждое событие.' },
+    { q: 'Где хранится текст, напечатанный в поле input?', o: ['`input.value`', '`input.textContent`', '`input.text`', '`input.innerHTML`'], a: 0, e: 'У полей ввода текст лежит в value.' },
+    { q: 'Как добавить новый пункт в список?', o: ["createElement('li'), задать текст и append в список", 'Вывести li в консоль', "list.push('li')", "list.textContent = 'li'"], a: 0, e: 'Элемент создают, наполняют и добавляют на страницу.' },
+    { q: 'Какое событие срабатывает при каждом изменении текста в поле?', o: ['`input`', '`click`', '`submit`', '`load`'], a: 0, e: 'input — на каждый символ.' },
+  ],
+  [
+    { q: "Как достать цену из `const coffee = { name: 'Латте', price: 150 }`?", o: ['`coffee.price`', '`price.coffee`', '`coffee(price)`', '`coffee->price`'], a: 0, e: 'Поле объекта берут через точку.' },
+    { q: 'Что делает `menu.filter(item => item.price < 150)`?', o: ['Возвращает новый массив только с дешёвыми', 'Удаляет дорогие напитки из menu', 'Возвращает true или false', 'Сортирует по цене'], a: 0, e: 'filter не меняет исходный массив.' },
+    { q: 'Что вернёт `[1, 2, 3].map(n => n * 10)`?', o: ['[10, 20, 30]', '60', '[1, 2, 3]', '10'], a: 0, e: 'map превращает каждый элемент.' },
+    { q: 'Что вернёт `[1, 2, 3].reduce((s, n) => s + n, 0)`?', o: ['6', '[1, 2, 3]', '0', '123'], a: 0, e: 'reduce сворачивает массив в одно значение.' },
+    { q: 'Чем `forEach` отличается от `map`?', o: ['forEach просто перебирает, map возвращает новый массив', 'Ничем', 'map не умеет перебирать', 'forEach возвращает новый массив'], a: 0, e: 'map собирает результаты в новый массив.' },
+    { q: 'Как сохранить значение, чтобы оно осталось после перезагрузки?', o: ["`localStorage.setItem('ключ', значение)`", '`let` в начале кода', '`console.log`', '`const`'], a: 0, e: 'Переменные пропадают при перезагрузке, localStorage — нет.' },
+    { q: "Что вернёт `localStorage.getItem('cups')`, если сохранили число 3?", o: ["Строку '3'", 'Число 3', 'true', 'undefined'], a: 0, e: 'localStorage хранит строки, поэтому число возвращают через Number().' },
+  ],
+  [
+    { q: 'Что делает `setTimeout(fn, 2000)`?', o: ['Вызывает fn один раз через 2 секунды', 'Вызывает fn каждые 2 секунды', 'Ждёт 2000 секунд', 'Вызывает fn 2000 раз'], a: 0, e: '2000 мс = 2 секунды, один раз.' },
+    { q: 'Чем `setInterval` отличается от `setTimeout`?', o: ['setInterval повторяет снова и снова', 'setInterval срабатывает один раз', 'Ничем', 'setInterval работает только с кнопками'], a: 0, e: 'Интервал повторяется, пока его не остановят.' },
+    { q: 'Как остановить таймер `const id = setInterval(...)`?', o: ['`clearInterval(id)`', '`stopInterval(id)`', '`id = 0`', '`setInterval(null)`'], a: 0, e: 'clearInterval принимает номер таймера.' },
+    { q: 'Что может вернуть `Math.floor(Math.random() * 6) + 1`?', o: ['Целое от 1 до 6', 'Целое от 0 до 6', 'Дробь от 0 до 1', 'Всегда 6'], a: 0, e: 'Math.random() < 1, поэтому максимум — 5 + 1.' },
+    { q: 'Что лежит в `event.key` при нажатии стрелки вправо?', o: ["`'ArrowRight'`", "`'Right'`", "`'→'`", "`'Arrow'`"], a: 0, e: 'Стрелки называются ArrowLeft, ArrowRight, ArrowUp, ArrowDown.' },
+    { q: 'Как запретить нажимать кнопку?', o: ['`button.disabled = true`', '`button.remove = true`', '`button.style = none`', '`button.click = false`'], a: 0, e: 'Выключенная кнопка не реагирует на клики.' },
+    { q: "Что вернёт `String(7).padStart(2, '0')`?", o: ["'07'", "'70'", '7', "'0'"], a: 0, e: 'padStart дописывает символы слева до нужной длины.' },
+  ],
 ];
 const QN = 6, QPASS = 5;
 const chEnd = k => CH[k + 1] ? CH[k + 1].from - 1 : LEVELS.length - 1;
@@ -2345,18 +3800,23 @@ function finishQuiz() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); });
 
-function finale() {
-  const total = Object.values(st.stars).reduce((a, b) => a + b, 0);
+function finale(season) {
+  const s1 = season === 1, from = s1 ? 0 : CH[5].from, to = s1 ? CH[5].from - 1 : LEVELS.length - 1;
+  let total = 0; for (let i = from; i <= to; i++) total += st.stars[i] || 0;
+  const skills = s1 ? ['HTML: теги, списки, ссылки, картинки, таблицы, формы', 'CSS: селекторы, цвета, шрифты, отступы, тени, градиенты', 'раскладка: flexbox, grid, позиционирование', 'адаптив, переменные, переходы и анимации']
+    : ['переменные, условия и циклы', 'функции и массивы', 'DOM: элементы, классы и события', 'объекты, filter, map, reduce и localStorage', 'таймеры, случайные числа и своя мини-игра'];
   const d = document.createElement('div');
   d.className = 'finale';
-  d.innerHTML = `<div class="card"><svg aria-hidden="true"><use href="#cat"/></svg><h2>Первый сезон пройден!</h2>
-    <p>Ты наколдовал сайт с нуля: ${total} из ${LEVELS.length * 3} звёзд, ${totalXP()} магической силы. Твои новые чары:</p>
-    <ul><li>HTML: теги, списки, ссылки, картинки, таблицы, формы</li><li>CSS: селекторы, цвета, шрифты, отступы, тени, градиенты</li><li>раскладка: flexbox, grid, позиционирование</li><li>адаптив, переменные, переходы и анимации</li></ul>
-    <div class="helpers"><button class="btn primary" id="closeFin" type="button">Посмотреть кофейню</button><button class="btn" id="restart" type="button">Пройти заново</button></div></div>`;
+  d.innerHTML = `<div class="card"><svg aria-hidden="true"><use href="#cat"/></svg><h2>${s1 ? 'Первый сезон пройден!' : 'Второй сезон пройден!'}</h2>
+    <p>${s1 ? 'Ты собрал сайты кофейни на HTML и CSS' : 'Ты оживил сайты кофейни на JavaScript'}: ${total} из ${(to - from + 1) * 3} звёзд, всего ${totalXP()} магической силы. Твои новые чары:</p>
+    <ul>${skills.map(x => `<li>${x}</li>`).join('')}</ul>
+    <div class="helpers">${s1 ? '<button class="btn primary" id="toS2" type="button">Начать сезон 2 →</button><button class="btn" id="closeFin" type="button">Посмотреть кофейню</button>'
+      : '<button class="btn primary" id="closeFin" type="button">Посмотреть кофейню</button><button class="btn" id="restart" type="button">Пройти заново</button>'}</div></div>`;
   document.body.appendChild(d);
   d.addEventListener('click', e => {
     if (e.target === d) d.remove();
     if (e.target.id === 'closeFin') { d.remove(); show('cafe'); }
+    if (e.target.id === 'toS2') { d.remove(); st.unlocked = Math.max(st.unlocked, CH[5].from); openLevel(CH[5].from); show('quest'); }
     if (e.target.id === 'restart') { st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {}, seen: -1 }; save(); d.remove(); openLevel(0); show('quest'); }
   });
 }
