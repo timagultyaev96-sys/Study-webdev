@@ -203,6 +203,55 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .residents em{font-style:normal;color:var(--muted);font-size:12px}
 .skip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
 .skip b{color:var(--ink)}
+.stv{display:grid;gap:16px}
+.stv h2{font:700 22px/1.2 var(--display);margin:0;text-wrap:balance}
+.stv h3{font:700 17px/1.2 var(--display);margin:0}
+.stv .sub{margin:0;color:var(--muted);font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.tile{min-width:0}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
+.tile b{font:700 clamp(19px,5vw,26px)/1.1 var(--display);overflow-wrap:anywhere;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tile span{font-size:12.5px;color:var(--muted)}
+.tile small{font-size:12px;color:var(--muted)}
+.stcols{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.stcols{grid-template-columns:minmax(0,1fr)}}
+.card2{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px;min-width:0}
+.hbars{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.hbars li{display:grid;grid-template-columns:118px minmax(0,1fr) 62px;gap:10px;align-items:center;font-size:13px}
+.hbars .lab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbars .track{height:12px;background:var(--soft);border-radius:4px;position:relative}
+.hbars .fill{position:absolute;inset:0 auto 0 0;background:var(--orange);border-radius:0 4px 4px 0;min-width:2px}
+.hbars .fill.zero{background:transparent}
+.hbars .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.vbars{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;align-items:end;height:130px;border-bottom:1px solid var(--line);padding-top:16px}
+.vbars .col{display:grid;align-items:end;height:100%;position:relative}
+.vbars .bar{background:var(--gold);border-radius:4px 4px 0 0;min-height:2px}
+.vbars .bar.today{background:var(--orange)}
+.vbars .col:hover .bar,.vbars .col:focus .bar{outline:2px solid var(--ink);outline-offset:1px}
+.vbars .tip{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);background:var(--night);color:#fbe9de;font-size:11.5px;padding:3px 7px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;z-index:2}
+.vbars .col:hover .tip,.vbars .col:focus .tip{opacity:1}
+.vlabels{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;font-size:10.5px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.hard{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.hard li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--soft);border-radius:12px;padding:8px 10px;font-size:13px}
+.hard b{display:block;font-size:14px}
+.hard small{color:var(--muted)}
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.ach{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px}
+.ach .badge{width:48px;height:52px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;background:var(--line);color:var(--muted);font:700 15px var(--display)}
+.ach.on .badge{background:linear-gradient(160deg,var(--gold),var(--orange));color:var(--night)}
+.ach.on{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.ach b{display:block;font-size:14px}
+.ach span{display:block;font-size:12.5px;color:var(--muted)}
+.ach .pbar{height:5px;background:var(--soft);border-radius:3px;margin-top:5px;overflow:hidden}
+.ach .pbar i{display:block;height:100%;background:var(--gold)}
+.ach .when{font-size:11.5px;color:var(--ok)}
+.achpops{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;display:grid;gap:8px;max-width:calc(100% - 32px)}
+.achpop{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;background:var(--night);color:#fbe9de;border:2px solid var(--gold);border-radius:14px;padding:10px 14px 10px 10px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:popin .35s cubic-bezier(.2,1.4,.4,1) both;max-width:340px}
+.achpop .badge{width:40px;height:44px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;background:linear-gradient(160deg,var(--gold),var(--orange));color:var(--night);font:700 13px var(--display)}
+.achpop small{display:block;color:var(--gold);font:8px/1.6 "Press Start 2P",monospace}
+.achpop b{display:block;font-size:14px}
+@keyframes popin{from{transform:translateY(20px) scale(.9);opacity:0}}
+@media (prefers-reduced-motion:reduce){.achpop{animation:none}}
 .bookbtn{position:absolute;top:14px;right:14px;z-index:3;display:flex;align-items:center;gap:6px;background:#2a140d;border:2px solid #8a4a22;color:#f4ac3c;
   font:8px/1 "Press Start 2P",monospace;padding:5px 8px 5px 6px;box-shadow:2px 2px 0 #000;animation:bob 2.4s ease-in-out infinite}
 .bookbtn:hover{border-color:#f4ac3c;color:#ffd27a}
@@ -353,8 +402,11 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     <button class="tab" role="tab" id="t-quest" data-v="quest" type="button" aria-selected="true">Квест</button>
     <button class="tab" role="tab" id="t-map" data-v="map" type="button" aria-selected="false">Карта мира</button>
     <button class="tab" role="tab" id="t-cafe" data-v="cafe" type="button" aria-selected="false">Окно в кофейню <span class="new" id="newbadge" hidden>NEW</span></button>
+    <button class="tab" role="tab" id="t-stats" data-v="stats" type="button" aria-selected="false">Достижения <span class="new" id="achbadge" hidden>0</span></button>
     <button class="tab booktab" type="button" data-book="1"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg>Книга повторения</button>
   </div>
+
+  <section class="view" id="v-stats" hidden><div class="stv" id="statsview"></div></section>
 
   <section class="view" id="v-map" hidden>
     <div class="pixel-view">
@@ -2779,6 +2831,7 @@ function npcClick(e) {
   if (!hit) { const S = SCENES.find(sc => sc.key === cafeScene); if (S && !npcList(cafeScene).length) toast('Жители появятся, когда начнётся глава этого помещения.'); return; }
   const { n, s } = hit;
   s.talk = 45; s.pause = 20;
+  S().talks++; S().met[n.name] = 1; save(); checkAch();
   toast(`${n.name}, ${n.role}: «${n.lines[s.line % n.lines.length]}»`);
   s.line++;
   if (REDUCED) drawCafe();
@@ -3193,7 +3246,7 @@ function renderCafeSide() {
 let view = 'quest';
 function show(v) {
   view = v;
-  ['quest', 'map', 'cafe'].forEach(k => { $('v-' + k).hidden = k !== v; $('t-' + k).setAttribute('aria-selected', String(k === v)); });
+  ['quest', 'map', 'cafe', 'stats'].forEach(k => { $('v-' + k).hidden = k !== v; $('t-' + k).setAttribute('aria-selected', String(k === v)); });
   if (v === 'cafe') {
     freshSet = new Set(Object.keys(st.stars).map(Number).filter(i => i > (st.seen ?? -1)));
     if (freshSet.size) cafeScene = sceneOf(Math.max(...freshSet));
@@ -3202,6 +3255,7 @@ function show(v) {
     renderCafeSide(); drawCafe();
   }
   if (v === 'quest') update(false);
+  if (v === 'stats') { renderStats(); st.achSeen = Date.now(); save(); achBadge(); }
   if (v === 'map') { mapCh = chapterOf(st.cur); renderMapSide(); drawMap(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -3309,6 +3363,126 @@ const KEY = 'pixel-quest-v2';
 let st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {} };
 try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s.cur === 'number') st = Object.assign(st, s); } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+/* ---------- statistics & achievements ---------- */
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function S() { st.stats = st.stats || {}; const x = st.stats; x.lv = x.lv || {}; x.days = x.days || []; x.dayTime = x.dayTime || {}; x.total = x.total || 0; x.typos = x.typos || 0; x.fixed = x.fixed || 0; x.talks = x.talks || 0; x.met = x.met || {}; x.repeats = x.repeats || 0; x.flags = x.flags || {}; return x; }
+const lvStat = i => { const x = S(); return x.lv[i] = x.lv[i] || { t: 0, runs: 0, warn: 0 }; };
+function markDay() { const x = S(), k = dayKey(); if (!x.days.includes(k)) { x.days.push(k); if (x.days.length > 400) x.days.shift(); } }
+function streak() {
+  const set = new Set(S().days); let cur = 0; const d = new Date();
+  if (!set.has(dayKey(d))) d.setDate(d.getDate() - 1);
+  while (set.has(dayKey(d))) { cur++; d.setDate(d.getDate() - 1); }
+  let best = 0, run = 0, prev = null;
+  [...set].sort().forEach(k => { const t = new Date(k + 'T12:00:00'); run = prev && Math.round((t - prev) / 864e5) === 1 ? run + 1 : 1; best = Math.max(best, run); prev = t; });
+  return [cur, Math.max(best, cur)];
+}
+let lastAct = Date.now(), prevWarn = false;
+['keydown', 'pointerdown'].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, true));
+setInterval(() => {
+  if (document.hidden || Date.now() - lastAct > 60000) return;
+  const x = S(), k = dayKey();
+  x.total += 5000; x.dayTime[k] = (x.dayTime[k] || 0) + 5000; markDay();
+  if (view === 'quest') lvStat(st.cur).t += 5000;
+  save(); checkAch();
+}, 5000);
+function trackRun(i, code, nWarn) {
+  const s1 = lvStat(i); s1.runs++; markDay();
+  if (nWarn && !prevWarn) { S().typos++; s1.warn++; }
+  if (!nWarn && prevWarn) S().fixed++;
+  prevWarn = !!nWarn;
+}
+function onWin(i) {
+  const s1 = lvStat(i), x = S(), h = new Date().getHours();
+  if (!s1.done) s1.done = Date.now();
+  if (h >= 23 || h < 5) x.flags.night = 1;
+  if (s1.t < 60000 && !st.sol[i]) x.flags.fast = 1;
+  if (s1.runs >= 20) x.flags.stubborn = 1;
+}
+const nPassed = () => Object.keys(st.stars).length;
+const nStars = () => Object.values(st.stars).reduce((a, b) => a + b, 0);
+const nThree = () => Object.values(st.stars).filter(v => v === 3).length;
+const nExtras = () => LEVELS.filter((L, i) => L.extra && have(i)).length;
+const chapDoneCount = () => CH.filter((_, k) => chapterDone(k)).length;
+const chapBest = () => Math.max(...CH.map((c, k) => { let n = 0; for (let i = c.from; i <= chEnd(k); i++) if (have(i)) n++; return n; }));
+const quizPassed = () => Object.values(st.quiz || {}).filter(v => v >= QPASS).length;
+const quizBest = () => Math.max(0, ...Object.values(st.quiz || {}));
+const ALLNPC = () => Object.values(NPCS).flat().length;
+const ACH = [
+  { id: 'first', g: '1', name: 'Первое заклинание', d: 'Пройди первый уровень.', p: () => [nPassed(), 1] },
+  { id: 'l10', g: '10', name: 'Ученик гильдии', d: 'Пройди 10 уровней.', p: () => [nPassed(), 10] },
+  { id: 'l25', g: '25', name: 'Подмастерье', d: 'Пройди 25 уровней.', p: () => [nPassed(), 25] },
+  { id: 'l50', g: '50', name: 'Мастер заклинаний', d: 'Пройди 50 уровней.', p: () => [nPassed(), 50] },
+  { id: 'all', g: '★', name: 'Архимаг', d: 'Пройди все 110 уровней.', p: () => [nPassed(), LEVELS.length] },
+  { id: 'p10', g: '✦', name: 'Без подсказок', d: 'Собери три звезды на 10 уровнях.', p: () => [nThree(), 10] },
+  { id: 'p30', g: '✦✦', name: 'Чистая магия', d: 'Собери три звезды на 30 уровнях.', p: () => [nThree(), 30] },
+  { id: 's150', g: '☆', name: 'Звездочёт', d: 'Набери 150 звёзд.', p: () => [nStars(), 150] },
+  { id: 'chap', g: '⚑', name: 'Глава закрыта', d: 'Пройди все уровни одной главы.', p: () => [chapBest(), 11] },
+  { id: 'deco', g: '⌂', name: 'Декоратор', d: 'Полностью обустрой 5 помещений.', p: () => [chapDoneCount(), 5] },
+  { id: 'x1', g: 'X', name: 'Экстра-класс', d: 'Пройди экстра-уровень.', p: () => [nExtras(), 1] },
+  { id: 'x5', g: 'X5', name: 'Испытатель', d: 'Пройди 5 экстра-уровней.', p: () => [nExtras(), 5] },
+  { id: 'season1', g: 'I', name: 'Первый сезон', d: 'Заверши сезон HTML и CSS.', p: () => [have(CH[5].from - 1) ? 1 : 0, 1] },
+  { id: 'season2', g: 'II', name: 'Второй сезон', d: 'Заверши сезон JavaScript.', p: () => [have(LEVELS.length - 1) ? 1 : 0, 1] },
+  { id: 'test', g: 'T', name: 'Экстерн', d: 'Сдай тест главы.', p: () => [quizPassed(), 1] },
+  { id: 'test6', g: '6/6', name: 'Отличник', d: 'Ответь в тесте на все 6 вопросов.', p: () => [quizBest(), QN] },
+  { id: 'owl', g: '◉', name: 'Совиный глаз', d: 'Сова заметила 10 ошибок — и ты их увидел.', p: () => [S().typos, 10] },
+  { id: 'fix', g: '✓', name: 'Отладчик', d: 'Исправь 10 ошибок, которые нашла сова.', p: () => [S().fixed, 10] },
+  { id: 'talk', g: '…', name: 'Разговорчивый', d: 'Поговори с жителями 10 раз.', p: () => [S().talks, 10] },
+  { id: 'met', g: '♥', name: 'Свой среди котов', d: 'Познакомься со всеми жителями комнат.', p: () => [Object.keys(S().met).length, ALLNPC()] },
+  { id: 'rep', g: '↻', name: 'Повторение — мать учения', d: 'Повтори 5 уроков через книгу повторения.', p: () => [S().repeats, 5] },
+  { id: 'd3', g: '3д', name: 'Три дня подряд', d: 'Занимайся три дня подряд.', p: () => [streak()[1], 3] },
+  { id: 'd7', g: '7д', name: 'Неделя магии', d: 'Занимайся семь дней подряд.', p: () => [streak()[1], 7] },
+  { id: 'night', g: '☾', name: 'Ночная сова', d: 'Пройди уровень после 23:00 или до 5 утра.', p: () => [S().flags.night ? 1 : 0, 1] },
+  { id: 'fast', g: '⚡', name: 'Быстрые лапки', d: 'Пройди уровень меньше чем за минуту, без готового решения.', p: () => [S().flags.fast ? 1 : 0, 1] },
+  { id: 'stub', g: '∞', name: 'Упорство', d: 'Пройди уровень, на который ушло 20 и больше запусков кода.', p: () => [S().flags.stubborn ? 1 : 0, 1] },
+  { id: 'host', g: '◆', name: 'Хозяин кофейни', d: 'Обслужи 50 гостей в зале.', p: () => [st.served || 0, 50] },
+];
+function checkAch(silent) {
+  st.ach = st.ach || {}; const fresh = [];
+  ACH.forEach(a => { if (st.ach[a.id]) return; let v; try { v = a.p(); } catch (e) { return; } if (v[0] >= v[1]) { st.ach[a.id] = Date.now(); fresh.push(a); } });
+  if (fresh.length) { save(); if (!silent) { fresh.slice(0, 3).forEach((a, k) => setTimeout(() => achPop(a), k * 450)); if (fresh.length > 3) setTimeout(() => achPop({ g: '+' + (fresh.length - 3), name: 'И ещё — смотри во вкладке «Достижения»' }), 3 * 450); } achBadge(); if (view === 'stats') renderStats(); }
+}
+function achBadge() { const n = Object.keys(st.ach || {}).filter(id => (st.ach[id] || 0) > (st.achSeen || 0)).length; const b = $('achbadge'); if (!b) return; b.hidden = !n; b.textContent = n; }
+function achPop(a) {
+  let box = document.querySelector('.achpops'); if (!box) { box = document.createElement('div'); box.className = 'achpops'; box.setAttribute('role', 'status'); document.body.appendChild(box); }
+  const el = document.createElement('div'); el.className = 'achpop';
+  el.innerHTML = `<div class="badge">${esc(a.g)}</div><div><small>ДОСТИЖЕНИЕ</small><b>${esc(a.name)}</b></div>`;
+  box.appendChild(el); setTimeout(() => el.remove(), 4500);
+}
+const fmtTime = ms => { const m = Math.round(ms / 60000); return m < 60 ? `${m} мин` : `${Math.floor(m / 60)} ч ${m % 60} мин`; };
+function renderStats() {
+  const x = S(), [cur, best] = streak(), maxStars = LEVELS.length * 3;
+  const tiles = [
+    [nPassed(), `из ${LEVELS.length} уровней пройдено`],
+    [nStars(), `звёзд из ${maxStars}`],
+    [fmtTime(x.total), 'в игре всего'],
+    [cur, `дней подряд · лучшая серия ${best}`],
+    [x.typos, `ошибок заметила сова · исправлено ${x.fixed}`],
+    [Object.keys(st.ach || {}).length, `достижений из ${ACH.length}`],
+  ];
+  const chapRows = CH.map((c, k) => { let s2 = 0; for (let i = c.from; i <= chEnd(k); i++) s2 += st.stars[i] || 0; const m = (chEnd(k) - c.from + 1) * 3; return `<li><span class="lab" title="${esc(c.title)}">${esc(c.short)}</span><span class="track" role="img" aria-label="${esc(c.title)}: ${s2} из ${m} звёзд"><span class="fill${s2 ? '' : ' zero'}" style="width:${(s2 / m * 100).toFixed(1)}%"></span></span><span class="val">${s2}/${m}</span></li>`; }).join('');
+  const days = []; for (let k = 13; k >= 0; k--) { const d = new Date(); d.setDate(d.getDate() - k); days.push(d); }
+  const mins = days.map(d => Math.round((x.dayTime[dayKey(d)] || 0) / 60000));
+  const top = Math.max(10, ...mins);
+  const WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+  const bars = days.map((d, k) => `<div class="col" tabindex="0" aria-label="${d.getDate()}.${String(d.getMonth() + 1).padStart(2, '0')}: ${mins[k]} мин"><span class="tip">${d.getDate()}.${String(d.getMonth() + 1).padStart(2, '0')} · ${mins[k]} мин</span><div class="bar${k === 13 ? ' today' : ''}" style="height:${(mins[k] / top * 100).toFixed(1)}%"></div></div>`).join('');
+  const labels = days.map((d, k) => `<span>${k === 13 ? 'сег.' : WD[d.getDay()]}</span>`).join('');
+  const hard = Object.entries(x.lv).map(([i, v]) => ({ i: +i, v, score: v.runs + (st.hint[i] ? 8 : 0) + (st.sol[i] ? 15 : 0) + v.t / 60000 })).filter(o => LEVELS[o.i] && o.v.runs > 0).sort((a, b) => b.score - a.score).slice(0, 5);
+  const hardHtml = hard.length ? `<ul class="hard">${hard.map(o => `<li><span><b>${levelLabel(o.i)}. ${esc(LEVELS[o.i].title)}</b><small>${fmtTime(o.v.t)} · запусков кода: ${o.v.runs}${st.hint[o.i] ? ' · подсказка' : ''}${st.sol[o.i] ? ' · решение' : ''} · ${'★'.repeat(st.stars[o.i] || 0) || 'не пройден'}</small></span><button class="btn" type="button" data-again="${o.i}">Повторить</button></li>`).join('')}</ul>` : '<p class="sub">Пока нечего показать. Пройди несколько уровней, и здесь появятся те, на которые ушло больше всего сил.</p>';
+  const got = ACH.filter(a => st.ach && st.ach[a.id]).length;
+  const achHtml = ACH.map(a => { const on = st.ach && st.ach[a.id]; let v = [0, 1]; try { v = a.p(); } catch (e) {} const pct = Math.min(100, v[0] / v[1] * 100);
+    return `<div class="ach${on ? ' on' : ''}"><div class="badge" aria-hidden="true">${esc(a.g)}</div><div><b>${esc(a.name)}</b><span>${esc(a.d)}</span>${on ? `<span class="when">Получено ${new Date(on).toLocaleDateString('ru-RU')}</span>` : `<div class="pbar" role="img" aria-label="Прогресс ${Math.min(v[0], v[1])} из ${v[1]}"><i style="width:${pct.toFixed(0)}%"></i></div><span>${Math.min(v[0], v[1])} / ${v[1]}</span>`}</div></div>`; }).join('');
+  $('statsview').innerHTML = `
+    <div><h2>Твоя магическая книжка</h2><p class="sub">Статистика хранится в этом браузере. Время считается, только пока ты что-то делаешь в игре.</p></div>
+    <div class="tiles">${tiles.map(([b, sp]) => `<div class="tile"><b>${b}</b><span>${sp}</span></div>`).join('')}</div>
+    <div class="stcols">
+      <div class="card2"><h3>Звёзды по главам</h3><ul class="hbars">${chapRows}</ul></div>
+      <div class="card2"><h3>Минуты в игре за 14 дней</h3><div class="vbars" role="group" aria-label="Минуты в игре по дням">${bars}</div><div class="vlabels" aria-hidden="true">${labels}</div><p class="sub">Наведи на столбик, чтобы увидеть точное время.</p></div>
+    </div>
+    <div class="card2"><h3>Где было труднее всего</h3><p class="sub">Уровни, на которые ушло больше всего попыток и времени. Хорошие кандидаты на повторение.</p>${hardHtml}</div>
+    <div class="card2"><h3>Достижения · ${got} из ${ACH.length}</h3><div class="achgrid">${achHtml}</div></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-again]'); if (b) { openLevel(+b.dataset.again); show('quest'); } });
 
 /* ---------- reference styles ---------- */
 (function () {
@@ -3706,9 +3880,11 @@ function update(fromInput) {
   if (hadFocus && document.activeElement !== ta) { ta.focus({ preventScroll: true }); ta.setSelectionRange(s0, s1); ta.scrollTop = sc; }
   const i = st.cur;
   const passed = res.every(Boolean);
+  if (fromInput) trackRun(i, code, lint(code).length + (LEVELS[i].js && visEnv ? visEnv.errors.length : 0));
   if (passed && fromInput && (!st.stars[i] || (st.tested && st.tested[i]))) {
     st.stars[i] = Math.max(st.tested && st.tested[i] ? 1 : 0, st.sol[i] ? 1 : st.hint[i] ? 2 : 3);
     if (st.tested) delete st.tested[i];
+    onWin(i);
     st.unlocked = Math.max(st.unlocked, Math.min(i + 1, LEVELS.length - 1));
     seal.classList.remove('on'); void seal.offsetWidth; seal.classList.add('on');
     renderTop();
@@ -3717,6 +3893,7 @@ function update(fromInput) {
   else if (st.stars[i]) seal.classList.add('on');
   save();
   renderBrief(res);
+  if (fromInput) checkAch();
 }
 
 function openLevel(i) {
@@ -3923,7 +4100,7 @@ function finishQuiz() {
   st.tested = st.tested || {};
   for (let i = CH[k].from; i <= chEnd(k); i++) if (!st.stars[i]) { st.stars[i] = 1; st.tested[i] = true; }
   if (CH[k + 1]) st.unlocked = Math.max(st.unlocked, CH[k + 1].from);
-  save(); renderTop(); update(false);
+  save(); renderTop(); update(false); checkAch();
   if (view === 'map') { renderMapSide(); drawMap(); }
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); if (e.key === 'Escape' && bk) closeBook(); });
@@ -3974,7 +4151,8 @@ function goRepeat(i) {
   const fresh = bk && bk.fresh;
   closeBook();
   if (fresh) { delete st.code[i]; if (typeof visStores !== 'undefined') delete visStores[i]; }
-  openLevel(i); show('quest');
+  S().repeats++; save();
+  openLevel(i); show('quest'); checkAch();
   toast(`Повторяем: ${LEVELS[i].title}`);
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-book]')) openBook(); });
@@ -4001,6 +4179,7 @@ function finale(season) {
 }
 
 openLevel(Math.min(st.cur, LEVELS.length - 1));
+checkAch(true); achBadge();
 </script>
 </body>
 </html>
