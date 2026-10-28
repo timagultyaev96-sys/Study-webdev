@@ -196,6 +196,11 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .chapintro p{margin:0;font-size:14px;color:#c8d4dc}
 .seasgroup{display:grid;gap:6px}
 .seasgroup>span{font:700 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.residents{background:var(--soft);border-radius:12px;padding:10px 12px;display:grid;gap:4px;font-size:13px}
+.residents b{font:700 14px var(--display)}
+.residents i{font-style:normal;font-weight:800;color:var(--red)}
+.residents .lock{color:var(--muted)}
+.residents em{font-style:normal;color:var(--muted);font-size:12px}
 .skip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
 .skip b{color:var(--ink)}
 .quizbox{position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--night) 70%,transparent);display:grid;place-items:center;
@@ -2422,7 +2427,7 @@ let T = 0, freshSet = new Set();
 const have = i => !!st.stars[i];
 
 function drawCafe() {
-  const alt = { terrace: drawTerrace, lab: drawLab, cellar: drawCellar, roof: drawRoof, library: drawLibrary, workshop: drawWorkshop, post: drawPost, kitchen: drawKitchen, garden: drawGarden }[cafeScene]; if (alt) { alt(); return; }
+  const alt = { terrace: drawTerrace, lab: drawLab, cellar: drawCellar, roof: drawRoof, library: drawLibrary, workshop: drawWorkshop, post: drawPost, kitchen: drawKitchen, garden: drawGarden }[cafeScene]; if (alt) { alt(); drawNpcs(); return; }
   cx = $('cafec').getContext('2d');
   const t = T;
   // wall with bricks
@@ -2659,6 +2664,97 @@ function drawTerrace() {
     }
   }
   [...freshSet].filter(i => i > 10 && TBOX[i]).forEach(i => { const [x, y, w, h] = TBOX[i]; const c = t % 4 < 2 ? '#ffd27a' : '#ffffff'; sparkle(x, y + 1, c); sparkle(x + w - 1, y + 1, c); sparkle(x, y + h - 2, c); sparkle(x + w - 1, y + h - 2, c); });
+}
+
+/* ---------- room residents (NPC) ---------- */
+const NPCS = {
+  terrace: [
+    { name: 'Пушок', role: 'бариста террасы', from: 11, col: ['c', 'e', 'k'], acc: 'apron', y: 99, x0: 2, x1: 70, lines: ['Картинке всегда нужен alt — вдруг она не загрузится.', 'В таблице сначала строка tr, а уже в ней ячейки td.', 'Если label связан с полем, по подписи тоже можно кликнуть!'] },
+    { name: 'Мурка', role: 'садовница', from: 16, col: ['g', 'G', 'k'], acc: 'straw', y: 99, x0: 80, x1: 150, lines: ['margin отодвигает соседей, а padding — содержимое.', 'Наведи курсор на кнопку — :hover сделает её живой.', 'space-between разносит всё по краям, как грядки.'] },
+  ],
+  lab: [
+    { name: 'Профессор Барсик', role: 'алхимик', from: 22, col: ['G', 'w', 'k'], acc: 'goggles', y: 99, x0: 40, x1: 120, lines: ['id — как имя кота: на странице только один такой.', '.lab p — это абзацы внутри .lab, а не рядом с ним.', 'nth-child(odd) — каждый нечётный. Удобно для полосок!'] },
+    { name: 'Искра', role: 'ученица алхимика', from: 27, col: ['o', 'O', 'k'], acc: 'scarf', y: 99, x0: 4, x1: 60, lines: ['Круг — это квадрат с border-radius: 50%.', 'Тень box-shadow делает блок объёмным.', 'position: absolute ищет ближайшего родителя с relative.'] },
+  ],
+  cellar: [
+    { name: 'Уголёк', role: 'сторож погреба', from: 33, col: ['k', 's', 'y'], acc: 'helmet', y: 99, x0: 96, x1: 150, lines: ['repeat(3, 1fr) — три равные полки.', 'gap — проход между ячейками, чтобы не толкаться.', 'span 2 — для бочек побольше.'] },
+    { name: 'Соня', role: 'кладовщица', from: 38, col: ['c', 'e', 'k'], acc: 'bow', y: 99, x0: 30, x1: 64, lines: ['flex-wrap: wrap переносит травы на новую строку.', 'rem растёт вместе с настройками браузера.', '@media — особые правила для узких экранов.'] },
+  ],
+  roof: [
+    { name: 'Лунь', role: 'звездочёт', from: 44, col: ['k', 's', 'y'], acc: 'wizard', y: 98, x0: 20, x1: 100, lines: ['Переменную --gold меняешь в одном месте — меняется везде.', 'transition делает любое превращение плавным.', '@keyframes — это кадры волшебного мультика.'] },
+    { name: 'Фыр', role: 'совёнок-наблюдатель', from: 49, owl: true, y: 96, x0: 60, x1: 112, lines: ['Ух! sticky-шапка всегда под лапой.', '::before рисует украшение без лишнего HTML.', 'Наведи — и transform: scale подрастёт.'] },
+  ],
+  library: [
+    { name: 'Ворс', role: 'библиотекарь', from: 55, col: ['G', 'w', 'k'], acc: 'glasses', y: 99, x0: 60, x1: 96, lines: ['console.log — лучший друг при поиске ошибок.', 'let можно менять, а const — нет.', 'Три знака === сравнивают точно, без фокусов.'] },
+    { name: 'Тиша', role: 'юный читатель', from: 60, col: ['o', 'c', 'k'], acc: 'bow', y: 99, x0: 4, x1: 36, lines: ['if — развилка: туда или туда.', '&& — нужны оба ключа, || — хватит одного.', 'Шаблонная строка — в обратных кавычках и с ${}.'] },
+  ],
+  workshop: [
+    { name: 'Мастер Винтик', role: 'часовщик', from: 66, col: ['O', 'c', 'k'], acc: 'goggles', y: 99, x0: 40, x1: 120, lines: ['for повторяет, пока условие true.', 'Массивы считают с нуля: первый — [0].', 'push добавляет в конец, как новые часы на полку.'] },
+    { name: 'Рыжик', role: 'подмастерье', from: 71, col: ['o', 'O', 'k'], acc: 'cap', y: 99, x0: 124, x1: 150, lines: ['Функцию объявили один раз — зови сколько хочешь.', 'return отдаёт результат обратно.', '=> — короткая запись функции.'] },
+  ],
+  post: [
+    { name: 'Ухта', role: 'сова-почтальон', from: 77, owl: true, y: 96, x0: 30, x1: 140, lines: ['Ух-ху! querySelector находит элемент, как я — адресата.', 'addEventListener ждёт клика и не забывает.', 'value — то, что гость напечатал в поле.'] },
+    { name: 'Сенька', role: 'почтальон', from: 82, col: ['g', 'G', 'k'], acc: 'cap', y: 97, x0: 30, x1: 150, lines: ['createElement создаёт, append — кладёт на страницу.', 'classList.toggle — переключатель день-ночь.', 'remove() — и письма как не бывало.'] },
+  ],
+  kitchen: [
+    { name: 'Пончик', role: 'повар', from: 88, col: ['o', 'O', 'k'], acc: 'chef', y: 97, x0: 24, x1: 150, lines: ['Объект — карточка рецепта: name, price, hot.', 'filter — сито, map — превращение, reduce — всё в одну миску.', 'Данные в одном месте, а страница рисуется из них.'] },
+    { name: 'Лапка', role: 'официантка', from: 93, col: ['c', 'e', 'k'], acc: 'apron', y: 97, x0: 24, x1: 150, lines: ['localStorage помнит заказ даже после обновления.', 'Number() превращает строку из памяти обратно в число.', 'Корзина — это переменная total и кнопки, которые её меняют.'] },
+  ],
+  garden: [
+    { name: 'Мох', role: 'садовник', from: 99, col: ['G', 'w', 'k'], acc: 'straw', y: 99, x0: 40, x1: 120, lines: ['setTimeout — один раз и попозже.', 'setInterval — снова и снова, пока не clearInterval.', 'Math.random — как камень удачи.'] },
+    { name: 'Звёздочка', role: 'ночная охотница', from: 104, col: ['k', 's', 'y'], acc: 'scarf', y: 99, x0: 90, x1: 150, lines: ['event.key подскажет, какую клавишу нажали.', 'Состояние игры — это просто переменные.', 'Рекорд держи в localStorage, иначе забудется.'] },
+  ],
+};
+const npcState = {};
+function npcList(scene) {
+  const cfg = NPCS[scene] || [];
+  if (!npcState[scene]) npcState[scene] = cfg.map((n, k) => ({ x: n.x0 + ((k * 37 + 11) % Math.max(1, n.x1 - n.x0)), dir: k % 2 ? -1 : 1, pause: 10 + k * 15, talk: 0, line: 0 }));
+  return cfg.map((n, k) => ({ n, s: npcState[scene][k] })).filter(o => have(o.n.from));
+}
+function simNpcs() {
+  npcList(cafeScene).forEach(({ n, s }) => {
+    if (s.talk > 0) { s.talk--; return; }
+    if (s.pause > 0) { s.pause--; return; }
+    if (T % 2) return;
+    s.x += s.dir;
+    if (s.x <= n.x0 || s.x >= n.x1) { s.dir *= -1; s.x = Math.max(n.x0, Math.min(n.x1, s.x)); s.pause = 15 + Math.floor(Math.random() * 25); }
+    else if (Math.random() < 0.02) s.pause = 10 + Math.floor(Math.random() * 30);
+  });
+}
+function drawAcc(acc, x, top) {
+  if (acc === 'wizard') spr(x + 1, top - 3, HAT);
+  if (acc === 'chef') { R(x + 1, top - 2, 8, 2, '#fff3e0'); R(x + 2, top - 5, 6, 3, '#fff3e0'); }
+  if (acc === 'goggles') { R(x + 1, top + 3, 3, 1, '#f4ac3c'); R(x + 6, top + 3, 3, 1, '#f4ac3c'); R(x + 4, top + 3, 2, 1, '#8a7a70'); }
+  if (acc === 'glasses') { R(x + 1, top + 2, 3, 1, '#c8d4dc'); R(x + 6, top + 2, 3, 1, '#c8d4dc'); R(x + 4, top + 3, 2, 1, '#c8d4dc'); }
+  if (acc === 'scarf') { R(x + 1, top + 6, 8, 1, '#b5151f'); R(x + 6, top + 7, 2, 2, '#b5151f'); }
+  if (acc === 'bow') { R(x + 3, top + 6, 1, 1, '#c3a0ec'); R(x + 6, top + 6, 1, 1, '#c3a0ec'); R(x + 4, top + 6, 2, 1, '#7a48b5'); }
+  if (acc === 'cap') { R(x + 1, top - 1, 8, 2, '#1c4a55'); R(x + 7, top, 3, 1, '#1c4a55'); R(x + 3, top - 1, 2, 1, '#f4ac3c'); }
+  if (acc === 'straw') { R(x - 1, top, 12, 1, '#d6bb8a'); R(x + 2, top - 2, 6, 2, '#d6bb8a'); R(x + 2, top - 1, 6, 1, '#b5151f'); }
+  if (acc === 'helmet') { R(x + 1, top - 1, 8, 2, '#c99a3a'); R(x + 4, top - 2, 2, 1, '#ffd27a'); }
+  if (acc === 'apron') { R(x + 2, top + 7, 6, 3, '#fff3e0'); R(x + 3, top + 6, 4, 1, '#fff3e0'); }
+}
+function drawNpcs() {
+  npcList(cafeScene).forEach(({ n, s }) => {
+    const x = Math.round(s.x), moving = !s.talk && !s.pause, top = n.y - 10 - (moving && T % 4 < 2 ? 1 : 0);
+    R(x, n.y, 10, 1, 'rgba(0,0,0,0.25)');
+    if (n.owl) { spr(x, top, OWL); if (moving) { const f = T % 4 < 2 ? -1 : 1; R(x - 1, top + 5 + f, 1, 2, '#5e2f15'); R(x + 9, top + 5 + f, 1, 2, '#5e2f15'); } }
+    else { spr(x, top, GUEST, { g: n.col[0], G: n.col[1], y: n.col[2] }); drawAcc(n.acc, x, top); }
+    if (s.talk) { const bx = x - 1, by = top - 11; R(bx, by, 12, 8, '#120a07'); R(bx + 1, by + 1, 10, 6, '#fff3e0'); R(bx + 3, by + 8, 2, 1, '#120a07'); R(bx + 3, by + 7, 2, 1, '#fff3e0'); const d = Math.floor(T / 3) % 4; for (let k = 0; k < 3; k++) R(bx + 3 + k * 2, by + 4, 1, 1, k < d ? '#7a48b5' : '#cbbca8'); }
+  });
+}
+function npcClick(e) {
+  const r = e.currentTarget.getBoundingClientRect(), mx = (e.clientX - r.left) / r.width * 160, my = (e.clientY - r.top) / r.height * 100;
+  const hit = npcList(cafeScene).reverse().find(({ n, s }) => mx >= s.x - 2 && mx < s.x + 12 && my >= n.y - 18 && my <= n.y + 2);
+  if (!hit) { const S = SCENES.find(sc => sc.key === cafeScene); if (S && !npcList(cafeScene).length) toast('Жители появятся, когда начнётся глава этого помещения.'); return; }
+  const { n, s } = hit;
+  s.talk = 45; s.pause = 20;
+  toast(`${n.name}, ${n.role}: «${n.lines[s.line % n.lines.length]}»`);
+  s.line++;
+  if (REDUCED) drawCafe();
+}
+function npcPanel(S) {
+  const cfg = NPCS[S.key]; if (!cfg) return '';
+  return `<div class="residents"><b>Жители</b>${cfg.map(n => have(n.from) ? `<span><i>${esc(n.name)}</i> — ${esc(n.role)}</span>` : `<span class="lock">??? — появится после уровня ${displayNum(n.from)}</span>`).join('')}${cfg.some(n => have(n.from)) ? '<em>Нажми на жителя в окне, чтобы поговорить.</em>' : ''}</div>`;
 }
 
 function sparkleFresh(boxes) { [...freshSet].filter(i => boxes[i]).forEach(i => { const [x, y, w, h] = boxes[i]; const c = T % 4 < 2 ? '#ffd27a' : '#ffffff'; sparkle(x, y + 1, c); sparkle(x + w - 1, y + 1, c); sparkle(x, y + h - 2, c); sparkle(x + w - 1, y + h - 2, c); }); }
@@ -3056,6 +3152,7 @@ function renderCafeSide() {
     <p>${S.key === 'hall' && !n ? 'Пока здесь пусто. Пройди первый уровень, и над прилавком появится вывеска.'
       : n ? `${esc(S.name)}: собрано ${n} из ${ids.length}. За каждый уровень появляется что-то новое.`
       : `Здесь пока пусто. Это помещение обустраивается в главе ${chap}, начиная с уровня ${displayNum(S.from)}.`}</p>
+    ${npcPanel(S)}
     ${S.key === 'hall' && have(1) ? `<div class="tip">Гостей обслужено: <b id="servedN">${st.served || 0}</b><br>Нажми на гостя, чтобы узнать, что он заказал.</div>` : ''}
     <ul class="items">${ids.map(i => { const it = CAFE[i]; return `<li class="${have(i) ? (freshSet.has(i) ? 'fresh' : '') : 'lock'}${LEVELS[i].extra ? ' xtra' : ''}"><span class="n">${levelLabel(i)}</span><span><b>${have(i) ? esc(it.name) : '???'}</b>${have(i) ? esc(it.d) : lockText(i)}${FURN[i] ? `<em class="furn">${have(i) ? '+ ' + esc(FURN[i].name) : '+ мебель'}</em>` : ''}${PLANTS[i] ? `<em class="plant">${have(i) ? '+ ' + esc(PLANTS[i].name) : '+ растение'}</em>` : ''}</span></li>`; }).join('')}</ul>`;
   $('cafeplate').textContent = S.plate;
@@ -3079,7 +3176,7 @@ function show(v) {
 }
 function updateBadge() { const max = Math.max(-1, ...Object.keys(st.stars).map(Number)); $('newbadge').hidden = !(max > (st.seen ?? -1)); }
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-setInterval(() => { if (REDUCED) return; T++; if (view === 'cafe') { simGuests(); drawCafe(); } else if (view === 'map') drawMap(); }, 140);
+setInterval(() => { if (REDUCED) return; T++; if (view === 'cafe') { simGuests(); simNpcs(); drawCafe(); } else if (view === 'map') drawMap(); }, 140);
 
 /* ---------- guests ---------- */
 // body, accent, eye colour
@@ -3630,7 +3727,7 @@ brief.addEventListener('click', e => {
 document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) show(b.dataset.v); });
 $('stops').addEventListener('click', e => { const b = e.target.closest('.stop'); if (b && !b.disabled) { openLevel(+b.dataset.i); show('quest'); } });
 $('cafec').addEventListener('click', e => {
-  if (cafeScene !== 'hall') return;
+  if (cafeScene !== 'hall') { npcClick(e); return; }
   const r = e.currentTarget.getBoundingClientRect();
   const g = guestAt((e.clientX - r.left) / r.width * 160, (e.clientY - r.top) / r.height * 100);
   if (!g) { if (!have(1)) toast('Гости придут, когда за прилавком появится Марта.'); return; }
