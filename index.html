@@ -236,9 +236,11 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .hard b{display:block;font-size:14px}
 .hard small{color:var(--muted)}
 .achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.ach{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px}
-.ach .badge{width:48px;height:52px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;background:var(--line);color:var(--muted);font:700 15px var(--display)}
-.ach.on .badge{background:linear-gradient(160deg,var(--gold),var(--orange));color:var(--night)}
+.ach{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px}
+.ach .badge{width:56px;height:60px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--muted);font:700 15px var(--display);border:2px solid var(--line)}
+.ach .badge img,.achpop .badge img{width:44px;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.ach:not(.on) .badge img{filter:brightness(0);opacity:.28}
+.ach.on .badge{background:radial-gradient(circle at 50% 40%,#1f4a5c,#0f2a3b 70%);border-color:var(--gold);color:var(--gold)}
 .ach.on{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
 .ach b{display:block;font-size:14px}
 .ach span{display:block;font-size:12.5px;color:var(--muted)}
@@ -246,8 +248,9 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .ach .pbar i{display:block;height:100%;background:var(--gold)}
 .ach .when{font-size:11.5px;color:var(--ok)}
 .achpops{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;display:grid;gap:8px;max-width:calc(100% - 32px)}
-.achpop{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;background:var(--night);color:#fbe9de;border:2px solid var(--gold);border-radius:14px;padding:10px 14px 10px 10px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:popin .35s cubic-bezier(.2,1.4,.4,1) both;max-width:340px}
-.achpop .badge{width:40px;height:44px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;background:linear-gradient(160deg,var(--gold),var(--orange));color:var(--night);font:700 13px var(--display)}
+.achpop{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:var(--night);color:#fbe9de;border:2px solid var(--gold);border-radius:14px;padding:10px 14px 10px 10px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:popin .35s cubic-bezier(.2,1.4,.4,1) both;max-width:340px}
+.achpop .badge{width:52px;height:56px;border-radius:10px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#1f4a5c,#0f2a3b 70%);border:2px solid var(--gold);color:var(--gold);font:700 13px var(--display)}
+.achpop .badge img{width:40px}
 .achpop small{display:block;color:var(--gold);font:8px/1.6 "Press Start 2P",monospace}
 .achpop b{display:block;font-size:14px}
 @keyframes popin{from{transform:translateY(20px) scale(.9);opacity:0}}
@@ -3437,6 +3440,57 @@ const ACH = [
   { id: 'stub', g: '∞', name: 'Упорство', d: 'Пройди уровень, на который ушло 20 и больше запусков кода.', p: () => [S().flags.stubborn ? 1 : 0, 1] },
   { id: 'host', g: '◆', name: 'Хозяин кофейни', d: 'Обслужи 50 гостей в зале.', p: () => [st.served || 0, 50] },
 ];
+/* pixel cat portraits for achievements */
+const CATPAL = { orange: ['#ef7b2b', '#c4561c'], gray: ['#8a8f9a', '#5e6470'], black: ['#2e2836', '#1a1520'], cream: ['#f7e1b8', '#d6b98a'], white: ['#f4f1ec', '#cbc3ba'], brown: ['#8a5a3a', '#5e3a22'], blue: ['#7f98b0', '#4f6a85'], calico: ['#f4f1ec', '#cbc3ba'] };
+const CATHEAD = ['.KK.........KK.', '.KBK.......KBK.', '.KBAK.....KABK.', '.KBBBKKKKKBBBK.', 'KBBBBBBBBBBBBBK', 'KBBBBBBBBBBBBBK', 'KBBEEBBBBBEEBBK', 'KBBEWBBBBBEWBBK', 'KBBBBBBNBBBBBBK', 'KABBBBBMBBBBBAK', '.KBBBBMBMBBBBK.', '..KBBBBBBBBBK..', '...KKKKKKKKK...'];
+const CATSPEC = { first: ['orange', 'sparkle'], l10: ['gray', 'scarf'], l25: ['cream', 'book'], l50: ['black', 'wizard'], all: ['orange', 'crown'], p10: ['white', 'star'], p30: ['blue', 'twostars'], s150: ['black', 'stars'],
+  chap: ['brown', 'flag'], deco: ['cream', 'plant'], x1: ['orange', 'medal'], x5: ['gray', 'medal'], season1: ['calico', 'wreath'], season2: ['blue', 'wreath'], test: ['white', 'gradcap'], test6: ['orange', 'gradcap'],
+  owl: ['gray', 'owleyes'], fix: ['brown', 'wrench'], talk: ['cream', 'bubble'], met: ['orange', 'heart'], rep: ['blue', 'arrows'], d3: ['cream', 'sun'], d7: ['orange', 'flame'], night: ['black', 'nightcap'], fast: ['white', 'bolt'], stub: ['gray', 'band'], host: ['orange', 'chef'] };
+const catCache = {};
+function catImg(id) {
+  if (catCache[id]) return catCache[id];
+  const [furName, acc] = CATSPEC[id] || ['orange', ''];
+  const fur = CATPAL[furName];
+  const cv = document.createElement('canvas'); cv.width = 17; cv.height = 19;
+  const c = cv.getContext('2d'); const P = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
+  const G = '#f4ac3c', GL = '#ffd27a';
+  const col = { K: '#120a07', B: fur[0], A: '#f4a3a3', E: '#120a07', W: '#ffffff', N: '#b5151f', M: '#120a07' };
+  CATHEAD.forEach((row, j) => { for (let i = 0; i < row.length; i++) { const ch = row[i]; if (ch !== '.') P(1 + i, 5 + j, 1, 1, col[ch]); } });
+  if (furName === 'orange' || furName === 'gray' || furName === 'brown') { P(7, 9, 1, 2, fur[1]); P(9, 9, 1, 2, fur[1]); P(8, 9, 1, 1, fur[1]); }
+  if (furName === 'calico') { P(2, 6, 3, 4, '#ef7b2b'); P(3, 10, 2, 1, '#ef7b2b'); P(11, 7, 3, 3, '#2e2836'); P(12, 6, 1, 1, '#2e2836'); }
+  if (furName === 'white' || furName === 'cream') { P(6, 13, 5, 2, '#fff8ee'); P(8, 13, 1, 1, '#b5151f'); }
+  const spark = (x, y, cc) => { P(x, y - 1, 1, 3, cc); P(x - 1, y, 3, 1, cc); };
+  switch (acc) {
+    case 'sparkle': P(14, 0, 1, 5, GL); P(12, 2, 5, 1, GL); spark(2, 2, G); break;
+    case 'scarf': P(3, 16, 11, 2, '#b5151f'); P(11, 18, 3, 1, '#b5151f'); P(4, 16, 1, 2, '#f4ac3c'); P(8, 16, 1, 2, '#f4ac3c'); break;
+    case 'book': P(3, 15, 11, 4, '#5a2f8a'); P(4, 15, 9, 3, '#fde9c8'); P(8, 15, 1, 4, '#c99a3a'); P(5, 16, 2, 1, '#a8968a'); P(10, 16, 2, 1, '#a8968a'); break;
+    case 'wizard': P(8, 0, 1, 1, '#163d64'); P(7, 1, 3, 1, '#163d64'); P(6, 2, 5, 1, '#163d64'); P(5, 3, 7, 2, '#163d64'); P(3, 5, 11, 1, '#0f2a3b'); P(8, 2, 1, 1, G); P(6, 4, 1, 1, G); break;
+    case 'crown': P(4, 3, 9, 2, G); P(4, 1, 1, 2, G); P(8, 0, 1, 3, G); P(12, 1, 1, 2, G); P(6, 2, 1, 1, G); P(10, 2, 1, 1, G); P(8, 3, 1, 1, '#b5151f'); P(5, 4, 1, 1, '#7fd1c7'); P(11, 4, 1, 1, '#7fd1c7'); break;
+    case 'star': P(7, 10, 3, 1, G); P(8, 9, 1, 3, G); spark(14, 2, GL); break;
+    case 'twostars': spark(2, 2, GL); spark(14, 2, GL); spark(8, 1, G); break;
+    case 'stars': spark(3, 2, GL); spark(8, 1, G); spark(13, 2, GL); P(0, 0, 1, 1, GL); P(16, 4, 1, 1, GL); break;
+    case 'flag': P(16, 2, 1, 15, '#5e2f15'); P(12, 2, 4, 3, '#b5151f'); P(13, 3, 1, 1, '#fde9c8'); break;
+    case 'plant': P(8, 1, 1, 5, '#4f8a4a'); P(5, 1, 3, 2, '#6fa856'); P(9, 0, 3, 2, '#6fa856'); P(6, 3, 2, 1, '#4f8a4a'); break;
+    case 'medal': P(6, 14, 2, 2, '#b5151f'); P(9, 14, 2, 2, '#1c4a55'); P(7, 15, 3, 4, G); P(8, 16, 1, 2, GL); break;
+    case 'wreath': [[1, 4], [2, 2], [4, 1], [6, 0], [10, 0], [12, 1], [14, 2], [15, 4]].forEach(([x, y]) => P(x, y, 2, 2, furName === 'blue' ? G : '#4f8a4a')); P(8, 0, 1, 2, '#b5151f'); break;
+    case 'gradcap': P(3, 3, 11, 2, '#120a07'); P(6, 5, 5, 1, '#120a07'); P(8, 2, 1, 1, '#120a07'); P(13, 4, 1, 4, acc && id === 'test6' ? G : '#b5151f'); P(12, 8, 3, 1, id === 'test6' ? G : '#b5151f'); break;
+    case 'owleyes': P(3, 10, 4, 4, G); P(4, 11, 2, 2, '#120a07'); P(10, 10, 4, 4, G); P(11, 11, 2, 2, '#120a07'); P(4, 11, 1, 1, '#ffffff'); P(11, 11, 1, 1, '#ffffff'); P(2, 4, 2, 2, fur[1]); P(13, 4, 2, 2, fur[1]); break;
+    case 'wrench': P(15, 9, 1, 8, '#a8968a'); P(14, 7, 3, 2, '#a8968a'); P(15, 7, 1, 1, '#2a1a12'); P(14, 16, 3, 2, '#5e2f15'); break;
+    case 'bubble': P(10, 0, 7, 5, '#fff3e0'); P(11, 5, 2, 1, '#fff3e0'); P(11, 2, 1, 1, '#7a48b5'); P(13, 2, 1, 1, '#7a48b5'); P(15, 2, 1, 1, '#7a48b5'); break;
+    case 'heart': P(5, 15, 3, 1, '#b5151f'); P(9, 15, 3, 1, '#b5151f'); P(5, 16, 7, 1, '#b5151f'); P(6, 17, 5, 1, '#b5151f'); P(8, 18, 1, 1, '#b5151f'); P(6, 15, 1, 1, '#f4a3a3'); break;
+    case 'arrows': P(12, 0, 4, 1, '#7fd1c7'); P(16, 1, 1, 3, '#7fd1c7'); P(12, 4, 4, 1, '#7fd1c7'); P(11, 1, 1, 3, '#7fd1c7'); P(15, 0, 1, 1, '#ffffff'); P(12, 4, 1, 1, '#ffffff'); break;
+    case 'sun': P(13, 1, 3, 3, GL); P(14, 0, 1, 5, G); P(12, 2, 5, 1, G); P(14, 2, 1, 1, '#ffffff'); break;
+    case 'flame': P(8, 0, 1, 1, GL); P(7, 1, 3, 1, G); P(6, 2, 5, 2, '#ef7b2b'); P(7, 2, 3, 2, G); P(8, 3, 1, 1, GL); P(5, 4, 7, 1, '#ef7b2b'); break;
+    case 'nightcap': P(4, 3, 9, 2, '#7a48b5'); P(10, 2, 4, 1, '#7a48b5'); P(13, 1, 2, 1, '#7a48b5'); P(15, 0, 2, 2, '#fff3e0'); P(5, 4, 1, 1, '#c3a0ec'); P(8, 3, 1, 1, '#c3a0ec'); P(4, 11, 2, 1, '#120a07'); P(11, 11, 2, 1, '#120a07'); P(4, 12, 2, 1, fur[0]); P(11, 12, 2, 1, fur[0]); P(0, 1, 2, 3, GL); P(1, 0, 1, 1, GL); break;
+    case 'bolt': P(14, 0, 3, 1, GL); P(13, 1, 3, 1, GL); P(12, 2, 4, 1, G); P(13, 3, 2, 1, G); P(13, 4, 1, 2, G); break;
+    case 'band': P(1, 9, 15, 2, '#b5151f'); P(15, 8, 2, 1, '#b5151f'); P(15, 11, 2, 2, '#b5151f'); P(8, 9, 1, 2, '#f4ac3c'); P(14, 13, 1, 2, '#7fd1c7'); break;
+    case 'chef': P(5, 2, 7, 3, '#fff3e0'); P(4, 0, 3, 3, '#fff3e0'); P(10, 0, 3, 3, '#fff3e0'); P(7, 0, 3, 2, '#fff3e0'); P(5, 4, 7, 1, '#e8dcc8'); P(13, 15, 3, 3, '#fff3e0'); P(16, 16, 1, 1, '#fff3e0'); P(14, 14, 1, 1, '#cbbca8'); break;
+  }
+  try { catCache[id] = cv.toDataURL(); } catch (e) { catCache[id] = ''; }
+  return catCache[id];
+}
+const achFace = (a, cls) => { const src = a.id ? catImg(a.id) : ''; return src ? `<div class="${cls}"><img src="${src}" alt="" width="17" height="19"></div>` : `<div class="${cls}">${esc(a.g)}</div>`; };
+
 function checkAch(silent) {
   st.ach = st.ach || {}; const fresh = [];
   ACH.forEach(a => { if (st.ach[a.id]) return; let v; try { v = a.p(); } catch (e) { return; } if (v[0] >= v[1]) { st.ach[a.id] = Date.now(); fresh.push(a); } });
@@ -3446,7 +3500,7 @@ function achBadge() { const n = Object.keys(st.ach || {}).filter(id => (st.ach[i
 function achPop(a) {
   let box = document.querySelector('.achpops'); if (!box) { box = document.createElement('div'); box.className = 'achpops'; box.setAttribute('role', 'status'); document.body.appendChild(box); }
   const el = document.createElement('div'); el.className = 'achpop';
-  el.innerHTML = `<div class="badge">${esc(a.g)}</div><div><small>ДОСТИЖЕНИЕ</small><b>${esc(a.name)}</b></div>`;
+  el.innerHTML = `${achFace(a, 'badge')}<div><small>ДОСТИЖЕНИЕ</small><b>${esc(a.name)}</b></div>`;
   box.appendChild(el); setTimeout(() => el.remove(), 4500);
 }
 const fmtTime = ms => { const m = Math.round(ms / 60000); return m < 60 ? `${m} мин` : `${Math.floor(m / 60)} ч ${m % 60} мин`; };
@@ -3471,7 +3525,7 @@ function renderStats() {
   const hardHtml = hard.length ? `<ul class="hard">${hard.map(o => `<li><span><b>${levelLabel(o.i)}. ${esc(LEVELS[o.i].title)}</b><small>${fmtTime(o.v.t)} · запусков кода: ${o.v.runs}${st.hint[o.i] ? ' · подсказка' : ''}${st.sol[o.i] ? ' · решение' : ''} · ${'★'.repeat(st.stars[o.i] || 0) || 'не пройден'}</small></span><button class="btn" type="button" data-again="${o.i}">Повторить</button></li>`).join('')}</ul>` : '<p class="sub">Пока нечего показать. Пройди несколько уровней, и здесь появятся те, на которые ушло больше всего сил.</p>';
   const got = ACH.filter(a => st.ach && st.ach[a.id]).length;
   const achHtml = ACH.map(a => { const on = st.ach && st.ach[a.id]; let v = [0, 1]; try { v = a.p(); } catch (e) {} const pct = Math.min(100, v[0] / v[1] * 100);
-    return `<div class="ach${on ? ' on' : ''}"><div class="badge" aria-hidden="true">${esc(a.g)}</div><div><b>${esc(a.name)}</b><span>${esc(a.d)}</span>${on ? `<span class="when">Получено ${new Date(on).toLocaleDateString('ru-RU')}</span>` : `<div class="pbar" role="img" aria-label="Прогресс ${Math.min(v[0], v[1])} из ${v[1]}"><i style="width:${pct.toFixed(0)}%"></i></div><span>${Math.min(v[0], v[1])} / ${v[1]}</span>`}</div></div>`; }).join('');
+    return `<div class="ach${on ? ' on' : ''}">${achFace(a, 'badge')}<div><b>${esc(a.name)}</b><span>${esc(a.d)}</span>${on ? `<span class="when">Получено ${new Date(on).toLocaleDateString('ru-RU')}</span>` : `<div class="pbar" role="img" aria-label="Прогресс ${Math.min(v[0], v[1])} из ${v[1]}"><i style="width:${pct.toFixed(0)}%"></i></div><span>${Math.min(v[0], v[1])} / ${v[1]}</span>`}</div></div>`; }).join('');
   $('statsview').innerHTML = `
     <div><h2>Твоя магическая книжка</h2><p class="sub">Статистика хранится в этом браузере. Время считается, только пока ты что-то делаешь в игре.</p></div>
     <div class="tiles">${tiles.map(([b, sp]) => `<div class="tile"><b>${b}</b><span>${sp}</span></div>`).join('')}</div>
