@@ -1,0 +1,2367 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Веб-квест «Пиксель»: учи HTML и CSS, помогая кошке-магине Марте собрать сайт кофейни.">
+<title>Веб-квест «Пиксель»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;700;800&family=Philosopher:wght@400;700&family=Press+Start+2P&display=swap">
+<style>
+html,body{margin:0}
+body{font-size:14px}
+
+/* Layout: a night-sky arch window holds the cat-mage; below, the workshop bench — spell order | spellbook editor | crystal-ball preview */
+:root{
+  --bg:#fbe5eb; --panel:#fff9f4; --ink:#10283a; --muted:#5e6b78; --line:#efcbd5;
+  --night:#0f2a3b; --night-2:#163d4c; --orange:#ef7b2b; --gold:#f4ac3c; --red:#b5151f; --cream:#fde9c8;
+  --on-orange:#10283a; --ok:#1d7f5b; --ok-soft:#e2f2ea; --soft:#fbeee9;
+  --code-bg:#0f2a3b; --code-line:#1f4556; --code-fg:#fbe9de;
+  --display:"Philosopher","Georgia",serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1822; --panel:#112a3a; --ink:#fbe9de; --muted:#a9b8c3; --line:#21485a;
+  --night:#07141d; --night-2:#123444; --orange:#ff8a3d; --gold:#f7bb4c; --red:#e2464e; --cream:#3a2a16;
+  --on-orange:#10283a; --ok:#5fd39d; --ok-soft:#133126; --soft:#16313f;
+  --code-bg:#07141d; --code-line:#1a3a4a; --code-fg:#fbe9de; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1822; --panel:#112a3a; --ink:#fbe9de; --muted:#a9b8c3; --line:#21485a;
+  --night:#07141d; --night-2:#123444; --orange:#ff8a3d; --gold:#f7bb4c; --red:#e2464e; --cream:#3a2a16;
+  --on-orange:#10283a; --ok:#5fd39d; --ok-soft:#133126; --soft:#16313f;
+  --code-bg:#07141d; --code-line:#1a3a4a; --code-fg:#fbe9de; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23f4ac3c' opacity='.28'%3E%3Cpath d='M30 20c.6 5 1.5 6 6 6-4.5.4-5.4 1.4-6 6-.6-4.6-1.5-5.6-6-6 4.5-.4 5.4-1 6-6z'/%3E%3Cpath d='M130 70c.8 7 2 8.5 8 9-6 .6-7.2 2-8 9-.8-7-2-8.4-8-9 6-.5 7.2-2 8-9z'/%3E%3Ccircle cx='80' cy='140' r='1.6'/%3E%3Ccircle cx='160' cy='150' r='1.2'/%3E%3Cpath d='M60 100c.5 4 1.2 5 5 5.3-3.8.3-4.5 1.2-5 5.2-.5-4-1.2-4.9-5-5.2 3.8-.3 4.5-1.3 5-5.3z'/%3E%3C/g%3E%3C/svg%3E");}
+.wrap{max-width:1480px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:18px}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+/* hero: night sky band with an arched window */
+.hero{position:relative;background:var(--night);color:#fbe9de;border-radius:22px;overflow:hidden;
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;gap:8px 24px;padding:18px 24px 0}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:10px;background:var(--red)}
+.moon{position:absolute;top:16px;right:28px;width:38px;height:38px;border-radius:50%;box-shadow:-9px 4px 0 0 var(--gold);transform:rotate(-10deg)}
+.sky{position:absolute;inset:0;pointer-events:none}
+.arch{position:relative;width:132px;height:150px;background:var(--night-2);border-radius:66px 66px 0 0;display:grid;place-items:end center;overflow:hidden;align-self:end}
+.arch svg{width:118px;height:138px;display:block}
+.brand{position:relative;padding-bottom:26px;min-width:0}
+.brand .eyebrow{color:var(--gold)}
+.brand h1{font:700 clamp(26px,3.4vw,40px)/1.05 var(--display);margin:4px 0 6px;text-wrap:balance}
+.brand h1 b{color:var(--gold);font-weight:700}
+.brand p{margin:0;color:#c8d4dc;max-width:58ch;font-size:14px}
+.xp{position:relative;display:grid;gap:6px;justify-items:end;padding-bottom:26px;font-size:13px;color:#c8d4dc}
+.xp strong{font:700 26px var(--display);color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
+.xpbar{width:150px;height:8px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .6s}
+@media (max-width:760px){
+  .hero{grid-template-columns:auto minmax(0,1fr);padding:16px 16px 0}
+  .xp{grid-column:1/-1;justify-items:start;grid-template-columns:auto auto;align-items:center;gap:10px;padding-bottom:22px;margin-top:-8px}
+  .arch{width:96px;height:112px}.arch svg{width:86px;height:104px}
+  .brand{padding-bottom:14px}.brand p{display:none}
+}
+
+/* level map: a path of stars */
+.map{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin;align-items:center}
+.node{flex:0 0 auto;width:48px;height:48px;border-radius:50%;border:2px solid var(--line);background:var(--panel);
+  color:var(--muted);display:grid;place-items:center;font:700 16px var(--display);position:relative}
+.node small{position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:1px;color:var(--gold);line-height:1;background:var(--bg);padding:0 3px;border-radius:4px;white-space:nowrap}
+.node.done{border-color:var(--gold);color:var(--ink);background:var(--cream)}
+.node.cur{background:var(--orange);border-color:var(--orange);color:var(--on-orange);box-shadow:0 0 0 4px color-mix(in srgb,var(--orange) 25%,transparent)}
+.node:disabled{opacity:.5;cursor:not-allowed}
+.node.extra{border-color:var(--gold);color:var(--gold);font-size:20px}
+.node.extra.done{background:var(--gold);color:var(--night)}
+.node.extra.cur{background:var(--gold);border-color:var(--gold);color:var(--night)}
+.map .chap{flex:0 0 auto;font:8px/1 "Press Start 2P",monospace;color:var(--muted);padding:0 4px;white-space:nowrap}
+.stop.extra{border-color:#ffd27a;color:#ffd27a}
+.stop.extra.done{background:#ffd27a;color:#120a07}
+.items li.xtra span.n{color:var(--gold);font-size:14px}
+.xtra-note{background:var(--night);color:#fde9c8;border-radius:12px;padding:10px 12px;font-size:14px}
+.xtra-note b{color:var(--gold)}
+.map .dash{flex:0 0 14px;height:2px;background:repeating-linear-gradient(90deg,var(--gold) 0 4px,transparent 4px 7px);opacity:.6}
+
+/* bench */
+.bench{display:grid;grid-template-columns:minmax(290px,360px) minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1150px){.bench{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.brief{grid-column:1/-1}}
+@media (max-width:760px){.bench{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;min-width:0}
+
+.brief{padding:20px;display:grid;gap:16px}
+.eyebrow{font:700 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.brief h2{font:700 24px/1.15 var(--display);margin:4px 0 0;text-wrap:balance}
+.client{display:flex;gap:10px;align-items:flex-start}
+.avatar{flex:0 0 46px;height:46px;border-radius:50%;background:var(--night);display:grid;place-items:end center;overflow:hidden}
+.avatar svg{width:42px;height:44px}
+.bubble{background:var(--soft);border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px}
+.bubble b{display:block;font-size:12px;color:var(--red);font-weight:800;margin-bottom:2px}
+.learn{border-top:1.5px dashed var(--line);padding-top:14px;display:grid;gap:8px}
+.learn h3,.task h3{font:700 16px var(--display);margin:0;display:flex;align-items:center;gap:7px}
+.learn h3 svg,.task h3 svg{width:14px;height:14px;fill:var(--gold);flex:0 0 auto}
+.learn p{margin:0;font-size:14px;color:var(--muted)}
+.learn pre{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:10px 12px;font:13px/1.5 var(--mono);overflow-x:auto}
+code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 5px;border-radius:4px;color:var(--red)}
+.task{display:grid;gap:8px}
+.task p{margin:0;font-size:14px}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.checks li{display:flex;gap:9px;align-items:flex-start;font-size:14px;padding:8px 10px;border-radius:10px;background:var(--soft);transition:background .25s}
+.checks li::before{content:"";flex:0 0 18px;height:18px;margin-top:1px;background:var(--line);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10z'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10z'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .3s,background .3s}
+.checks li.pass{background:var(--cream)}
+.checks li.pass::before{background:var(--gold);transform:rotate(45deg) scale(1.1)}
+.helpers{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:var(--on-orange)}
+.btn.primary:hover{filter:brightness(1.07);color:var(--on-orange)}
+.warn{background:color-mix(in srgb,var(--red) 10%,var(--panel));border:1.5px solid color-mix(in srgb,var(--red) 45%,transparent);border-radius:12px;padding:10px 12px;font-size:14px;display:grid;gap:4px}
+.warn b{color:var(--red)}
+.warn p{margin:0}
+.tip{background:var(--cream);border-radius:12px;padding:10px 12px;font-size:14px}
+.tip pre{margin:8px 0;background:var(--code-bg);color:var(--code-fg);border-radius:8px;padding:10px;font:12.5px/1.5 var(--mono);overflow-x:auto;white-space:pre}
+.win{background:var(--night);color:#fbe9de;border-radius:16px;padding:16px;display:grid;gap:8px;position:relative;overflow:hidden}
+.win h3{margin:0;font:700 20px var(--display);color:var(--gold)}
+.win .stars{font-size:24px;letter-spacing:5px;color:var(--gold)}
+.win p{margin:0;font-size:14px;color:#c8d4dc}
+
+/* editor — spellbook */
+.editor{display:grid;grid-template-rows:auto 1fr;overflow:hidden;background:var(--code-bg);border-color:var(--code-line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-bottom:1px solid var(--code-line);color:#9fb3c0;font:12px var(--mono)}
+.bar .file{color:var(--gold);font:700 14px var(--display)}
+.bar .file span{color:#9fb3c0;font:12px var(--mono);margin-left:6px}
+.bar button{background:transparent;border:1px solid var(--code-line);color:#c8d4dc;border-radius:999px;padding:3px 11px;font:12px var(--mono)}
+.bar button:hover{border-color:#f7bb4c;color:#fff}
+.ed{position:relative;height:clamp(320px,58vh,560px)}
+.ed pre,.ed textarea{position:absolute;inset:0;margin:0;padding:14px 16px;border:0;font:14px/1.65 var(--mono);white-space:pre;tab-size:2;letter-spacing:0;word-spacing:0}
+.ed pre{overflow:hidden;color:var(--code-fg);pointer-events:none}
+.ed textarea{width:100%;height:100%;background:transparent;color:transparent;caret-color:#f7bb4c;resize:none;outline:none;overflow:auto}
+.ed textarea::selection{background:rgba(247,187,76,.3);color:transparent}
+.t-p{color:#6f8a99}.t-n{color:#ff9a57}.t-a{color:#f7bb4c}.t-v{color:#9fe0c4}.t-c{color:#6a8494;font-style:italic}
+
+/* preview — the site in a window */
+.preview{overflow:hidden;display:grid;grid-template-rows:auto 1fr;position:relative}
+.chrome{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i:first-child{background:var(--red)}.dots i:nth-child(2){background:var(--gold)}
+.url{flex:1;min-width:0;background:var(--soft);border-radius:999px;padding:3px 12px;font:12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen{height:clamp(320px,58vh,560px);overflow:auto;background:#fffaf5}
+
+/* the seal */
+.seal{position:absolute;right:20px;bottom:20px;width:116px;height:116px;pointer-events:none;opacity:0}
+.seal .disc{position:absolute;inset:0;border-radius:50%;background:var(--red);border:3px dashed var(--gold);box-shadow:0 0 0 5px var(--red);
+  display:grid;place-items:center;text-align:center;color:#fde9c8;font:700 13px/1.15 var(--display);letter-spacing:.06em;transform:rotate(-10deg)}
+.seal .disc b{display:block;font-size:22px;color:var(--gold)}
+.seal i{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;background:var(--gold);opacity:0;
+  clip-path:path("M7 0C7.7 4.6 9.4 6.3 14 7 9.4 7.7 7.7 9.4 7 14 6.3 9.4 4.6 7.7 0 7 4.6 6.3 6.3 4.6 7 0Z")}
+.seal.on{opacity:1}
+.seal.on .disc{animation:stamp .5s cubic-bezier(.2,1.6,.4,1) both}
+.seal.on i{animation:burst .9s ease-out .15s both}
+@keyframes stamp{from{transform:rotate(-30deg) scale(1.9);opacity:0}to{transform:rotate(-10deg) scale(1);opacity:1}}
+@keyframes burst{0%{opacity:1;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.1) rotate(90deg)}}
+@media (prefers-reduced-motion:reduce){.seal.on .disc,.seal.on i{animation:none}.seal.on i{opacity:0}.xpbar i{transition:none}}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--night);color:#fbe9de;border:1px solid var(--gold);padding:9px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+
+.finale{position:fixed;inset:0;background:color-mix(in srgb,var(--night) 75%,transparent);display:grid;place-items:center;z-index:30;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.finale .card{background:var(--night);color:#fbe9de;border-radius:180px 180px 22px 22px / 120px 120px 22px 22px;padding:30px 28px 26px;max-width:440px;display:grid;gap:12px;justify-items:center;text-align:center;border-bottom:10px solid var(--red)}
+.finale svg{width:120px;height:140px}
+.finale h2{font:700 28px/1.15 var(--display);margin:0;color:var(--gold);text-wrap:balance}
+.finale p{margin:0;color:#c8d4dc}
+.finale ul{margin:0;padding:0;list-style:none;color:#c8d4dc;font-size:14px;display:grid;gap:2px}
+.finale ul li::before{content:"✦ ";color:var(--gold)}
+
+/* chapter test */
+.topics{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.topics li{background:var(--cream);color:var(--ink);border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:700}
+.chapintro{background:var(--night);color:#fde9c8;border-radius:14px;padding:14px;display:grid;gap:8px}
+.chapintro b{color:var(--gold);font:700 15px var(--display)}
+.chapintro p{margin:0;font-size:14px;color:#c8d4dc}
+.skip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
+.skip b{color:var(--ink)}
+.quizbox{position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--night) 70%,transparent);display:grid;place-items:center;
+  padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.quizbox .qcard{background:var(--panel);color:var(--ink);border-radius:18px;padding:22px;width:min(540px,100%);max-height:100%;overflow:auto;display:grid;gap:14px;border-top:8px solid var(--gold)}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.qtop .eyebrow{color:var(--red)}
+.qclose{border:0;background:transparent;color:var(--muted);font-size:22px;line-height:1;padding:4px 8px;border-radius:8px}
+.qclose:hover{color:var(--ink);background:var(--soft)}
+.qdots{display:flex;gap:6px}
+.qdots i{width:22px;height:6px;border-radius:3px;background:var(--line)}
+.qdots i.ok{background:var(--ok)}.qdots i.no{background:var(--red)}.qdots i.now{background:var(--gold)}
+.qcard h3{margin:0;font:700 19px/1.3 var(--display);text-wrap:balance}
+.qcard pre{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:10px 12px;font:13px/1.5 var(--mono);overflow-x:auto}
+.qopts{display:grid;gap:8px}
+.qopt{text-align:left;border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600}
+.qopt:hover:not(:disabled){border-color:var(--orange)}
+.qopt:disabled{cursor:default}
+.qopt.right{border-color:var(--ok);background:var(--ok-soft)}
+.qopt.wrong{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--panel))}
+.qexp{font-size:14px;color:var(--muted);margin:0}
+.qexp b{color:var(--ink)}
+.qres{text-align:center;display:grid;gap:10px;justify-items:center}
+.qres .big{font:700 44px/1 var(--display);color:var(--gold)}
+.qres p{margin:0;color:var(--muted);max-width:42ch}
+.qres .helpers{justify-content:center}
+
+/* tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:9px 16px;font-weight:800;font-size:14px}
+.tab:hover{border-color:var(--orange)}
+.tab[aria-selected="true"]{background:var(--night);border-color:var(--night);color:var(--gold)}
+.tab .new{font:8px/1 "Press Start 2P",monospace;background:var(--red);color:#fde9c8;padding:4px 5px;border-radius:3px}
+.view{display:grid;gap:18px}
+
+/* pixel views */
+.pixel-view{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:16px;align-items:start}
+@media (max-width:900px){.pixel-view{grid-template-columns:minmax(0,1fr)}}
+.frame{background:#5e2f15;padding:10px;border-radius:6px;box-shadow:0 0 0 3px #2a140d,0 0 0 6px #8a4a22,8px 8px 0 6px rgba(16,40,58,.22);position:relative;margin:6px;min-width:0}
+.frame canvas{display:block;cursor:pointer;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;background:#0f2a3b}
+.frame .plate{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);background:#2a140d;color:#f4ac3c;font:8px/1 "Press Start 2P",monospace;padding:6px 10px;border:2px solid #8a4a22;white-space:nowrap}
+.side{padding:18px;display:grid;gap:14px}
+.side h2{font:12px/1.7 "Press Start 2P",monospace;margin:0;color:var(--ink)}
+.side p{margin:0;font-size:14px;color:var(--muted)}
+.items{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.items li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:start;padding:8px 10px;border-radius:10px;background:var(--soft);font-size:13px}
+.items li b{display:block;font-size:14px}
+.items li span.n{font:9px/22px "Press Start 2P",monospace;color:var(--red);text-align:center}
+.items li.lock{opacity:.55}
+.items em.furn{display:block;font-style:normal;font-weight:700;color:var(--orange);font-size:12px;margin-top:2px}
+.items em.plant{display:block;font-style:normal;font-weight:700;color:var(--ok);font-size:12px;margin-top:2px}
+.items li.fresh{background:var(--cream);box-shadow:inset 0 0 0 2px var(--gold)}
+.mapbox{position:relative}
+.stop{position:absolute;transform:translate(-50%,-50%);min-width:26px;height:26px;padding:0 4px;border:2px solid #f4ac3c;background:#120a07;color:#f4ac3c;
+  font:9px/1 "Press Start 2P",monospace;box-shadow:2px 2px 0 #000;border-radius:0}
+.stop.done{background:#f4ac3c;color:#120a07}
+.stop.cur{background:#ef7b2b;border-color:#fde9c8;color:#120a07}
+.stop:disabled{border-color:#7d6a5e;color:#a8968a;cursor:not-allowed;background:#2a1a12}
+.fog-label{position:absolute;right:3%;top:44%;width:16%;text-align:center;font:8px/1.8 "Press Start 2P",monospace;color:#c8d4dc;pointer-events:none}
+.seasons{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
+.seasons li{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;background:var(--soft)}
+.seasons li.on{background:var(--cream);font-weight:700}
+.seasons li em{font-style:normal;color:var(--muted);font-size:12px;white-space:nowrap}
+.win .newitem{background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;font-size:13px;color:#fde9c8}
+.win .newitem b{color:var(--gold)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="spark" viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10z"/></symbol>
+    <symbol id="cat" viewBox="0 0 120 140">
+      <!-- ears -->
+      <path d="M26 92 L22 54 L50 74 Z" fill="#ef7b2b"/><path d="M30 86 L28 62 L44 75 Z" fill="#c73a1e"/>
+      <path d="M94 92 L98 54 L70 74 Z" fill="#ef7b2b"/><path d="M90 86 L92 62 L76 75 Z" fill="#c73a1e"/>
+      <!-- cape -->
+      <path d="M18 140 C24 118 38 110 60 110 C82 110 96 118 102 140 Z" fill="#163d64"/>
+      <path d="M44 112 L60 126 L76 112 Z" fill="#b5151f"/><path d="M60 118 l3 6 -3 6 -3-6z" fill="#f4ac3c"/>
+      <!-- head -->
+      <ellipse cx="60" cy="92" rx="34" ry="28" fill="#ef7b2b"/>
+      <path d="M30 96 C36 116 50 120 60 120 C70 120 84 116 90 96 C84 104 74 106 60 104 C46 106 36 104 30 96Z" fill="#fde3d3"/>
+      <path d="M44 72 q4 6 2 12 M60 68 q0 6 0 12 M76 72 q-4 6 -2 12" stroke="#d5551d" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- eyes -->
+      <ellipse cx="47" cy="91" rx="8" ry="8.5" fill="#fde3d3"/><circle cx="48" cy="92" r="6" fill="#10283a"/><circle cx="50" cy="90" r="1.8" fill="#fff"/>
+      <ellipse cx="73" cy="91" rx="8" ry="8.5" fill="#fde3d3"/><circle cx="72" cy="92" r="6" fill="#10283a"/><circle cx="74" cy="90" r="1.8" fill="#fff"/>
+      <!-- nose, mouth, whiskers -->
+      <path d="M56 101 h8 l-4 4z" fill="#b5151f"/>
+      <path d="M60 105 q-3 4 -7 2 M60 105 q3 4 7 2" stroke="#10283a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M40 102 h-14 M40 106 l-13 3 M80 102 h14 M80 106 l13 3" stroke="#f4ac3c" stroke-width="1.6" stroke-linecap="round"/>
+      <!-- hat -->
+      <path d="M30 70 C40 50 50 22 66 6 C72 2 84 6 92 14 C82 12 76 16 74 24 C78 40 84 56 90 70 Z" fill="#163d64"/>
+      <ellipse cx="60" cy="70" rx="46" ry="9" fill="#0f2a3b"/>
+      <path d="M33 66 C50 60 70 60 87 66 L86 70 C70 64 50 64 34 70Z" fill="#f4ac3c"/>
+      <g fill="#f4ac3c"><use href="#spark" x="52" y="42" width="9" height="9"/><use href="#spark" x="66" y="28" width="7" height="7"/><use href="#spark" x="70" y="50" width="6" height="6"/></g>
+      <path d="M48 56 a5 5 0 1 0 6 -6 a4 4 0 1 1 -6 6z" fill="#f4ac3c"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="hero">
+    <svg class="sky" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="#f4ac3c">
+        <use href="#spark" x="250" y="20" width="16" height="16"/><use href="#spark" x="420" y="140" width="10" height="10"/>
+        <use href="#spark" x="610" y="30" width="12" height="12"/><use href="#spark" x="760" y="120" width="18" height="18"/>
+        <use href="#spark" x="880" y="70" width="9" height="9"/><use href="#spark" x="180" y="150" width="8" height="8"/>
+        <circle cx="520" cy="80" r="1.6"/><circle cx="700" cy="60" r="1.4"/><circle cx="350" cy="70" r="1.4"/><circle cx="940" cy="150" r="1.6"/>
+      </g>
+    </svg>
+    <div class="moon" aria-hidden="true"></div>
+    <div class="arch" aria-hidden="true"><svg><use href="#cat"/></svg></div>
+    <div class="brand">
+      <div class="eyebrow">Кофейня котов-магов</div>
+      <h1>Веб-квест <b>«Пиксель»</b></h1>
+      <p>Кошка-магиня Марта варит кофейные зелья. Помоги ей наколдовать сайт: каждое заклинание — это строчка HTML или CSS.</p>
+    </div>
+    <div class="xp"><span>Магическая сила</span><strong id="xp">0</strong><div class="xpbar"><i id="xpbar"></i></div></div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Разделы">
+    <button class="tab" role="tab" id="t-quest" data-v="quest" type="button" aria-selected="true">Квест</button>
+    <button class="tab" role="tab" id="t-map" data-v="map" type="button" aria-selected="false">Карта мира</button>
+    <button class="tab" role="tab" id="t-cafe" data-v="cafe" type="button" aria-selected="false">Окно в кофейню <span class="new" id="newbadge" hidden>NEW</span></button>
+  </div>
+
+  <section class="view" id="v-map" hidden>
+    <div class="pixel-view">
+      <div class="frame mapbox">
+        <canvas id="mapc" width="160" height="110" aria-label="Пиксельная карта уровней"></canvas>
+        <div id="stops"></div>
+        <div class="fog-label">СЕЗОН 2<br>JAVA<br>SCRIPT<br>скоро</div>
+        <div class="plate">ЗЕМЛИ ГИЛЬДИИ</div>
+      </div>
+      <aside class="panel side" id="mapside"></aside>
+    </div>
+  </section>
+
+  <section class="view" id="v-cafe" hidden>
+    <div class="pixel-view">
+      <div class="frame">
+        <canvas id="cafec" width="160" height="100" aria-label="Пиксельная кофейня изнутри"></canvas>
+        <div class="plate" id="cafeplate">КОФЕЙНЯ «ПИКСЕЛЬ»</div>
+      </div>
+      <aside class="panel side" id="cafeside"></aside>
+    </div>
+  </section>
+
+  <section class="view" id="v-quest">
+  <nav class="map" id="map" aria-label="Уровни"></nav>
+
+  <main class="bench">
+    <section class="panel brief" id="brief" aria-live="polite"></section>
+
+    <section class="panel editor" aria-label="Редактор кода">
+      <div class="bar"><span class="file">Книга заклинаний<span>index.html</span></span><button id="reset" type="button">Сбросить</button></div>
+      <div class="ed">
+        <pre id="hl" aria-hidden="true"></pre>
+        <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Код страницы"></textarea>
+      </div>
+    </section>
+
+    <section class="panel preview" aria-label="Как выглядит сайт">
+      <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">kofeynya-piksel.local</div></div>
+      <div class="screen"><div id="host"></div></div>
+      <div class="seal" id="seal" aria-hidden="true">
+        <div class="disc"><span><b>✦</b>ЗАЧАРО-<br>ВАНО</span></div>
+        <i style="--x:-70px;--y:-50px"></i><i style="--x:60px;--y:-70px"></i><i style="--x:-80px;--y:30px"></i><i style="--x:20px;--y:-90px"></i><i style="--x:-30px;--y:-80px"></i>
+      </div>
+    </section>
+  </main>
+  </section>
+</div>
+
+<script>
+const BASE = `<style>.__root{font-family:Georgia,"Times New Roman",serif;color:#1d1d1f;background:#fffaf5;padding:20px 24px;line-height:1.5;min-height:100%;box-sizing:border-box}.__root img{max-width:100%}</style>`;
+const C = '<' + '!--';
+const CC = '/*';
+
+const S1 = `<h1>Кофейня Пиксель</h1>`;
+const P2 = `<p>Здесь коты-маги варят кофе по древним рецептам.</p>`;
+const S2 = S1 + `\n` + P2;
+const S3 = S1 + `\n<p>Коты-маги варят <strong>волшебный кофе</strong> по древним рецептам. Заходите <em>на чашку зелья</em>!</p>`;
+const MENU = `<h2>Меню</h2>\n<ul>\n  <li>Эспрессо «Полнолуние»</li>\n  <li>Капучино со звёздной корицей</li>\n  <li>Какао с облачным зефиром</li>\n</ul>`;
+const S4 = S3 + `\n\n` + MENU;
+const LINK = `<p>Наша башня на карте: <a href="https://example.com">открыть адрес</a></p>`;
+const S5 = S4 + `\n\n` + LINK;
+const BTN = `<button class="order">Заказать зелье</button>`;
+const S6 = S5 + `\n\n` + BTN;
+const CSS7 = `  h1 {\n    color: #b5151f;\n    text-align: center;\n  }`;
+const S7 = `<style>\n${CSS7}\n</style>\n\n` + S6;
+const CSS8 = CSS7 + `\n  .card {\n    background-color: #fde9c8;\n    padding: 16px;\n    border-radius: 12px;\n  }`;
+const BODY8 = S3 + `\n\n<div class="card">\n  ${MENU.replace(/\n/g, '\n  ')}\n</div>\n\n` + LINK + `\n\n` + BTN;
+const S8 = `<style>\n${CSS8}\n</style>\n\n` + BODY8;
+const ITEMS = `<h2>Фирменные зелья</h2>\n<div class="row">\n  <div class="item">Раф «Комета»</div>\n  <div class="item">Лунный латте</div>\n  <div class="item">Матча-эликсир</div>\n</div>`;
+const ITEMCSS = `\n  .item {\n    flex: 1;\n    padding: 12px;\n    background: #dbe9ee;\n    border-radius: 10px;\n    text-align: center;\n  }`;
+const CSS9 = CSS8 + ITEMCSS + `\n  .row {\n    display: flex;\n    gap: 12px;\n  }`;
+const BODY9 = BODY8.replace(LINK, ITEMS + `\n\n` + LINK);
+const S9 = `<style>\n${CSS9}\n</style>\n\n` + BODY9;
+
+const T0 = `<h1>Терраса «Пиксель»</h1>\n<p>Под звёздным небом у старого фонтана — лучшие места в городе.</p>`;
+const IMG = `<img src="terrace.png" alt="Терраса с фонариками и столиками">`;
+const T1 = T0 + `\n\n` + IMG;
+const RECIPE = `<h2>Рецепт зелья «Звездопад»</h2>\n<ol>\n  <li>Сварить крепкий эспрессо</li>\n  <li>Добавить щепотку звёздной корицы</li>\n  <li>Помешать по часовой стрелке</li>\n</ol>`;
+const T2 = T1 + `\n\n` + RECIPE;
+const HOURS = `<h2>Часы работы</h2>\n<table>\n  <tr>\n    <td>Будни</td>\n    <td>с заката до полуночи</td>\n  </tr>\n  <tr>\n    <td>Выходные</td>\n    <td>всю ночь</td>\n  </tr>\n</table>`;
+const T3 = T2 + `\n\n` + HOURS;
+const FORM = `<h2>Бронь столика</h2>\n<form>\n  <label for="name">Имя</label>\n  <input id="name" placeholder="Например, Мурзик">\n  <button class="order">Забронировать</button>\n</form>`;
+const T4 = T3 + `\n\n` + FORM;
+const FOOT = `<footer>\n  <p>© Кофейня «Пиксель», гильдия котов-магов</p>\n</footer>`;
+const T5 = T4 + `\n\n` + FOOT;
+const C16 = `  p {\n    font-size: 18px;\n    font-family: Verdana, sans-serif;\n  }`;
+const C17 = C16 + `\n  h2 {\n    margin-top: 32px;\n  }`;
+const C18 = C17 + `\n  td {\n    border: 2px solid #b5151f;\n    padding: 8px;\n  }`;
+const ORD = `\n  .order {\n    background-color: #ef7b2b;\n    color: white;\n    border: none;\n    padding: 8px 16px;\n    border-radius: 999px;\n  }`;
+const C19 = C18 + ORD + `\n  .order:hover {\n    background-color: #b5151f;\n  }`;
+const HEAD = `<header class="top">\n  <b>Пиксель</b>\n  <nav>\n    <a href="#menu">Меню</a>\n    <a href="#bron">Бронь</a>\n  </nav>\n</header>`;
+const C20 = C19 + `\n  .top {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n  }`;
+const css = c => `<style>\n${c}\n</style>\n\n`;
+const E1 = css(`  .card {\n    background-color: #fde9c8;\n    padding: 16px;\n    border-radius: 12px;\n  }\n  .row {\n    display: flex;\n    gap: 12px;\n  }\n  .send {\n    background-color: #ef7b2b;\n    color: white;\n    border: none;\n    padding: 8px 14px;\n    border-radius: 999px;\n  }`) +
+  `<div class="card">\n  <h2>Сова Ухта</h2>\n  <p>Доставляю <strong>зелья и письма</strong> по всему городу.</p>\n  <ul>\n    <li>Летаю с заката до рассвета</li>\n    <li>Беру посылки до трёх фунтов</li>\n  </ul>\n  <div class="row">\n    <a href="https://example.com">Карта полётов</a>\n    <button class="send">Отправить письмо</button>\n  </div>\n</div>`;
+const E2 = css(`  .top {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n  }\n  td {\n    border: 1px solid #b5151f;\n    padding: 6px;\n  }\n  button:hover {\n    background-color: #f4ac3c;\n  }`) +
+  `<header class="top">\n  <b>Дегустация</b>\n  <a href="#form">Записаться</a>\n</header>\n\n<h1>Звёздная дегустация</h1>\n<img src="tasting.png" alt="Котёл с пятью зельями">\n\n<ol>\n  <li>Лунный латте</li>\n  <li>Раф «Комета»</li>\n  <li>Матча-эликсир</li>\n</ol>\n\n<table>\n  <tr>\n    <td>Начало</td>\n    <td>в полночь</td>\n  </tr>\n  <tr>\n    <td>Цена</td>\n    <td>три рыбки</td>\n  </tr>\n</table>\n\n<form>\n  <label for="guest">Твоё имя</label>\n  <input id="guest" placeholder="Например, Барсик">\n  <button>Записаться</button>\n</form>\n\n<footer>\n  <p>Гильдия котов-магов</p>\n</footer>`;
+
+function hoverRule(r, sel) {
+  for (const el of r.querySelectorAll('style')) { let rules; try { rules = el.sheet.cssRules; } catch (e) { continue; }
+    for (const rule of rules) if (rule.selectorText && rule.selectorText.includes(':hover') && (!sel || rule.selectorText.includes(sel)) && rule.style.length) return rule; }
+  return null;
+}
+function rulesOf(r) {
+  const out = [];
+  const walk = (list, media) => { for (const rule of list) { if (rule.media && rule.cssRules) walk(rule.cssRules, rule.media.mediaText); else if (rule.selectorText) out.push({ rule, media }); } };
+  for (const el of r.querySelectorAll('style')) { try { walk(el.sheet.cssRules, null); } catch (e) {} }
+  return out;
+}
+const hasSel = (x, sel) => x.rule.selectorText.split(',').some(t => t.trim().includes(sel));
+const ruleWith = (r, sel, prop, media) => rulesOf(r).find(x => hasSel(x, sel) && (!prop || x.rule.style.getPropertyValue(prop).trim()) &&
+  (media === undefined || (media === null ? !x.media : !!x.media && x.media.includes(media))));
+function keyframeNames(r) { const out = []; for (const el of r.querySelectorAll('style')) { try { for (const rule of el.sheet.cssRules) if (rule.type === 7) out.push(rule.name); } catch (e) {} } return out; }
+function countTracks(v) { if (!v || v === 'none') return 0; let n = 0; const rest = v.replace(/repeat\(\s*(\d+)\s*,\s*([^)]*)\)/g, (m, k, inner) => { n += (+k) * inner.trim().split(/\s+/).length; return ' '; }); return n + rest.trim().split(/\s+/).filter(Boolean).length; }
+function declaredVars(r) { const src = [...r.querySelectorAll('style')].map(el => el.textContent).join('\n'); return [...src.matchAll(/(--[\w-]+)\s*:/g)].map(m => m[1]).filter(n => getComputedStyle(r).getPropertyValue(n).trim()); }
+const usesVar = r => rulesOf(r).some(x => x.rule.style.cssText.includes('var(--'));
+const filled = e => !!e && !/rgba\(0, 0, 0, 0\)|transparent/.test(cs(e).backgroundColor);
+const isRound = e => { if (!e) return false; const v = cs(e).borderTopLeftRadius; return v.endsWith('%') ? parseFloat(v) >= 50 : px(v) > 0 && px(v) >= px(cs(e).width) / 2; };
+const squareBox = e => !!e && px(cs(e).width) >= 20 && px(cs(e).width) === px(cs(e).height);
+const zebra = (r, sel) => { const l = qa(r, sel); return l.length >= 3 && cs(l[0]).backgroundColor !== cs(l[1]).backgroundColor && cs(l[0]).backgroundColor === cs(l[2]).backgroundColor; };
+const afterContent = e => { if (!e) return false; const c = getComputedStyle(e, '::before').content; return !!c && c !== 'none' && c !== 'normal'; };
+
+/* chapter 3 · laboratory */
+const L0 = `<h1>Лаборатория Марты</h1>\n<p>Здесь рождаются новые зелья. Посторонним котам вход только по записке.</p>`;
+const WARN = `<p id="warning">Осторожно: котлы горячие!</p>`;
+const JARS0 = `<h2>Банки с ингредиентами</h2>\n<div class="jar">Звёздная пыль</div>\n<div class="jar">Перо феникса</div>\n<div class="jar">Лунный мёд</div>`;
+const JARS = JARS0.replace('<div class="jar">Перо', '<div class="jar rare">Перо');
+const LABP = `<div class="lab">\n  <p>Котёл номер один: только для кофе.</p>\n  <p>Котёл номер два: только для какао.</p>\n</div>`;
+const LOG = `<h2>Журнал опытов</h2>\n<ul class="log">\n  <li>Опыт 1: зелье стало синим</li>\n  <li>Опыт 2: зелье запело</li>\n  <li>Опыт 3: зелье убежало</li>\n  <li>Опыт 4: зелье вернулось</li>\n</ul>`;
+const BOOK = `<div class="book">\n  <h2>Книга рецептов</h2>\n  <p>«Звездопад» варить только в полнолуние.</p>\n</div>`;
+const BOOKB = BOOK.replace('<div class="book">\n', '<div class="book">\n  <span class="badge">Новое!</span>\n');
+const FLASKH = `<h2>Колбы</h2>\n<div class="flask"></div>`;
+const B1 = L0 + `\n` + WARN, B2 = B1 + `\n\n` + JARS, B3 = B2 + `\n\n` + LABP, B4 = B3 + `\n\n` + LOG, B6 = B4 + `\n\n` + BOOK, B7 = B6 + `\n\n` + FLASKH, B10 = B7.replace(BOOK, BOOKB);
+const K1 = `  #warning {\n    color: #b5151f;\n    font-weight: bold;\n  }`;
+const KJ = `\n  .jar {\n    background-color: #fde9c8;\n    padding: 8px;\n    margin-bottom: 6px;\n    border-radius: 8px;\n  }`;
+const K2 = K1 + KJ + `\n  .rare {\n    border: 2px solid #f4ac3c;\n  }`;
+const K3 = K2 + `\n  .lab p {\n    color: #1c4a55;\n    font-style: italic;\n  }`;
+const K4 = K3 + `\n  .log li:nth-child(odd) {\n    background-color: #e8efff;\n  }`;
+const K5 = K4 + `\n  .log {\n    list-style: none;\n    padding: 0;\n  }`;
+const KB = `\n  .book {\n    background-color: #fde9c8;\n    padding: 16px;\n  }`;
+const K6 = K5 + KB + `\n  .book {\n    max-width: 320px;\n    margin: 0 auto;\n  }`;
+const K7 = K6 + `\n  .flask {\n    width: 60px;\n    height: 60px;\n    background-color: #7a48b5;\n    border-radius: 50%;\n  }`;
+const K8 = K7 + `\n  .book {\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n  }`;
+const K9 = K8 + `\n  .flask {\n    background: linear-gradient(#c3a0ec, #7a48b5);\n  }`;
+const KBADGE = `\n  .badge {\n    background-color: #b5151f;\n    color: white;\n    padding: 2px 8px;\n    border-radius: 999px;\n  }`;
+const K10 = K9 + KBADGE + `\n  .book {\n    position: relative;\n  }\n  .badge {\n    position: absolute;\n    top: -10px;\n    right: -10px;\n  }`;
+const E3 = css(`  #title {\n    color: #7a48b5;\n  }\n  .label {\n    max-width: 320px;\n    margin: 0 auto;\n    padding: 16px;\n    position: relative;\n    border-radius: 12px;\n    background: linear-gradient(#fff3e0, #fde9c8);\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);\n  }\n  .ingredients {\n    list-style: none;\n    padding: 0;\n  }\n  .ingredients li:nth-child(even) {\n    background-color: #f4ac3c;\n  }\n  .seal {\n    width: 40px;\n    height: 40px;\n    border-radius: 50%;\n    background-color: #b5151f;\n  }\n  .badge {\n    position: absolute;\n    top: -10px;\n    right: -10px;\n    background-color: #1c4a55;\n    color: white;\n    padding: 2px 8px;\n    border-radius: 999px;\n  }`) +
+  `<div class="label">\n  <span class="badge">Редкое</span>\n  <h2 id="title">Зелье «Кошачья мята»</h2>\n  <ul class="ingredients">\n    <li>Мята с лунной поляны</li>\n    <li>Три капли росы</li>\n    <li>Щепотка звёздной пыли</li>\n  </ul>\n  <div class="seal"></div>\n</div>`;
+
+/* chapter 4 · cellar */
+const P0 = `<h1>Погреб гильдии</h1>\n<p>Здесь хранятся бочки, зёрна и старинные запасы котов-магов.</p>`;
+const RACK = `<h2>Стеллаж с зёрнами</h2>\n<div class="rack">\n  <div class="cell">Арабика</div>\n  <div class="cell">Робуста</div>\n  <div class="cell">Лунные зёрна</div>\n  <div class="cell">Какао-бобы</div>\n  <div class="cell">Ваниль</div>\n  <div class="cell">Корица</div>\n</div>`;
+const RACKB = RACK.replace('<div class="cell">Арабика', '<div class="cell big">Арабика');
+const HERBS = `<h2>Травы под потолком</h2>\n<div class="herbs">\n  <span class="herb">Мята</span>\n  <span class="herb">Лаванда</span>\n  <span class="herb">Розмарин</span>\n  <span class="herb">Чабрец</span>\n  <span class="herb">Мелисса</span>\n  <span class="herb">Шалфей</span>\n  <span class="herb">Кошачья мята</span>\n</div>`;
+const CANDLES = `<h2>Свечи на лестнице</h2>\n<div class="candles">\n  <span>Ступенька 1</span>\n  <span>Ступенька 2</span>\n  <span>Ступенька 3</span>\n</div>`;
+const BARREL = `<div class="barrel">Бочка «Полночь»</div>`;
+const D1 = P0 + `\n\n` + RACK, D4 = P0 + `\n\n` + RACKB, D5 = D4 + `\n\n` + HERBS, D6 = D5 + `\n\n` + CANDLES, D7 = D6 + `\n\n` + BARREL;
+const GC = `  .cell {\n    background-color: #fde9c8;\n    padding: 10px;\n    border-radius: 8px;\n  }`;
+const G1 = GC + `\n  .rack {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n  }`;
+const G2 = GC + `\n  .rack {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n  }`;
+const G3 = G2.replace('repeat(4, 1fr);', 'repeat(4, 1fr);\n    gap: 10px;');
+const G4 = G3 + `\n  .big {\n    grid-column: span 2;\n  }`;
+const GH = `\n  .herbs {\n    display: flex;\n    gap: 8px;\n  }\n  .herb {\n    min-width: 110px;\n    padding: 6px;\n    background-color: #e2f2ea;\n    border-radius: 6px;\n  }`;
+const G5 = G4 + GH.replace('gap: 8px;', 'gap: 8px;\n    flex-wrap: wrap;');
+const GCD = `\n  .candles {\n    display: flex;\n    gap: 6px;\n  }`;
+const G6 = G5 + GCD.replace('gap: 6px;', 'gap: 6px;\n    flex-direction: column;');
+const GBR = `\n  .barrel {\n    background-color: #8a4a22;\n    color: white;\n    padding: 12px;\n    border-radius: 12px;\n  }`;
+const G7 = G6 + GBR.replace('padding: 12px;', 'padding: 12px;\n    width: 50%;');
+const G8 = G7 + `\n  h2 {\n    font-size: 1.5rem;\n  }`;
+const G9 = G8 + `\n  @media (max-width: 600px) {\n    .rack {\n      grid-template-columns: repeat(2, 1fr);\n    }\n  }`;
+const G10 = G9 + `\n  @media (min-width: 700px) {\n    .candles {\n      flex-direction: row;\n    }\n  }`;
+const E4 = css(`  h1 {\n    font-size: 2rem;\n  }\n  .grid {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n  }\n  .item {\n    background-color: #fde9c8;\n    padding: 10px;\n    border-radius: 8px;\n  }\n  .wide {\n    grid-column: span 2;\n  }\n  .tags {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 6px;\n  }\n  .side {\n    display: flex;\n    flex-direction: column;\n    width: 60%;\n  }\n  @media (max-width: 600px) {\n    .grid {\n      grid-template-columns: repeat(2, 1fr);\n    }\n  }`) +
+  `<h1>Каталог погреба</h1>\n\n<div class="grid">\n  <div class="item wide">Бочка «Полночь»</div>\n  <div class="item">Мешок арабики</div>\n  <div class="item">Сундук специй</div>\n  <div class="item">Банка мёда</div>\n</div>\n\n<h2>Метки</h2>\n<div class="tags">\n  <span>редкое</span>\n  <span>сладкое</span>\n  <span>крепкое</span>\n  <span>ночное</span>\n</div>\n\n<div class="side">\n  <span>Вход по лестнице</span>\n  <span>Ключ у Марты</span>\n</div>`;
+
+/* chapter 5 · observatory */
+const O0 = `<h1>Обсерватория на крыше</h1>\n<p>Отсюда Марта смотрит на звёзды и придумывает новые зелья.</p>`;
+const TOPH = `<header class="top">\n  <b>Обсерватория</b>\n  <a href="#sky">Карта неба</a>\n</header>`;
+const CLOUD = `<div class="cloud">Туманность «Кошачий глаз»</div>`;
+const SKY = `<h2>Звёзды этой ночи</h2>\n<p><span class="star">★</span> <span class="star">★</span> <span class="star">★</span></p>`;
+const WISH = `<button class="star-btn">Загадать желание</button>`;
+const LONG = `<h2>Журнал наблюдений</h2>\n<p>Понедельник: видели комету с хвостом из корицы.</p>\n<p>Вторник: луна была похожа на блюдце со сливками.</p>\n<p>Среда: созвездие Кота подмигнуло дважды.</p>\n<p>Четверг: туман, наблюдения отменены, пили какао.</p>\n<p>Пятница: Марта открыла новую звезду и назвала её Пиксель.</p>`;
+const W2 = O0 + `\n\n` + CLOUD, W4 = W2 + `\n\n` + SKY, W5 = W4 + `\n\n` + WISH, W10 = TOPH + `\n\n` + W5 + `\n\n` + LONG;
+const V1 = `  :root {\n    --night: #0f2a3b;\n    --gold: #f4ac3c;\n  }\n  h1 {\n    color: var(--gold);\n    background-color: var(--night);\n    padding: 12px;\n  }`;
+const VC = `\n  .cloud {\n    background-color: #c3a0ec;\n    padding: 16px;\n    border-radius: 16px;\n  }`;
+const V2 = V1 + VC.replace('border-radius: 16px;', 'border-radius: 16px;\n    opacity: 0.6;');
+const V3 = V2 + `\n  h1 {\n    text-shadow: 0 0 8px #f4ac3c;\n  }`;
+const V4 = V3 + `\n  h2 {\n    text-transform: uppercase;\n    letter-spacing: 3px;\n  }`;
+const VB = `\n  .star-btn {\n    background-color: var(--night);\n    color: var(--gold);\n    border: none;\n    padding: 10px 18px;\n    border-radius: 999px;\n  }\n  .star-btn:hover {\n    background-color: #b5151f;\n  }`;
+const V5 = V4 + VB + `\n  .star-btn {\n    cursor: pointer;\n  }`;
+const V6 = V5 + `\n  .star-btn {\n    transition: all 0.3s;\n  }`;
+const V7 = V6 + `\n  .star-btn:hover {\n    transform: scale(1.1);\n  }`;
+const V8 = V7 + `\n  .cloud::before {\n    content: "✦ ";\n  }`;
+const V9 = V8 + `\n  @keyframes twinkle {\n    from {\n      opacity: 1;\n    }\n    to {\n      opacity: 0.2;\n    }\n  }\n  .star {\n    animation: twinkle 1s infinite alternate;\n  }`;
+const VT = `\n  .top {\n    display: flex;\n    justify-content: space-between;\n    background-color: var(--night);\n    color: white;\n    padding: 10px;\n  }`;
+const V10 = V9 + VT + `\n  .top {\n    position: sticky;\n    top: 0;\n  }`;
+const E5 = css(`  :root {\n    --night: #0f2a3b;\n    --gold: #f4ac3c;\n  }\n  .top {\n    position: sticky;\n    top: 0;\n    display: flex;\n    justify-content: space-between;\n    background-color: var(--night);\n    color: var(--gold);\n    padding: 10px;\n  }\n  .cards {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n  }\n  .card {\n    background-color: #fde9c8;\n    padding: 12px;\n    border-radius: 10px;\n  }\n  @media (max-width: 600px) {\n    .cards {\n      grid-template-columns: 1fr;\n    }\n  }\n  button {\n    background-color: var(--night);\n    color: var(--gold);\n    border: none;\n    padding: 10px 18px;\n    border-radius: 999px;\n    cursor: pointer;\n    transition: transform 0.3s;\n  }\n  button:hover {\n    transform: scale(1.1);\n  }\n  @keyframes glow {\n    from {\n      opacity: 1;\n    }\n    to {\n      opacity: 0.4;\n    }\n  }\n  .moon {\n    animation: glow 2s infinite alternate;\n  }`) +
+  `<header class="top">\n  <b>Обсерватория</b>\n  <a href="#join">Вступить</a>\n</header>\n\n<h1>Ночь открытых звёзд <span class="moon">☾</span></h1>\n\n<div class="cards">\n  <div class="card">Телескоп</div>\n  <div class="card">Карта неба</div>\n  <div class="card">Какао</div>\n</div>\n\n<button>Посмотреть в телескоп</button>\n\n<footer>\n  <p>Гильдия котов-магов</p>\n</footer>`;
+
+const lastIs = (r, tag) => { const els = [...r.children].filter(e => e.tagName !== 'STYLE'); return !!els.length && els[els.length - 1].tagName === tag; };
+const labelLinked = r => { const l = r.querySelector('label[for]'); if (!l || !l.getAttribute('for')) return false; let t = null; try { t = r.querySelector('#' + CSS.escape(l.getAttribute('for'))); } catch (e) {} return !!t && t.tagName === 'INPUT'; };
+
+const q = (r, s) => r && r.querySelector(s);
+const qa = (r, s) => r ? [...r.querySelectorAll(s)] : [];
+const txt = el => el ? el.textContent.trim() : '';
+const cs = el => getComputedStyle(el);
+const px = v => parseFloat(v) || 0;
+let REF = {};
+
+const LEVELS = [
+  {
+    title: 'Вывеска над башней',
+    say: 'Мур, привет! Я Марта, кошка-магиня. Мы с котами открываем кофейню «Пиксель», и нам нужен сайт. Начнём с вывески — большого заголовка.',
+    learn: { t: 'Тег — первое заклинание', p: 'HTML-страница собирается из тегов. Тег — слово в угловых скобках. У почти каждого тега есть пара: открывающий и закрывающий со слешем. Между ними — содержимое. h1 — главный заголовок страницы.', code: '<h1>Текст заголовка</h1>' },
+    task: 'Напиши главный заголовок `h1` с названием кофейни.',
+    starter: `${C} Напиши заголовок ниже этой строки -->\n`,
+    checks: [
+      ['На странице есть заголовок `h1`', r => !!q(r, 'h1')],
+      ['В заголовке есть слово «Пиксель»', r => /пиксел/i.test(txt(q(r, 'h1')))],
+    ],
+    hint: 'Открой тег <h1>, напиши название, закрой тег </h1>. Слеш / есть только в закрывающем теге.',
+    solution: S1,
+  },
+  {
+    title: 'Пара слов о нас',
+    say: 'Мяу, вывеска сияет! Под ней нужна пара предложений, чтобы гости поняли, что их угостят настоящей магией.',
+    learn: { t: 'Абзац', p: 'Обычный текст живёт в теге p — от слова paragraph, «абзац». Каждый новый абзац начинается с новой строки.', code: '<p>Здесь обычный текст.</p>' },
+    task: 'Добавь под заголовком абзац `p` о кофейне — хотя бы 5 слов.',
+    starter: S1 + `\n${C} Добавь абзац здесь -->\n`,
+    checks: [
+      ['На странице есть абзац `p`', r => !!q(r, 'p')],
+      ['В абзаце хотя бы 5 слов', r => txt(q(r, 'p')).split(/\s+/).filter(Boolean).length >= 5],
+      ['Абзац стоит после заголовка', r => { const h = q(r, 'h1'), p = q(r, 'p'); return !!(h && p && (h.compareDocumentPosition(p) & 4)); }],
+    ],
+    hint: 'Напиши новую строку под </h1>: открой <p>, напиши текст, закрой </p>.',
+    solution: S2,
+  },
+  {
+    title: 'Чары выделения',
+    say: 'Хочу, чтобы самое важное в тексте светилось, как руна. Одни слова сделаем жирными, другие — курсивом.',
+    learn: { t: 'Теги внутри тегов', p: 'Теги можно вкладывать друг в друга. strong делает слова важными (жирными), em выделяет интонацией (курсивом). Вложенный тег закрывается раньше внешнего.', code: '<p>Это <strong>важно</strong>, а это <em>с акцентом</em>.</p>' },
+    task: 'Внутри абзаца выдели одни слова тегом `strong`, другие — тегом `em`.',
+    starter: S2,
+    checks: [
+      ['Внутри абзаца есть `strong`', r => !!q(r, 'p strong')],
+      ['Внутри абзаца есть `em`', r => !!q(r, 'p em')],
+    ],
+    hint: 'Оберни слово прямо внутри абзаца: <p>Варим <strong>кофе</strong> ...</p>. Так же с <em>.',
+    solution: S3,
+  },
+  {
+    title: 'Свиток с меню',
+    say: 'Гости всё спрашивают, какие зелья мы варим. Запишем меню списком, как в старинном свитке.',
+    learn: { t: 'Списки', p: 'ul — список с маркерами, каждый пункт в нём — тег li. h2 — заголовок поменьше, для разделов.', code: '<h2>Раздел</h2>\n<ul>\n  <li>Первый пункт</li>\n  <li>Второй пункт</li>\n</ul>' },
+    task: 'Добавь заголовок раздела `h2` «Меню» и список `ul` минимум из трёх пунктов `li`.',
+    starter: S3 + `\n\n${C} Здесь будет меню -->\n`,
+    checks: [
+      ['Есть заголовок `h2` со словом «Меню»', r => qa(r, 'h2').some(h => /меню/i.test(txt(h)))],
+      ['Есть список `ul`', r => !!q(r, 'ul')],
+      ['В списке минимум 3 пункта `li`', r => qa(r, 'ul > li').length >= 3],
+      ['Ни один пункт не пустой', r => { const l = qa(r, 'ul > li'); return l.length > 0 && l.every(li => txt(li)); }],
+    ],
+    hint: 'Сначала <h2>Меню</h2>, потом <ul>, внутри три строки <li>Напиток</li>, в конце </ul>.',
+    solution: S4,
+  },
+  {
+    title: 'Портал к башне',
+    say: 'Гость прочитал меню и захотел прийти. Откроем ему портал — ссылку на карту с нашей башней.',
+    learn: { t: 'Ссылки и атрибуты', p: 'Ссылка — тег a. Куда она ведёт, задаёт атрибут href. Атрибуты пишутся внутри открывающего тега: имя="значение".', code: '<a href="https://example.com">Текст ссылки</a>' },
+    task: 'Добавь ссылку `a` с адресом в атрибуте `href`, который начинается с https://.',
+    starter: S4 + `\n\n${C} Добавь ссылку на карту -->\n`,
+    checks: [
+      ['Есть ссылка `a`', r => !!q(r, 'a')],
+      ['У ссылки есть `href`, начинается с https://', r => { const a = q(r, 'a'); return !!a && /^https?:\/\/\S+/i.test(a.getAttribute('href') || ''); }],
+      ['У ссылки есть текст', r => !!txt(q(r, 'a'))],
+    ],
+    hint: 'Пример: <a href="https://example.com">открыть адрес</a>. Кавычки вокруг адреса обязательны.',
+    solution: S5,
+  },
+  {
+    title: 'Кнопка заказа',
+    say: 'Скоро будем доставлять зелья совами. Нужна кнопка заказа! И повесь на неё ярлык, чтобы потом её зачаровать.',
+    learn: { t: 'Класс — это ярлык', p: 'Атрибут class вешает на тег ярлык с именем. По этому имени потом можно найти элемент и раскрасить его в CSS.', code: '<button class="имя">Нажми меня</button>' },
+    task: 'Добавь кнопку `button` с классом `order` и текстом на ней.',
+    starter: S5 + `\n\n${C} Добавь кнопку заказа -->\n`,
+    checks: [
+      ['Есть кнопка `button`', r => !!q(r, 'button')],
+      ['У кнопки класс `order`', r => !!q(r, 'button.order')],
+      ['На кнопке есть текст', r => !!txt(q(r, 'button'))],
+    ],
+    hint: 'Атрибут пишется так же, как href: <button class="order">Заказать зелье</button>',
+    solution: S6,
+  },
+  {
+    title: 'Цвет мантии',
+    say: 'У нашей гильдии фирменный цвет — алый, как подкладка моей мантии. Хочу вывеску этого цвета и ровно по центру.',
+    learn: { t: 'Знакомство с CSS', p: 'HTML отвечает за то, что на странице, а CSS — за то, как это выглядит. Стили пишут в теге style: сначала селектор (какой элемент), потом в фигурных скобках свойства.', code: '<style>\n  h1 {\n    color: #b5151f;\n    text-align: center;\n  }\n</style>' },
+    task: 'Добавь в начало тег `style` и задай для `h1` свой цвет (`color`) и выравнивание по центру (`text-align: center`).',
+    starter: `${C} Добавь сюда тег style -->\n\n` + S6,
+    checks: [
+      ['На странице есть тег `style`', r => !!q(r, 'style')],
+      ['У заголовка `h1` новый цвет', r => { const h = q(r, 'h1'); return !!h && cs(h).color !== REF.h1color; }],
+      ['Заголовок `h1` выровнен по центру', r => { const h = q(r, 'h1'); return !!h && cs(h).textAlign === 'center'; }],
+    ],
+    hint: 'Каждое свойство заканчивается точкой с запятой. Цвет можно написать словом (crimson) или кодом (#b5151f).',
+    solution: S7,
+  },
+  {
+    title: 'Пергамент для меню',
+    say: 'Меню теряется среди текста. Положим его на тёплый пергамент со скруглёнными краями.',
+    learn: { t: 'Блок div и свойства коробки', p: 'div — пустая коробка для других тегов. В CSS к классу обращаются через точку: .card. background-color — фон, padding — внутренний отступ, border-radius — скругление углов.', code: '.card {\n  background-color: #fde9c8;\n  padding: 16px;\n  border-radius: 12px;\n}' },
+    task: 'Оберни меню (`h2` и `ul`) в `div` с классом `card` и дай ему фон, отступ от 12px и скругление.',
+    starter: S7,
+    checks: [
+      ['Есть блок с классом `card`', r => !!q(r, '.card')],
+      ['Список меню лежит внутри `.card`', r => !!q(r, '.card ul')],
+      ['У `.card` есть фон', r => { const c = q(r, '.card'); return !!c && !/rgba\(0, 0, 0, 0\)|transparent/.test(cs(c).backgroundColor); }],
+      ['Внутренний отступ `padding` от 12px', r => { const c = q(r, '.card'); return !!c && px(cs(c).paddingTop) >= 12 && px(cs(c).paddingLeft) >= 12; }],
+      ['Углы скруглены (`border-radius`)', r => { const c = q(r, '.card'); return !!c && px(cs(c).borderTopLeftRadius) > 0; }],
+    ],
+    hint: 'Напиши <div class="card"> перед <h2>Меню</h2> и </div> после </ul>. Потом добавь в style правило .card { ... }.',
+    solution: S8,
+  },
+  {
+    title: 'Полка с зельями',
+    say: 'У нас три фирменных зелья. Хочу, чтобы они стояли рядком на полке, а не друг под другом.',
+    learn: { t: 'Flexbox', p: 'display: flex выстраивает детей блока в ряд. gap задаёт расстояние между ними. Это главный инструмент раскладки в современном CSS.', code: '.row {\n  display: flex;\n  gap: 12px;\n}' },
+    task: 'Блок `.row` уже есть, а карточки `.item` в нём стоят столбиком. Поставь их в ряд через `display: flex` и добавь `gap`.',
+    starter: `<style>\n${CSS8}${ITEMCSS}\n  ${CC} Добавь правило для .row */\n</style>\n\n` + BODY9,
+    checks: [
+      ['У `.row` включён `display: flex`', r => { const e = q(r, '.row'); return !!e && /flex/.test(cs(e).display); }],
+      ['Между карточками есть `gap`', r => { const e = q(r, '.row'); return !!e && px(cs(e).columnGap) > 0; }],
+      ['В ряду минимум 3 карточки', r => qa(r, '.row > .item').length >= 3],
+    ],
+    hint: 'Добавь внутрь <style> новое правило: .row { display: flex; gap: 12px; }',
+    solution: S9,
+  },
+  {
+    title: 'Ночь открытия',
+    say: 'В полнолуние открываемся! Осталось зачаровать кнопку заказа, чтобы на неё хотелось нажать лапкой.',
+    learn: { t: 'Стили для кнопки', p: 'Кнопку найдём по классу .order. color — цвет текста, background-color — фон, padding — «подушка» вокруг текста, border: none убирает рамку.', code: '.order {\n  background-color: #ef7b2b;\n  color: white;\n  padding: 12px 20px;\n  border: none;\n  border-radius: 999px;\n}' },
+    task: 'Добавь правило для `.order`: свой фон, цвет текста, отступы по бокам от 10px и скругление.',
+    starter: S9.replace('</style>', `  ${CC} Зачаруй кнопку .order */\n</style>`),
+    checks: [
+      ['У кнопки свой фон', r => { const b = q(r, 'button'); return !!b && cs(b).backgroundColor !== REF.btnBg; }],
+      ['У текста кнопки свой цвет', r => { const b = q(r, 'button'); return !!b && cs(b).color !== REF.btnColor; }],
+      ['Отступы по бокам от 10px', r => { const b = q(r, 'button'); return !!b && px(cs(b).paddingLeft) >= 10 && px(cs(b).paddingRight) >= 10; }],
+      ['Углы скруглены', r => { const b = q(r, 'button'); return !!b && px(cs(b).borderTopLeftRadius) > 0; }],
+    ],
+    hint: 'В style добавь .order { background-color: ...; color: white; padding: 12px 20px; border-radius: 999px; }',
+    solution: S9.replace('</style>', `  .order {\n    background-color: #ef7b2b;\n    color: white;\n    padding: 12px 20px;\n    border: none;\n    border-radius: 999px;\n  }\n</style>`),
+  },
+  {
+    extra: true, chapter: 1,
+    title: 'Визитка совы-почтальона',
+    say: 'Ух-ху! Я сова Ухта, ношу заказы кофейни по всему городу. Марта сказала, ты теперь мастер заклинаний. Соберёшь мне визитку с нуля?',
+    learn: { t: 'Повторение главы 1', p: 'Новых заклинаний здесь нет. Вспомни теги, вложенность, списки, ссылки, классы, CSS-свойства коробки и flexbox. Чек-лист подскажет, что нужно.', code: '<div class="card">\n  <h2>...</h2>\n  ...\n</div>' },
+    task: 'Собери визитку совы на пустой странице: все пункты чек-листа — то, что ты уже умеешь.',
+    starter: `${C} Экстра-уровень: страница пустая. Собери визитку сам по чек-листу слева -->\n`,
+    checks: [
+      ['Всё лежит в блоке `.card`', r => !!q(r, '.card h2')],
+      ['Заголовок `h2` с именем совы', r => !!txt(q(r, 'h2'))],
+      ['В абзаце `p` есть `strong`', r => !!q(r, 'p strong')],
+      ['Список `ul` минимум из 2 пунктов', r => qa(r, 'ul > li').length >= 2],
+      ['Ссылка `a` с адресом https://', r => { const a = q(r, 'a'); return !!a && /^https?:\/\/\S+/i.test(a.getAttribute('href') || ''); }],
+      ['Кнопка с классом `send` и своим фоном', r => { const b = q(r, 'button.send'); return !!b && cs(b).backgroundColor !== REF.btnBg; }],
+      ['У `.card` фон, отступ от 12px и скругление', r => { const c = q(r, '.card'); return !!c && !/rgba\(0, 0, 0, 0\)|transparent/.test(cs(c).backgroundColor) && px(cs(c).paddingTop) >= 12 && px(cs(c).borderTopLeftRadius) > 0; }],
+      ['Ссылка и кнопка стоят в ряд: `.row` с `display: flex`', r => { const e = q(r, '.row'); return !!e && /flex/.test(cs(e).display) && !!e.querySelector('a') && !!e.querySelector('button'); }],
+    ],
+    hint: 'Начни с <style> и <div class="card">. Внутри: <h2>, <p> со <strong>, <ul> с двумя <li>, и <div class="row"> со ссылкой и кнопкой class="send".',
+    solution: E1,
+  },
+  {
+    title: 'Терраса открывается',
+    say: 'Мур! Летом гостям тесно в зале, поэтому мы открываем террасу у фонтана. Для неё нужна своя страница. Начнём с картинки, чтобы гости увидели, как тут красиво.',
+    learn: { t: 'Картинки', p: 'Картинка — тег img. У него нет закрывающей пары. src — путь к файлу, alt — описание картинки словами. Если картинка не загрузится, гость увидит alt, а незрячим его прочитает экранный диктор.', code: '<img src="photo.png" alt="Что изображено">' },
+    task: 'Добавь картинку `img` с атрибутами `src` и `alt`. Файла пока нет — в превью ты увидишь, как работает alt.',
+    starter: T0 + `\n\n${C} Добавь картинку -->\n`,
+    checks: [
+      ['Есть картинка `img`', r => !!q(r, 'img')],
+      ['У картинки есть `src`', r => !!(q(r, 'img') && (q(r, 'img').getAttribute('src') || '').trim())],
+      ['У картинки есть описание `alt` (от 3 букв)', r => (q(r, 'img') && (q(r, 'img').getAttribute('alt') || '').trim().length >= 3) || false],
+    ],
+    hint: 'Пример: <img src="terrace.png" alt="Терраса с фонариками">. Закрывающий тег не нужен.',
+    solution: T1,
+  },
+  {
+    title: 'Рецепт по шагам',
+    say: 'На террасе будем варить «Звездопад». Его рецепт важно делать строго по порядку, иначе зелье убежит из котла!',
+    learn: { t: 'Нумерованный список', p: 'ol — список с номерами, когда порядок важен. Пункты внутри — те же li, что и в ul. Браузер сам расставит цифры.', code: '<ol>\n  <li>Первый шаг</li>\n  <li>Второй шаг</li>\n</ol>' },
+    task: 'Добавь заголовок `h2` и нумерованный список `ol` минимум из трёх шагов.',
+    starter: T1 + `\n\n${C} Здесь будет рецепт -->\n`,
+    checks: [
+      ['Есть заголовок `h2`', r => !!txt(q(r, 'h2'))],
+      ['Есть нумерованный список `ol`', r => !!q(r, 'ol')],
+      ['В нём минимум 3 шага `li`', r => qa(r, 'ol > li').length >= 3],
+    ],
+    hint: 'Так же, как <ul>, только тег <ol>: <ol> <li>Шаг</li> ... </ol>',
+    solution: T2,
+  },
+  {
+    title: 'Часы работы',
+    say: 'Гости спрашивают, когда мы открыты. Коты ведь ночные, у нас особое расписание. Давай сделаем табличку.',
+    learn: { t: 'Таблицы', p: 'table — таблица. Внутри неё строки tr (table row), а в строках ячейки td (table data). Каждая строка начинается с tr.', code: '<table>\n  <tr>\n    <td>Будни</td>\n    <td>с заката</td>\n  </tr>\n</table>' },
+    task: 'Добавь таблицу `table` минимум из двух строк `tr`, в каждой по две ячейки `td`.',
+    starter: T2 + `\n\n${C} Добавь таблицу часов работы -->\n`,
+    checks: [
+      ['Есть таблица `table`', r => !!q(r, 'table')],
+      ['В таблице минимум 2 строки `tr`', r => qa(r, 'table tr').length >= 2],
+      ['В каждой строке минимум 2 ячейки', r => { const rows = qa(r, 'table tr'); return rows.length > 0 && rows.every(tr => tr.querySelectorAll('td, th').length >= 2); }],
+    ],
+    hint: 'Структура: <table> → <tr> → две <td>. Повтори <tr> ещё раз для второй строки.',
+    solution: T3,
+  },
+  {
+    title: 'Бронь столика',
+    say: 'Столики под звёздами разбирают за минуту! Пусть гости бронируют заранее — нужна форма с именем.',
+    learn: { t: 'Формы', p: 'form — форма. input — поле для ввода, placeholder — серая подсказка внутри поля. label — подпись к полю. Чтобы подпись знала своё поле, у label пишут for, а у input такой же id.', code: '<label for="name">Имя</label>\n<input id="name" placeholder="Мурзик">' },
+    task: 'Добавь форму `form` с полем `input` (у него `placeholder`) и подписью `label`, связанной с полем через `for` и `id`.',
+    starter: T3 + `\n\n${C} Добавь форму брони -->\n`,
+    checks: [
+      ['Есть форма `form`', r => !!q(r, 'form')],
+      ['Внутри формы есть поле `input`', r => !!q(r, 'form input')],
+      ['У поля есть `placeholder`', r => !!(q(r, 'input') && (q(r, 'input').getAttribute('placeholder') || '').trim())],
+      ['`label` связан с полем: `for` = `id`', r => labelLinked(r)],
+    ],
+    hint: '<label for="name">Имя</label> и <input id="name" placeholder="...">. Слово в for и id должно совпадать.',
+    solution: T4,
+  },
+  {
+    title: 'Подвал сайта',
+    say: 'Внизу каждой приличной страницы есть подвал: кто мы и откуда. У нас подвал — это место, где хранятся старые свитки, а у сайта — footer.',
+    learn: { t: 'Смысловые теги', p: 'Есть теги, которые ничего не меняют внешне, но говорят, что это за часть страницы: header — шапка, main — основное, footer — подвал. Их понимают поисковики и экранные дикторы.', code: '<footer>\n  <p>© Кофейня</p>\n</footer>' },
+    task: 'Добавь в самый конец страницы подвал `footer` с текстом.',
+    starter: T4 + `\n\n${C} Добавь подвал сайта -->\n`,
+    checks: [
+      ['Есть подвал `footer`', r => !!q(r, 'footer')],
+      ['В подвале есть текст', r => !!txt(q(r, 'footer'))],
+      ['Подвал — последний на странице', r => lastIs(r, 'FOOTER')],
+    ],
+    hint: 'В самом низу: <footer> <p>Текст</p> </footer>. После него ничего не пиши.',
+    solution: T5,
+  },
+  {
+    title: 'Почерк гильдии',
+    say: 'Текст на террасе мелковат, гости щурятся при свечах. Сделай буквы крупнее и смени шрифт на более простой.',
+    learn: { t: 'Шрифты', p: 'font-size — размер букв, обычно в пикселях. font-family — шрифт. Пишут несколько через запятую: если первого нет на компьютере, возьмётся следующий. В конце ставят общий вид: serif или sans-serif.', code: 'p {\n  font-size: 18px;\n  font-family: Verdana, sans-serif;\n}' },
+    task: 'В `style` задай для `p` размер `font-size` от 17px и другой шрифт `font-family`.',
+    starter: css(`  ${CC} Шрифты для абзацев */`) + T5,
+    checks: [
+      ['Размер абзацев от 17px', r => { const e = q(r, 'p'); return !!e && px(cs(e).fontSize) >= 17; }],
+      ['У абзацев другой шрифт', r => { const e = q(r, 'p'); return !!e && cs(e).fontFamily !== REF.pFont; }],
+    ],
+    hint: 'p { font-size: 18px; font-family: Verdana, sans-serif; } — не забудь точки с запятой.',
+    solution: css(C16) + T5,
+  },
+  {
+    title: 'Место для воздуха',
+    say: 'Разделы слиплись, как шерсть после дождя. Добавь простора над заголовками.',
+    learn: { t: 'Внешний отступ margin', p: 'padding — отступ внутри коробки, а margin — снаружи, между коробками. margin-top отодвигает элемент от того, что сверху.', code: 'h2 {\n  margin-top: 32px;\n}' },
+    task: 'Задай заголовкам `h2` внешний отступ сверху `margin-top` от 28px.',
+    starter: css(C16 + `\n  ${CC} Отступ для заголовков h2 */`) + T5,
+    checks: [
+      ['У `h2` отступ сверху от 28px', r => { const e = q(r, 'h2'); return !!e && px(cs(e).marginTop) >= 28; }],
+    ],
+    hint: 'Добавь правило: h2 { margin-top: 32px; }',
+    solution: css(C17) + T5,
+  },
+  {
+    title: 'Рамка для таблицы',
+    say: 'Табличка с часами работы сливается с фоном. Обведи ячейки алой рамкой, как на старинных свитках.',
+    learn: { t: 'Рамки border', p: 'border задаёт рамку сразу тремя словами: толщина, вид линии и цвет. solid — сплошная линия, dashed — пунктир. padding внутри ячейки отодвинет текст от рамки.', code: 'td {\n  border: 2px solid #b5151f;\n  padding: 8px;\n}' },
+    task: 'Дай ячейкам `td` сплошную рамку `border` и внутренний отступ от 6px.',
+    starter: css(C17 + `\n  ${CC} Рамки для ячеек td */`) + T5,
+    checks: [
+      ['У ячеек есть рамка', r => { const e = q(r, 'td'); return !!e && px(cs(e).borderTopWidth) >= 1 && cs(e).borderTopStyle !== 'none'; }],
+      ['Рамка сплошная (`solid`)', r => { const e = q(r, 'td'); return !!e && cs(e).borderTopStyle === 'solid'; }],
+      ['Отступ внутри ячеек от 6px', r => { const e = q(r, 'td'); return !!e && px(cs(e).paddingLeft) >= 6; }],
+    ],
+    hint: 'td { border: 2px solid #b5151f; padding: 8px; }',
+    solution: css(C18) + T5,
+  },
+  {
+    title: 'Отклик на лапку',
+    say: 'Хочу, чтобы кнопка брони отзывалась, когда на неё наводят лапку. Как будто она чувствует гостя!',
+    learn: { t: 'Состояние :hover', p: 'Двоеточие после селектора — это состояние. :hover срабатывает, пока курсор над элементом. Стили из такого правила применяются только в этот момент.', code: '.order:hover {\n  background-color: #b5151f;\n}' },
+    task: 'Добавь правило `.order:hover`, которое меняет цвет фона кнопки. Наведи курсор на кнопку в превью и проверь.',
+    starter: css(C18 + ORD + `\n  ${CC} Добавь .order:hover */`) + T5,
+    checks: [
+      ['Есть правило с `:hover`', r => !!hoverRule(r)],
+      ['Оно для кнопки `.order`', r => !!hoverRule(r, '.order')],
+      ['Оно меняет цвет: `background-color` или `color`', r => { const h = hoverRule(r, '.order'); return !!h && !!(h.style.backgroundColor || h.style.color || h.style.background); }],
+    ],
+    hint: 'Новое правило: .order:hover { background-color: #b5151f; } — без пробела перед двоеточием.',
+    solution: css(C19) + T5,
+  },
+  {
+    title: 'Шапка с навигацией',
+    say: 'Последний штрих перед летним открытием: шапка сайта. Название слева, ссылки справа — как у настоящих гильдий.',
+    learn: { t: 'Распределение во flexbox', p: 'justify-content решает, как разложить детей по горизонтали: space-between прижимает крайних к краям. align-items выравнивает по вертикали: center ставит всех на одну линию.', code: '.top {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}' },
+    task: 'Шапка `header.top` уже есть. Разложи её: `display: flex`, `justify-content: space-between`, `align-items: center`.',
+    starter: css(C19 + `\n  ${CC} Разложи шапку .top */`) + HEAD + `\n\n` + T5,
+    checks: [
+      ['У `.top` включён `display: flex`', r => { const e = q(r, '.top'); return !!e && /flex/.test(cs(e).display); }],
+      ['Название и ссылки разнесены: `space-between`', r => { const e = q(r, '.top'); return !!e && cs(e).justifyContent === 'space-between'; }],
+      ['Всё на одной линии: `align-items: center`', r => { const e = q(r, '.top'); return !!e && cs(e).alignItems === 'center'; }],
+    ],
+    hint: '.top { display: flex; justify-content: space-between; align-items: center; }',
+    solution: css(C20) + HEAD + `\n\n` + T5,
+  },
+  {
+    extra: true, chapter: 2,
+    title: 'Афиша звёздной дегустации',
+    say: 'Ну что, мастер, финальное испытание лета! В полночь у фонтана дегустация новых зелий. Сделай афишу с нуля: я верю, ты всё помнишь.',
+    learn: { t: 'Повторение главы 2', p: 'Здесь пригодится всё из второй главы: картинки, нумерованные списки, таблицы, формы, подвал, рамки, :hover и шапка на flexbox.', code: '<header class="top">...</header>\n<img src="..." alt="...">\n...\n<footer>...</footer>' },
+    task: 'Собери афишу дегустации на пустой странице по чек-листу.',
+    starter: `${C} Экстра-уровень: страница пустая. Собери афишу сам по чек-листу слева -->\n`,
+    checks: [
+      ['Шапка `.top`: flex и `space-between`', r => { const e = q(r, '.top'); return !!e && /flex/.test(cs(e).display) && cs(e).justifyContent === 'space-between'; }],
+      ['Картинка `img` с описанием `alt`', r => !!(q(r, 'img') && (q(r, 'img').getAttribute('alt') || '').trim().length >= 3)],
+      ['Нумерованный список минимум из 3 зелий', r => qa(r, 'ol > li').length >= 3],
+      ['Таблица минимум из 2 строк', r => qa(r, 'table tr').length >= 2],
+      ['У ячеек `td` есть рамка', r => { const e = q(r, 'td'); return !!e && px(cs(e).borderTopWidth) >= 1 && cs(e).borderTopStyle !== 'none'; }],
+      ['Форма: `label` связан с `input`, у поля есть `placeholder`', r => labelLinked(r) && !!(q(r, 'input') && (q(r, 'input').getAttribute('placeholder') || '').trim())],
+      ['Есть правило с `:hover`', r => !!hoverRule(r)],
+      ['Подвал `footer` в самом конце', r => lastIs(r, 'FOOTER')],
+    ],
+    hint: 'Порядок: <style> с .top, td и button:hover → <header class="top"> → <h1> → <img> → <ol> → <table> → <form> → <footer>.',
+    solution: E2,
+  },
+
+  /* ---------------- chapter 3 · laboratory ---------------- */
+  {
+    title: 'Табличка «Горячо!»',
+    say: 'Мур! Под кофейней есть старая лаборатория, где я придумываю новые зелья. Ей тоже нужна страница. Начнём с таблички-предупреждения, она на странице одна-единственная.',
+    learn: { t: 'id — уникальное имя', p: 'Класс можно повесить на сколько угодно элементов, а id — только на один на странице. В CSS к id обращаются через решётку #.', code: '<p id="warning">Текст</p>\n\n#warning {\n  color: #b5151f;\n}' },
+    task: 'Добавь абзац с `id="warning"` и в `style` задай `#warning` свой цвет.',
+    starter: css(`  ${CC} Стили для #warning */`) + L0 + `\n${C} Добавь абзац с id="warning" -->\n`,
+    checks: [
+      ['Есть элемент с `id="warning"`', r => !!q(r, '#warning')],
+      ['В нём есть текст', r => !!txt(q(r, '#warning'))],
+      ['Есть правило `#warning`', r => !!ruleWith(r, '#warning')],
+      ['У `#warning` свой цвет', r => { const e = q(r, '#warning'); return !!e && cs(e).color !== REF.h1color; }],
+    ],
+    hint: '<p id="warning">Осторожно: котлы горячие!</p>, а в style: #warning { color: #b5151f; }',
+    solution: css(K1) + B1,
+  },
+  {
+    title: 'Редкий ингредиент',
+    say: 'Все банки одинаковые, но перо феникса — особенное. Пусть у его банки будет золотая рамка, а остальные останутся как есть.',
+    learn: { t: 'Несколько классов', p: 'В атрибут class можно записать несколько классов через пробел. Элемент получит стили всех своих классов сразу.', code: '<div class="jar rare">...</div>\n\n.rare {\n  border: 2px solid #f4ac3c;\n}' },
+    task: 'Добавь банке «Перо феникса» второй класс `rare` и напиши правило `.rare` с рамкой.',
+    starter: css(K1 + KJ + `\n  ${CC} Добавь правило .rare */`) + B1 + `\n\n` + JARS0,
+    checks: [
+      ['У одной банки два класса: `jar` и `rare`', r => qa(r, '.jar.rare').length >= 1],
+      ['У `.rare` есть рамка', r => { const e = q(r, '.rare'); return !!e && px(cs(e).borderTopWidth) > 0 && cs(e).borderTopStyle !== 'none'; }],
+      ['Остальные банки без рамки', r => { const o = qa(r, '.jar:not(.rare)'); return o.length >= 2 && o.every(j => px(cs(j).borderTopWidth) === 0 || cs(j).borderTopStyle === 'none'); }],
+    ],
+    hint: 'Поменяй class="jar" на class="jar rare" у пера феникса. В style: .rare { border: 2px solid #f4ac3c; }',
+    solution: css(K2) + B2,
+  },
+  {
+    title: 'Только внутри лаборатории',
+    say: 'Записки про котлы лежат в отдельном блоке `.lab`. Хочу выделить только их, не трогая остальной текст и не навешивая новых классов.',
+    learn: { t: 'Селектор потомка', p: 'Два селектора через пробел значат «внутри». .lab p — это все абзацы, которые лежат внутри блока .lab. Абзацы снаружи правило не тронет.', code: '.lab p {\n  font-style: italic;\n}' },
+    task: 'Напиши правило `.lab p`, которое меняет цвет или начертание абзацев внутри `.lab`.',
+    starter: css(K2 + `\n  ${CC} Добавь правило .lab p */`) + B3,
+    checks: [
+      ['Есть правило `.lab p`', r => rulesOf(r).some(x => /\.lab\s+p\b/.test(x.rule.selectorText))],
+      ['Абзацы внутри `.lab` выглядят иначе', r => { const a = q(r, '.lab p'), b = qa(r, 'p').find(p => !p.closest('.lab') && !p.id); return !!a && !!b && (cs(a).color !== cs(b).color || cs(a).fontStyle !== cs(b).fontStyle || cs(a).fontWeight !== cs(b).fontWeight); }],
+      ['Абзацам не добавлены свои классы', r => qa(r, '.lab p').length >= 2 && qa(r, '.lab p').every(p => !p.className)],
+    ],
+    hint: '.lab p { color: #1c4a55; font-style: italic; } — между .lab и p нужен пробел.',
+    solution: css(K3) + B3,
+  },
+  {
+    title: 'Журнал в полоску',
+    say: 'В журнале опытов строчки сливаются. Раскрась их через одну, как полоски на хвосте у енота-соседа.',
+    learn: { t: ':nth-child', p: ':nth-child выбирает элемент по его номеру среди соседей. odd — нечётные (1, 3, 5…), even — чётные (2, 4, 6…).', code: '.log li:nth-child(odd) {\n  background-color: #e8efff;\n}' },
+    task: 'Раскрась записи журнала через одну правилом с `:nth-child(odd)` или `:nth-child(even)`.',
+    starter: css(K3 + `\n  ${CC} Раскрась журнал через одну */`) + B4,
+    checks: [
+      ['Есть правило с `:nth-child`', r => rulesOf(r).some(x => x.rule.selectorText.includes(':nth-child'))],
+      ['Соседние записи разного цвета, через одну — одинакового', r => zebra(r, '.log li')],
+    ],
+    hint: '.log li:nth-child(odd) { background-color: #e8efff; }',
+    solution: css(K4) + B4,
+  },
+  {
+    title: 'Без точек',
+    say: 'Точки у журнала лишние, будто муха наследила. Убери маркеры и отступ слева.',
+    learn: { t: 'list-style', p: 'list-style: none убирает маркеры у списка. Браузер ещё добавляет спискам отступ слева, его убирают через padding: 0. Так делают все меню на сайтах.', code: '.log {\n  list-style: none;\n  padding: 0;\n}' },
+    task: 'Убери у `.log` маркеры и отступ слева.',
+    starter: css(K4 + `\n  ${CC} Убери маркеры у .log */`) + B4,
+    checks: [
+      ['У `.log` нет маркеров', r => { const e = q(r, '.log'); return !!e && cs(e).listStyleType === 'none'; }],
+      ['Отступ слева убран', r => { const e = q(r, '.log'); return !!e && px(cs(e).paddingLeft) === 0; }],
+    ],
+    hint: '.log { list-style: none; padding: 0; }',
+    solution: css(K5) + B4,
+  },
+  {
+    title: 'Книга по центру',
+    say: 'Книга рецептов растянулась на всю ширину, как кот на солнышке. Пусть она будет узкой и лежит ровно посередине.',
+    learn: { t: 'max-width и margin: auto', p: 'max-width не даёт блоку стать шире заданного. margin: 0 auto — сверху и снизу 0, а слева и справа браузер делит свободное место поровну, и блок встаёт по центру.', code: '.book {\n  max-width: 320px;\n  margin: 0 auto;\n}' },
+    task: 'Ограничь ширину `.book` через `max-width` и поставь её по центру через `margin: 0 auto`.',
+    starter: css(K5 + KB + `\n  ${CC} Сузь книгу и поставь по центру */`) + B6,
+    checks: [
+      ['У `.book` задан `max-width`', r => { const e = q(r, '.book'); return !!e && cs(e).maxWidth !== 'none' && px(cs(e).maxWidth) <= 700; }],
+      ['Книга по центру: `margin: 0 auto`', r => rulesOf(r).some(x => hasSel(x, '.book') && x.rule.style.marginLeft === 'auto' && x.rule.style.marginRight === 'auto')],
+    ],
+    hint: 'Добавь в .book строки max-width: 320px; и margin: 0 auto;',
+    solution: css(K6) + B6,
+  },
+  {
+    title: 'Круглая колба',
+    say: 'Для пробных зелий нужна колба. Сделай её круглой, как полная луна.',
+    learn: { t: 'Круг из квадрата', p: 'Если у блока ширина равна высоте, а border-radius: 50%, углы скругляются до круга. Пустому div обязательно нужны размеры, иначе его не видно.', code: '.flask {\n  width: 60px;\n  height: 60px;\n  background-color: #7a48b5;\n  border-radius: 50%;\n}' },
+    task: 'Задай `.flask` одинаковые ширину и высоту, цвет фона и `border-radius: 50%`.',
+    starter: css(K6 + `\n  ${CC} Сделай .flask круглой колбой */`) + B7,
+    checks: [
+      ['У `.flask` ширина равна высоте (от 20px)', r => squareBox(q(r, '.flask'))],
+      ['Есть цвет фона', r => filled(q(r, '.flask'))],
+      ['Колба круглая: `border-radius: 50%`', r => isRound(q(r, '.flask'))],
+    ],
+    hint: '.flask { width: 60px; height: 60px; background-color: #7a48b5; border-radius: 50%; }',
+    solution: css(K7) + B7,
+  },
+  {
+    title: 'Тень от книги',
+    say: 'Книга выглядит плоской, как блин. Пусть она отбрасывает тень, будто лежит на столе при свечах.',
+    learn: { t: 'box-shadow', p: 'box-shadow рисует тень: сдвиг вправо, сдвиг вниз, размытие и цвет. rgba(0, 0, 0, 0.3) — чёрный с прозрачностью 30%.', code: '.book {\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n}' },
+    task: 'Добавь `.book` тень через `box-shadow`.',
+    starter: css(K7 + `\n  ${CC} Добавь книге тень */`) + B7,
+    checks: [
+      ['У `.book` есть тень', r => { const e = q(r, '.book'); return !!e && cs(e).boxShadow !== 'none'; }],
+    ],
+    hint: '.book { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }',
+    solution: css(K8) + B7,
+  },
+  {
+    title: 'Зелье с переливом',
+    say: 'Настоящее зелье не бывает одного цвета. Пусть в колбе он плавно переходит из сиреневого в фиолетовый.',
+    learn: { t: 'Градиент', p: 'linear-gradient(цвет1, цвет2) — плавный переход от одного цвета к другому. Это картинка, поэтому её пишут в background, а не в background-color.', code: '.flask {\n  background: linear-gradient(#c3a0ec, #7a48b5);\n}' },
+    task: 'Сделай фон `.flask` градиентом через `linear-gradient`.',
+    starter: css(K8 + `\n  ${CC} Градиент для .flask */`) + B7,
+    checks: [
+      ['У `.flask` фон-градиент', r => { const e = q(r, '.flask'); return !!e && cs(e).backgroundImage.includes('gradient'); }],
+      ['Колба осталась круглой', r => isRound(q(r, '.flask'))],
+    ],
+    hint: '.flask { background: linear-gradient(#c3a0ec, #7a48b5); }',
+    solution: css(K9) + B7,
+  },
+  {
+    title: 'Наклейка «Новое!»',
+    say: 'В книгу добавили новый рецепт. Налепи на угол книги наклейку «Новое!», чтобы она торчала поверх, как ухо из-под одеяла.',
+    learn: { t: 'position: absolute', p: 'position: absolute вынимает элемент из потока и ставит его по top, right, bottom, left. Отсчёт идёт от ближайшего предка с position: relative.', code: '.book {\n  position: relative;\n}\n.badge {\n  position: absolute;\n  top: -10px;\n  right: -10px;\n}' },
+    task: 'Сделай `.book` точкой отсчёта (`position: relative`), а `.badge` поставь в угол через `position: absolute`.',
+    starter: css(K9 + KBADGE + `\n  ${CC} Поставь наклейку в угол книги */`) + B10,
+    checks: [
+      ['`.badge` в `position: absolute`', r => { const e = q(r, '.badge'); return !!e && cs(e).position === 'absolute'; }],
+      ['Наклейка сдвинута через `top` или `right`', r => { const e = q(r, '.badge'); return !!e && (cs(e).top !== 'auto' || cs(e).right !== 'auto'); }],
+      ['`.book` — точка отсчёта: `position: relative`', r => { const e = q(r, '.book'); return !!e && cs(e).position !== 'static'; }],
+      ['Наклейка лежит внутри `.book`', r => !!q(r, '.book .badge')],
+    ],
+    hint: '.book { position: relative; } .badge { position: absolute; top: -10px; right: -10px; }',
+    solution: css(K10) + B10,
+  },
+  {
+    extra: true, chapter: 3,
+    title: 'Этикетка зелья',
+    say: 'Пора разливать «Кошачью мяту» по бутылкам! Сделай для неё этикетку с нуля. Тут пригодится всё, чему ты научился в лаборатории.',
+    learn: { t: 'Повторение главы 3', p: 'id, несколько классов, селектор потомка, :nth-child, списки без маркеров, центрирование, круги, тени, градиенты и position: absolute.', code: '<div class="label">\n  <span class="badge">...</span>\n  ...\n</div>' },
+    task: 'Собери этикетку на пустой странице по чек-листу.',
+    starter: `${C} Экстра-уровень: страница пустая. Собери этикетку сам по чек-листу слева -->\n`,
+    checks: [
+      ['Заголовок с `id="title"` окрашен через `#title`', r => { const e = q(r, '#title'); return !!e && !!ruleWith(r, '#title') && cs(e).color !== REF.h1color; }],
+      ['`.label` по центру: `max-width` и `margin: 0 auto`', r => { const e = q(r, '.label'); return !!e && cs(e).maxWidth !== 'none' && rulesOf(r).some(x => hasSel(x, '.label') && x.rule.style.marginLeft === 'auto'); }],
+      ['У `.label` фон-градиент', r => { const e = q(r, '.label'); return !!e && cs(e).backgroundImage.includes('gradient'); }],
+      ['У `.label` есть тень', r => { const e = q(r, '.label'); return !!e && cs(e).boxShadow !== 'none'; }],
+      ['Список `.ingredients` без маркеров', r => { const e = q(r, '.ingredients'); return !!e && cs(e).listStyleType === 'none'; }],
+      ['Строки списка в полоску через `:nth-child`', r => zebra(r, '.ingredients li') && rulesOf(r).some(x => x.rule.selectorText.includes(':nth-child'))],
+      ['Круглая печать `.seal`', r => squareBox(q(r, '.seal')) && isRound(q(r, '.seal'))],
+      ['Наклейка `.badge` внутри `.label` в `position: absolute`', r => { const b = q(r, '.label .badge'), l = q(r, '.label'); return !!b && cs(b).position === 'absolute' && cs(l).position !== 'static'; }],
+    ],
+    hint: 'Структура: <div class="label"> → <span class="badge"> → <h2 id="title"> → <ul class="ingredients"> → <div class="seal">. Стили по одному правилу на каждый пункт.',
+    solution: E3,
+  },
+
+  /* ---------------- chapter 4 · cellar ---------------- */
+  {
+    title: 'Стеллаж-сетка',
+    say: 'Мяу, в погребе бардак! Зёрна свалены в кучу. Разложим их на стеллаж с ровными ячейками.',
+    learn: { t: 'CSS Grid', p: 'display: grid превращает блок в сетку. grid-template-columns задаёт колонки: 1fr значит «одна доля свободного места». Три раза 1fr — три равные колонки.', code: '.rack {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}' },
+    task: 'Сделай `.rack` сеткой из трёх колонок.',
+    starter: css(GC + `\n  ${CC} Сделай .rack сеткой */`) + D1,
+    checks: [
+      ['У `.rack` включён `display: grid`', r => { const e = q(r, '.rack'); return !!e && cs(e).display === 'grid'; }],
+      ['В сетке 3 колонки', r => { const e = q(r, '.rack'); return !!e && countTracks(cs(e).gridTemplateColumns) === 3; }],
+    ],
+    hint: '.rack { display: grid; grid-template-columns: 1fr 1fr 1fr; }',
+    solution: css(G1) + D1,
+  },
+  {
+    title: 'Четыре полки',
+    say: 'Привезли новые мешки, нужна ещё одна колонка. Только не пиши 1fr четыре раза, у магов есть заклинание покороче.',
+    learn: { t: 'repeat()', p: 'repeat(4, 1fr) — то же самое, что 1fr 1fr 1fr 1fr, только короче. Первое число — сколько раз повторить.', code: 'grid-template-columns: repeat(4, 1fr);' },
+    task: 'Сделай в `.rack` 4 колонки через `repeat()`.',
+    starter: css(G1.replace('1fr 1fr 1fr;', '1fr 1fr 1fr; /* сделай 4 колонки через repeat */')) + D1,
+    checks: [
+      ['В сетке 4 колонки', r => { const e = q(r, '.rack'); return !!e && countTracks(cs(e).gridTemplateColumns) === 4; }],
+      ['Колонки заданы через `repeat()`', r => rulesOf(r).some(x => hasSel(x, '.rack') && !x.media && x.rule.style.gridTemplateColumns.includes('repeat'))],
+    ],
+    hint: 'grid-template-columns: repeat(4, 1fr);',
+    solution: css(G2) + D1,
+  },
+  {
+    title: 'Зазоры между ячейками',
+    say: 'Мешки стоят вплотную, между ними не протиснуться даже самому худому коту. Нужны проходы.',
+    learn: { t: 'gap в сетке', p: 'gap работает в grid так же, как во flexbox: задаёт расстояние между ячейками и по горизонтали, и по вертикали.', code: '.rack {\n  gap: 10px;\n}' },
+    task: 'Добавь `.rack` расстояние между ячейками через `gap`.',
+    starter: css(G2 + `\n  ${CC} Добавь зазоры */`) + D1,
+    checks: [
+      ['Есть зазор между колонками', r => { const e = q(r, '.rack'); return !!e && px(cs(e).columnGap) > 0; }],
+      ['Есть зазор между рядами', r => { const e = q(r, '.rack'); return !!e && px(cs(e).rowGap) > 0; }],
+    ],
+    hint: 'В .rack добавь gap: 10px;',
+    solution: css(G3) + D1,
+  },
+  {
+    title: 'Большая бочка арабики',
+    say: 'Арабики у нас больше всего, её бочка не помещается в одну ячейку. Дай ей место за двоих.',
+    learn: { t: 'grid-column: span', p: 'grid-column: span 2 растягивает ячейку на две колонки. Остальные ячейки сами подвинутся.', code: '.big {\n  grid-column: span 2;\n}' },
+    task: 'У арабики уже есть класс `big`. Растяни `.big` на две колонки.',
+    starter: css(G3 + `\n  ${CC} Растяни .big на 2 колонки */`) + D4,
+    checks: [
+      ['`.big` занимает 2 колонки', r => { const e = q(r, '.big'); return !!e && (cs(e).gridColumnStart + ' ' + cs(e).gridColumnEnd).includes('span 2'); }],
+    ],
+    hint: '.big { grid-column: span 2; }',
+    solution: css(G4) + D4,
+  },
+  {
+    title: 'Травы переносятся',
+    say: 'Травы под потолком висят в один ряд и вылезают за стену. Пусть лишние переходят на новую строку.',
+    learn: { t: 'flex-wrap', p: 'По умолчанию flexbox держит всех детей в одном ряду, даже если им тесно. flex-wrap: wrap разрешает переносить их на следующую строку.', code: '.herbs {\n  flex-wrap: wrap;\n}' },
+    task: 'Разреши `.herbs` переносить травы через `flex-wrap: wrap`.',
+    starter: css(G4 + GH + `\n  ${CC} Разреши перенос */`) + D5,
+    checks: [
+      ['У `.herbs` включён перенос', r => { const e = q(r, '.herbs'); return !!e && cs(e).flexWrap === 'wrap'; }],
+    ],
+    hint: 'В .herbs добавь flex-wrap: wrap;',
+    solution: css(G5) + D5,
+  },
+  {
+    title: 'Свечи столбиком',
+    say: 'Свечи стоят на ступеньках лестницы, а на сайте почему-то в ряд. Поставь их столбиком.',
+    learn: { t: 'flex-direction', p: 'flex-direction задаёт направление: row — в ряд (по умолчанию), column — столбиком сверху вниз.', code: '.candles {\n  flex-direction: column;\n}' },
+    task: 'Поставь элементы `.candles` столбиком через `flex-direction: column`.',
+    starter: css(G5 + GCD + `\n  ${CC} Свечи столбиком */`) + D6,
+    checks: [
+      ['У `.candles` направление — столбик', r => { const e = q(r, '.candles'); return !!e && cs(e).flexDirection === 'column'; }],
+    ],
+    hint: 'В .candles добавь flex-direction: column;',
+    solution: css(G6) + D6,
+  },
+  {
+    title: 'Бочка в половину',
+    say: 'Бочка «Полночь» растянулась на всю ширину погреба. Пусть занимает ровно половину, на любом экране.',
+    learn: { t: 'Проценты', p: 'width: 50% — половина ширины родителя. Пиксели всегда одинаковые, а проценты подстраиваются под размер экрана.', code: '.barrel {\n  width: 50%;\n}' },
+    task: 'Задай `.barrel` ширину в процентах.',
+    starter: css(G6 + GBR + `\n  ${CC} Ширина бочки в процентах */`) + D7,
+    checks: [
+      ['Ширина `.barrel` в процентах', r => rulesOf(r).some(x => hasSel(x, '.barrel') && /%$/.test(x.rule.style.width.trim()))],
+      ['Значение от 10% до 99%', r => rulesOf(r).some(x => hasSel(x, '.barrel') && /%$/.test(x.rule.style.width.trim()) && parseFloat(x.rule.style.width) >= 10 && parseFloat(x.rule.style.width) < 100)],
+    ],
+    hint: 'В .barrel добавь width: 50%;',
+    solution: css(G7) + D7,
+  },
+  {
+    title: 'Размер в rem',
+    say: 'Старый кот Бублик плохо видит и увеличивает шрифт в браузере. Пусть заголовки растут вместе с его настройками.',
+    learn: { t: 'Единица rem', p: 'rem — доля от базового размера шрифта браузера (обычно 16px). 1.5rem = 24px. Если человек увеличит шрифт в настройках, всё в rem вырастет вместе с ним.', code: 'h2 {\n  font-size: 1.5rem;\n}' },
+    task: 'Задай заголовкам `h2` размер шрифта в `rem`.',
+    starter: css(G7 + `\n  ${CC} Размер h2 в rem */`) + D7,
+    checks: [
+      ['У `h2` размер шрифта в `rem`', r => rulesOf(r).some(x => hasSel(x, 'h2') && x.rule.style.fontSize.includes('rem'))],
+    ],
+    hint: 'h2 { font-size: 1.5rem; }',
+    solution: css(G8) + D7,
+  },
+  {
+    title: 'Погреб на телефоне',
+    say: 'Половина гостей смотрит сайт с телефона, а там 4 колонки — каша. На узком экране пусть будет 2 колонки.',
+    learn: { t: 'Медиазапрос', p: '@media (max-width: 600px) { ... } — правила внутри работают только на экранах не шире 600px. Чтобы увидеть, сузь окно браузера.', code: '@media (max-width: 600px) {\n  .rack {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}' },
+    task: 'Добавь `@media (max-width: ...)`, внутри которого у `.rack` меньше колонок.',
+    starter: css(G8 + `\n  ${CC} Добавь @media для узких экранов */`) + D7,
+    checks: [
+      ['Есть `@media` с `max-width`', r => rulesOf(r).some(x => x.media && x.media.includes('max-width'))],
+      ['Внутри меняются колонки `.rack`', r => !!ruleWith(r, '.rack', 'grid-template-columns', 'max-width')],
+    ],
+    hint: '@media (max-width: 600px) { .rack { grid-template-columns: repeat(2, 1fr); } } — следи за скобками.',
+    solution: css(G9) + D7,
+  },
+  {
+    title: 'Сначала телефон',
+    say: 'Есть и другой способ: сначала сделать удобно для телефона, а для больших экранов добавить своё. Свечи на телефоне пусть стоят столбиком, а на большом экране — в ряд.',
+    learn: { t: 'min-width', p: '@media (min-width: 700px) срабатывает на экранах от 700px и шире. Подход «сначала телефон»: базовые стили для маленьких экранов, а min-width добавляет правила для больших.', code: '@media (min-width: 700px) {\n  .candles {\n    flex-direction: row;\n  }\n}' },
+    task: 'Добавь `@media (min-width: ...)`, внутри которого `.candles` получает `flex-direction: row`.',
+    starter: css(G9 + `\n  ${CC} Добавь @media для широких экранов */`) + D7,
+    checks: [
+      ['Есть `@media` с `min-width`', r => rulesOf(r).some(x => x.media && x.media.includes('min-width'))],
+      ['Внутри `.candles` меняет `flex-direction`', r => !!ruleWith(r, '.candles', 'flex-direction', 'min-width')],
+    ],
+    hint: '@media (min-width: 700px) { .candles { flex-direction: row; } }',
+    solution: css(G10) + D7,
+  },
+  {
+    extra: true, chapter: 4,
+    title: 'Каталог погреба',
+    say: 'Марта хочет каталог всех запасов погреба, чтобы удобно было смотреть и с компьютера, и с телефона. Собери его с нуля!',
+    learn: { t: 'Повторение главы 4', p: 'Grid и repeat, gap, span, flex-wrap, flex-direction, проценты, rem и медиазапросы.', code: '<div class="grid">\n  <div class="item wide">...</div>\n  ...\n</div>' },
+    task: 'Собери каталог на пустой странице по чек-листу.',
+    starter: `${C} Экстра-уровень: страница пустая. Собери каталог сам по чек-листу слева -->\n`,
+    checks: [
+      ['`.grid` — сетка с колонками через `repeat()`', r => { const e = q(r, '.grid'); return !!e && cs(e).display === 'grid' && rulesOf(r).some(x => hasSel(x, '.grid') && !x.media && x.rule.style.gridTemplateColumns.includes('repeat')); }],
+      ['В сетке есть `gap`', r => { const e = q(r, '.grid'); return !!e && px(cs(e).columnGap) > 0; }],
+      ['Одна карточка занимает 2 колонки', r => qa(r, '.grid > *').some(e => (cs(e).gridColumnStart + ' ' + cs(e).gridColumnEnd).includes('span 2'))],
+      ['`.tags` — flex с переносом', r => { const e = q(r, '.tags'); return !!e && /flex/.test(cs(e).display) && cs(e).flexWrap === 'wrap'; }],
+      ['`.side` — flex-столбик', r => { const e = q(r, '.side'); return !!e && /flex/.test(cs(e).display) && cs(e).flexDirection === 'column'; }],
+      ['Есть ширина в процентах', r => rulesOf(r).some(x => /%$/.test(x.rule.style.width.trim()))],
+      ['Есть размер шрифта в `rem`', r => rulesOf(r).some(x => x.rule.style.fontSize.includes('rem'))],
+      ['`@media` меняет колонки сетки', r => rulesOf(r).some(x => x.media && x.rule.style.gridTemplateColumns)],
+    ],
+    hint: 'Нужны блоки .grid (с .item, одна из них .wide), .tags и .side. В style: grid с repeat и gap, .wide со span 2, .tags с wrap, .side со столбиком и width в %, h1 в rem, и @media.',
+    solution: E4,
+  },
+
+  /* ---------------- chapter 5 · observatory ---------------- */
+  {
+    title: 'Цвета гильдии в переменных',
+    say: 'Последняя глава сезона! На крыше башни у нас обсерватория. Для её сайта заведём цвета гильдии один раз и будем брать их везде.',
+    learn: { t: 'CSS-переменные', p: 'Переменную объявляют в :root через два дефиса: --gold: #f4ac3c. Используют через var(--gold). Поменяешь цвет в одном месте — он сменится на всём сайте.', code: ':root {\n  --gold: #f4ac3c;\n}\nh1 {\n  color: var(--gold);\n}' },
+    task: 'Объяви в `:root` переменные и покрась ими `h1` через `var()`.',
+    starter: css(`  ${CC} Объяви переменные в :root и используй их в h1 */`) + O0,
+    checks: [
+      ['Объявлена переменная `--...`', r => declaredVars(r).length > 0],
+      ['Она используется через `var()`', r => usesVar(r)],
+      ['Заголовок `h1` получил новый цвет', r => { const e = q(r, 'h1'); return !!e && cs(e).color !== REF.h1color; }],
+    ],
+    hint: ':root { --gold: #f4ac3c; } h1 { color: var(--gold); }',
+    solution: css(V1) + O0,
+  },
+  {
+    title: 'Туманность',
+    say: 'В телескоп видна туманность «Кошачий глаз». Она полупрозрачная, сквозь неё видно звёзды. Пусть и на сайте будет такой.',
+    learn: { t: 'opacity', p: 'opacity задаёт прозрачность всего элемента: 1 — полностью видно, 0 — невидимо, 0.5 — наполовину.', code: '.cloud {\n  opacity: 0.6;\n}' },
+    task: 'Сделай `.cloud` полупрозрачной через `opacity`.',
+    starter: css(V1 + VC + `\n  ${CC} Сделай туманность полупрозрачной */`) + W2,
+    checks: [
+      ['У `.cloud` прозрачность меньше 1', r => { const e = q(r, '.cloud'); return !!e && parseFloat(cs(e).opacity) < 0.96; }],
+      ['Но её всё ещё видно', r => { const e = q(r, '.cloud'); return !!e && parseFloat(cs(e).opacity) >= 0.1; }],
+    ],
+    hint: '.cloud { opacity: 0.6; }',
+    solution: css(V2) + W2,
+  },
+  {
+    title: 'Сияние заголовка',
+    say: 'Пусть название обсерватории светится, как звезда в морозную ночь.',
+    learn: { t: 'text-shadow', p: 'text-shadow — тень у букв: сдвиг вправо, сдвиг вниз, размытие, цвет. Если сдвигов нет, а размытие большое, получается свечение.', code: 'h1 {\n  text-shadow: 0 0 8px #f4ac3c;\n}' },
+    task: 'Добавь `h1` свечение через `text-shadow`.',
+    starter: css(V2 + `\n  ${CC} Свечение для h1 */`) + W2,
+    checks: [
+      ['У `h1` есть `text-shadow`', r => { const e = q(r, 'h1'); return !!e && cs(e).textShadow !== 'none'; }],
+    ],
+    hint: 'h1 { text-shadow: 0 0 8px #f4ac3c; }',
+    solution: css(V3) + W2,
+  },
+  {
+    title: 'Надписи как на картах',
+    say: 'На старинных звёздных картах подписи пишут большими буквами вразрядку. Сделаем так же с заголовками разделов.',
+    learn: { t: 'Заглавные и разрядка', p: 'text-transform: uppercase делает все буквы заглавными, не меняя сам текст в HTML. letter-spacing — расстояние между буквами.', code: 'h2 {\n  text-transform: uppercase;\n  letter-spacing: 3px;\n}' },
+    task: 'Сделай `h2` заглавными буквами и добавь `letter-spacing`.',
+    starter: css(V3 + `\n  ${CC} Заглавные буквы вразрядку для h2 */`) + W4,
+    checks: [
+      ['`h2` заглавными буквами', r => { const e = q(r, 'h2'); return !!e && cs(e).textTransform === 'uppercase'; }],
+      ['Есть разрядка `letter-spacing`', r => { const e = q(r, 'h2'); return !!e && px(cs(e).letterSpacing) > 0; }],
+    ],
+    hint: 'h2 { text-transform: uppercase; letter-spacing: 3px; }',
+    solution: css(V4) + W4,
+  },
+  {
+    title: 'Лапка-указатель',
+    say: 'Когда наводишь курсор на кнопку желаний, он остаётся стрелкой. Непонятно, что на неё можно нажать!',
+    learn: { t: 'cursor', p: 'cursor меняет вид курсора над элементом. pointer — рука с пальцем, так браузер показывает, что сюда можно нажать.', code: '.star-btn {\n  cursor: pointer;\n}' },
+    task: 'Сделай курсор над `.star-btn` рукой через `cursor: pointer`.',
+    starter: css(V4 + VB + `\n  ${CC} Курсор-рука для кнопки */`) + W5,
+    checks: [
+      ['Над `.star-btn` курсор `pointer`', r => { const e = q(r, '.star-btn'); return !!e && cs(e).cursor === 'pointer'; }],
+    ],
+    hint: '.star-btn { cursor: pointer; }',
+    solution: css(V5) + W5,
+  },
+  {
+    title: 'Плавное превращение',
+    say: 'Кнопка меняет цвет при наведении резко, будто кто-то щёлкнул выключателем. Настоящая магия происходит плавно.',
+    learn: { t: 'transition', p: 'transition делает изменения плавными. transition: all 0.3s значит: любые изменения стилей длятся 0.3 секунды.', code: '.star-btn {\n  transition: all 0.3s;\n}' },
+    task: 'Добавь `.star-btn` плавность через `transition`. Наведи курсор и проверь.',
+    starter: css(V5 + `\n  ${CC} Плавность для кнопки */`) + W5,
+    checks: [
+      ['У `.star-btn` есть `transition` дольше 0 секунд', r => { const e = q(r, '.star-btn'); return !!e && cs(e).transitionDuration.split(',').some(v => parseFloat(v) > 0); }],
+    ],
+    hint: '.star-btn { transition: all 0.3s; }',
+    solution: css(V6) + W5,
+  },
+  {
+    title: 'Кнопка растёт',
+    say: 'Пусть кнопка желаний немного увеличивается, когда к ней тянется лапка. Будто она радуется гостю.',
+    learn: { t: 'transform', p: 'transform меняет форму элемента, не сдвигая соседей. scale(1.1) — увеличить на 10%, rotate(5deg) — повернуть на 5 градусов.', code: '.star-btn:hover {\n  transform: scale(1.1);\n}' },
+    task: 'Добавь в правило `.star-btn:hover` свойство `transform`.',
+    starter: css(V6 + `\n  ${CC} Пусть кнопка растёт при наведении */`) + W5,
+    checks: [
+      ['У `.star-btn:hover` есть `transform`', r => rulesOf(r).some(x => x.rule.selectorText.includes('.star-btn:hover') && x.rule.style.transform)],
+    ],
+    hint: '.star-btn:hover { transform: scale(1.1); }',
+    solution: css(V7) + W5,
+  },
+  {
+    title: 'Звёздочка перед текстом',
+    say: 'Хочу звёздочку перед названием туманности. Но в HTML лезть не хочу, пусть её нарисует CSS.',
+    learn: { t: '::before', p: 'Псевдоэлемент ::before добавляет содержимое в начало элемента прямо из CSS. Его текст задают в content в кавычках.', code: '.cloud::before {\n  content: "✦ ";\n}' },
+    task: 'Добавь `.cloud` звёздочку через `::before` и `content`.',
+    starter: css(V7 + `\n  ${CC} Звёздочка перед туманностью */`) + W5,
+    checks: [
+      ['У `.cloud` есть `::before` с `content`', r => afterContent(q(r, '.cloud'))],
+      ['HTML не менялся: в тексте нет звёздочки', r => !/[✦★*]/.test(txt(q(r, '.cloud')))],
+    ],
+    hint: '.cloud::before { content: "✦ "; } — два двоеточия и кавычки обязательны.',
+    solution: css(V8) + W5,
+  },
+  {
+    title: 'Мерцание звёзд',
+    say: 'Звёзды на сайте застыли. Настоящие мерцают! Оживи их.',
+    learn: { t: 'Анимация @keyframes', p: '@keyframes описывает кадры: from — начало, to — конец. animation подключает их к элементу: имя, длительность, повтор (infinite) и направление (alternate — туда-обратно).', code: '@keyframes twinkle {\n  from { opacity: 1; }\n  to { opacity: 0.2; }\n}\n.star {\n  animation: twinkle 1s infinite alternate;\n}' },
+    task: 'Опиши `@keyframes` и подключи анимацию к `.star`.',
+    starter: css(V8 + `\n  ${CC} Анимация мерцания для .star */`) + W5,
+    checks: [
+      ['Есть `@keyframes`', r => keyframeNames(r).length > 0],
+      ['У `.star` есть анимация', r => { const e = q(r, '.star'); return !!e && cs(e).animationName !== 'none'; }],
+      ['Имя анимации совпадает с `@keyframes`', r => { const e = q(r, '.star'); return !!e && keyframeNames(r).includes(cs(e).animationName); }],
+    ],
+    hint: '@keyframes twinkle { from { opacity: 1; } to { opacity: 0.2; } } и .star { animation: twinkle 1s infinite alternate; }',
+    solution: css(V9) + W5,
+  },
+  {
+    title: 'Шапка не уезжает',
+    say: 'Финальный штрих сезона! Страница длинная, а шапка с навигацией уезжает вверх. Пусть она прилипнет и всегда будет под лапой.',
+    learn: { t: 'position: sticky', p: 'position: sticky + top: 0 — элемент едет вместе со страницей, пока не упрётся в верх, а дальше прилипает. Прокрути превью, чтобы увидеть.', code: '.top {\n  position: sticky;\n  top: 0;\n}' },
+    task: 'Сделай шапку `.top` липкой через `position: sticky` и `top: 0`.',
+    starter: css(V9 + VT + `\n  ${CC} Сделай шапку липкой */`) + W10,
+    checks: [
+      ['`.top` в `position: sticky`', r => { const e = q(r, '.top'); return !!e && cs(e).position === 'sticky'; }],
+      ['Задано, где прилипать: `top`', r => { const e = q(r, '.top'); return !!e && cs(e).top !== 'auto'; }],
+    ],
+    hint: '.top { position: sticky; top: 0; }',
+    solution: css(V10) + W10,
+  },
+  {
+    extra: true, chapter: 5,
+    title: 'Финал сезона: ночь открытых звёзд',
+    say: 'Ты прошёл весь первый сезон! Последнее испытание: сайт праздника «Ночь открытых звёзд» с нуля. Покажи гильдии всё, что умеешь.',
+    learn: { t: 'Повторение главы 5 и всего сезона', p: 'Переменные, sticky-шапка, сетка, медиазапрос, transition, transform при наведении, анимация и подвал.', code: '<header class="top">...</header>\n<div class="cards">...</div>\n<footer>...</footer>' },
+    task: 'Собери сайт праздника на пустой странице по чек-листу.',
+    starter: `${C} Финал сезона: страница пустая. Собери сайт сам по чек-листу слева -->\n`,
+    checks: [
+      ['Переменные объявлены и используются', r => declaredVars(r).length > 0 && usesVar(r)],
+      ['Шапка `.top` липкая', r => { const e = q(r, '.top'); return !!e && cs(e).position === 'sticky'; }],
+      ['Карточки `.cards` в сетке с `gap`', r => { const e = q(r, '.cards'); return !!e && cs(e).display === 'grid' && px(cs(e).columnGap) > 0; }],
+      ['Есть `@media`', r => rulesOf(r).some(x => x.media)],
+      ['У кнопки плавный `transition`', r => { const e = q(r, 'button'); return !!e && cs(e).transitionDuration.split(',').some(v => parseFloat(v) > 0); }],
+      ['При наведении меняется `transform`', r => rulesOf(r).some(x => x.rule.selectorText.includes(':hover') && x.rule.style.transform)],
+      ['Что-то анимировано через `@keyframes`', r => { const n = keyframeNames(r); return n.length > 0 && qa(r, '*').some(e => n.includes(cs(e).animationName)); }],
+      ['Подвал `footer` в самом конце', r => lastIs(r, 'FOOTER')],
+    ],
+    hint: 'Порядок: <style> → <header class="top"> → <h1> с анимированным значком → <div class="cards"> с карточками → <button> → <footer>.',
+    solution: E5,
+  },
+];
+
+/* ---------- café rewards: one new thing per level ---------- */
+const CAFE = [
+  { name: 'Вывеска «Пиксель»', d: 'Над прилавком засияло имя кофейни.' },
+  { name: 'Прилавок и Марта', d: 'Хозяйка встала за стойку, и пришли первые гости.' },
+  { name: 'Котёл-кофеварка', d: 'В нём булькает первое зелье.' },
+  { name: 'Доска с меню', d: 'Все напитки записаны мелом.' },
+  { name: 'Дверь-портал', d: 'Гости находят дорогу по ссылке — их становится больше.' },
+  { name: 'Колокольчик заказа', d: 'Динь — звенит на каждый готовый заказ.' },
+  { name: 'Алые шторы', d: 'Цвета гильдии на окне.' },
+  { name: 'Столик и стулья', d: 'Гости остаются посидеть с чашкой.' },
+  { name: 'Полка с зельями', d: 'Гости начали заказывать фирменные зелья.' },
+  { name: 'Фонари и толпа гостей', d: 'Кофейня открыта, у прилавка очередь!' },
+  { name: 'Сова-почтальон', d: 'Ухта поселилась на жёрдочке под вывеской.' },
+  { name: 'Штендер с картинкой', d: 'Зазывает прохожих на террасу.' },
+  { name: 'Тележка с зельями', d: 'Зелья по рецепту прямо на улице.' },
+  { name: 'Табличка часов работы', d: 'Висит у окна, чтобы гости знали, когда приходить.' },
+  { name: 'Почтовый ящик для броней', d: 'Сюда падают записки с бронью столиков.' },
+  { name: 'Фонарный столб', d: 'Освещает террасу до самой мостовой.' },
+  { name: 'Полосатая маркиза', d: 'Навес над входом и окном.' },
+  { name: 'Клумбы', d: 'Цветы растут ровными рядами с отступами.' },
+  { name: 'Резная скамейка', d: 'На ней уже кто-то дремлет.' },
+  { name: 'Светлячки', d: 'Кружат над террасой, будто откликаются на лапку.' },
+  { name: 'Столик под зонтиком', d: 'Лучшее место на террасе — уже занято.' },
+  { name: 'Звёздный фонтан', d: 'Награда за повторение второй главы.' },
+  { name: 'Табличка «Горячо!»', d: 'Висит над котлами, чтобы никто не обжёг лапы.' },
+  { name: 'Полка с банками', d: 'Одна банка особенная: в ней светится перо феникса.' },
+  { name: 'Рабочий стол', d: 'Длинный стол для опытов.' },
+  { name: 'Полосатый коврик', d: 'Полоски через одну, как в журнале опытов.' },
+  { name: 'Пучки трав', d: 'Сушатся под потолком.' },
+  { name: 'Книга рецептов', d: 'Лежит ровно по центру стола.' },
+  { name: 'Круглые колбы', d: 'В них булькают пробные зелья.' },
+  { name: 'Медный котёл', d: 'Отбрасывает тень на пол.' },
+  { name: 'Витражное окно', d: 'Стекло переливается градиентом.' },
+  { name: 'Кот-ученик', d: 'Помощник Марты в защитных очках и с наклейкой «Новое!».' },
+  { name: 'Перегонный куб', d: 'Награда за повторение третьей главы.' },
+  { name: 'Стеллаж-сетка', d: 'Ячейки ровными рядами.' },
+  { name: 'Ряд бочек', d: 'Четыре одинаковые бочки, как repeat(4, 1fr).' },
+  { name: 'Ящики с зёрнами', d: 'Стоят с ровными зазорами.' },
+  { name: 'Большая бочка', d: 'Занимает место за двоих.' },
+  { name: 'Гирлянда трав', d: 'Не влезла в один ряд и перенеслась на второй.' },
+  { name: 'Свечи на ступенях', d: 'Освещают лестницу сверху вниз.' },
+  { name: 'Мешки кофе', d: 'Каждый занимает свою долю места.' },
+  { name: 'Вяленая рыба', d: 'Любимый запас котов.' },
+  { name: 'Факелы', d: 'Светят на экране любой ширины.' },
+  { name: 'Паучок-сторож', d: 'Свил паутину в углу и следит за порядком.' },
+  { name: 'Сундук с сокровищами', d: 'Награда за повторение четвёртой главы.' },
+  { name: 'Телескоп', d: 'Медный, с бирюзовой линзой.' },
+  { name: 'Туманность', d: 'Полупрозрачное облако в небе.' },
+  { name: 'Созвездие Кота', d: 'Звёзды сложились в кошачью мордочку.' },
+  { name: 'Флюгер-кот', d: 'Поворачивается на трубе по ветру.' },
+  { name: 'Гамак', d: 'Для ночных наблюдений лёжа.' },
+  { name: 'Падающие звёзды', d: 'Пролетают плавно, как transition.' },
+  { name: 'Армиллярная сфера', d: 'Кольца вращаются на подставке.' },
+  { name: 'Подушки', d: 'Мягкие места для гостей обсерватории.' },
+  { name: 'Воздушный змей', d: 'Летает по небу по ключевым кадрам.' },
+  { name: 'Марта на крыше', d: 'Пьёт кофе и не сходит с места.' },
+  { name: 'Северное сияние', d: 'Награда за весь первый сезон!' },
+];
+const BOX = [[60,3,44,13],[56,33,66,39],[62,37,12,11],[98,18,24,20],[130,32,22,40],[104,43,13,5],[8,7,48,48],[6,66,50,24],[57,19,30,13],[6,0,140,90],[102,3,16,13]];
+
+const PLANTS = {
+  2: { name: 'Лунный папоротник', d: 'Растёт на подоконнике и тянется к луне.' },
+  4: { name: 'Кактус-светлячок', d: 'Тихо мерцает на краю прилавка.' },
+  6: { name: 'Мандрагора в кадке', d: 'Стоит у двери и почти не кричит.' },
+  7: { name: 'Букет на столике', d: 'Свежие цветы для гостей.' },
+  8: { name: 'Висячее кашпо', d: 'Плети свисают с потолка.' },
+  9: { name: 'Светящиеся грибы', d: 'Мягко светятся в углах.' },
+};
+const FURN = {
+  3: { name: 'Барные табуреты', d: 'Можно выпить зелье прямо у стойки.' },
+  5: { name: 'Круглый столик', d: 'Ещё два места для гостей.' },
+  9: { name: 'Большой стол', d: 'Для шумных компаний котов.' },
+};
+const FBOX = { 3: [60, 66, 24, 18], 5: [61, 85, 34, 14], 9: [101, 82, 44, 17] };
+const SEATS = [
+  { lvl: 7, x: 5, y: 70, tx: 6, ty: 84, cup: [20, 74] },
+  { lvl: 7, x: 46, y: 70, tx: 47, ty: 84, cup: [39, 74] },
+  { lvl: 3, x: 60, y: 66, tx: 61, ty: 84 },
+  { lvl: 3, x: 72, y: 66, tx: 73, ty: 84 },
+  { lvl: 5, x: 61, y: 85, tx: 62, ty: 97, cup: [72, 86] },
+  { lvl: 5, x: 85, y: 85, tx: 86, ty: 97, cup: [80, 86] },
+  { lvl: 9, x: 101, y: 85, tx: 102, ty: 97, cup: [114, 86] },
+  { lvl: 9, x: 135, y: 85, tx: 136, ty: 97, cup: [128, 86] },
+];
+const PBOX = { 2: [14, 39, 10, 11], 4: [115, 39, 7, 9], 6: [120, 54, 10, 18], 7: [34, 68, 6, 8], 8: [124, 0, 11, 21], 9: [0, 90, 160, 9] };
+
+/* ---------- pixel engine ---------- */
+const PX = { k:'#120a07', N:'#0f2a3b', n:'#163d64', y:'#f4ac3c', Y:'#ffd27a', o:'#ef7b2b', O:'#c4561c', r:'#b5151f', c:'#fde9c8', w:'#fff3e0',
+  t:'#1c4a55', T:'#3a8a8f', g:'#8a7a70', G:'#bdb0a6', s:'#3b1d14', b:'#5e2f15', B:'#8a4a22', p:'#7a48b5', P:'#c3a0ec', e:'#d9d2c3' };
+const R = (x, y, w, h, c) => { cx.fillStyle = c; cx.fillRect(x, y, w, h); };
+let cx;
+function spr(x, y, rows, swap) {
+  rows.forEach((row, j) => { for (let i = 0; i < row.length; i++) { let ch = row[i]; if (ch === '.') continue; if (swap && swap[ch]) ch = swap[ch]; cx.fillStyle = PX[ch] || ch; cx.fillRect(x + i, y + j, 1, 1); } });
+}
+const MARTA = ['.......NN.......','......NnnN......','.....NnnyN......','....NnnnnnN.....','....NnnnynnN....','...NnnnnnnnnN...','...yyyyyyyyyy...','.NNNNNNNNNNNNNN.',
+  '..oO.oooooo.Oo..','..oooooooooooo..','..okwooooookwo..','..ooooorrooooo..','..occccccccccoo.','...cccccccccc...','..nnnrrrrrrnnn..','.nnnnnnynnnnnnn.'];
+const CAULDRON = ['..kkkkkkkk..','.kyyYyyYyyk.','kttttttttttk','kttTtttttttk','ktttttttTttk','.kttttttttk.','..kttttttk..','..k......k..'];
+const GUEST = ['.g......g.','.gg....gg.','.gggggggg.','ggyggggygg','ggggrrgggg','.gggGGggg.','..gGGGGg..','.gggggggg.','.gggggggg.','..g....g..'];
+const BOTTLE = ['..b..','..e..','.eXe.','eXXXe','eXwXe','eXXXe','.eee.'];
+const LANTERN = ['..k..','..k..','.kkk.','kYyYk','kyYyk','kYyYk','.kkk.','..k..'];
+const TREE = ['..OoO..','.OoooO.','OoooyoO','oOoooOo','OoyooOO','.OoOoO.','...s...','...s...'];
+const TOWER = ['......yy......','.....yrry.....','....yrrrry....','...yrrrrrry...','...rrrrrrrr...','....rrrrrr....','.....yyyy.....','....bbbbbb....',
+  '....bBBBBb....','....bBYYBb....','....bBYYBb....','....bBBBBb....','...bbbbbbbb...','...bBBBBBBb...','...bBYBBYBb...','...bBYBBYBb...','...bBBBBBBb...',
+  '..bbbbbbbbbb..','..bBBBkkBBBb..','..bBBBkkBBBb..','..bbbbbbbbbb..'];
+const FLAG = ['syyY','sYyy','syyY','s...','s...'];
+const MINI = ['...NN...','..NnnN..','.NnnnnN.','yyyyyyyy','.oooooo.','.okooko.','..occo..'];
+const FONT = { 'П':['1111','1001','1001','1001','1001'], 'И':['1001','1001','1011','1101','1001'], 'К':['1001','1010','1100','1010','1001'],
+  'С':['0111','1000','1000','1000','0111'], 'Е':['1111','1000','1110','1000','1111'], 'Л':['0111','0101','0101','0101','1101'], 'Ь':['1000','1000','1110','1001','1110'] };
+function text(x, y, s, c) { [...s].forEach((ch, k) => (FONT[ch] || []).forEach((row, j) => { for (let i = 0; i < 4; i++) if (row[i] === '1') R(x + k * 5 + i, y + j, 1, 1, c); })); }
+function arch(x, y, w, h, c) { const ins = [9, 6, 4, 3, 2, 1, 1]; for (let j = 0; j < h; j++) { const k = j < ins.length ? ins[j] : 0; R(x + k, y + j, w - 2 * k, 1, c); } }
+function rtop(x, y, w, h, c, ins) { for (let j = 0; j < h; j++) { const k = j < ins.length ? ins[j] : 0; R(x + k, y + j, w - 2 * k, 1, c); } }
+function sparkle(x, y, c) { R(x, y - 1, 1, 3, c); R(x - 1, y, 3, 1, c); }
+const hash = (x, y) => { let h = x * 374761393 + y * 668265263; h = (h ^ (h >> 13)) * 1274126177; return ((h ^ (h >> 16)) >>> 0) / 4294967295; };
+
+let T = 0, freshSet = new Set();
+const have = i => !!st.stars[i];
+
+function drawCafe() {
+  const alt = { terrace: drawTerrace, lab: drawLab, cellar: drawCellar, roof: drawRoof }[cafeScene]; if (alt) { alt(); return; }
+  cx = $('cafec').getContext('2d');
+  const t = T;
+  // wall with bricks
+  R(0, 0, 160, 72, '#4a2216');
+  for (let y = 0; y < 60; y += 6) { R(0, y, 160, 1, '#3b1a10'); for (let x = (y / 6) % 2 ? 0 : 6; x < 160; x += 12) R(x, y, 1, 6, '#3b1a10'); }
+  R(0, 59, 160, 1, '#b0662e'); R(0, 60, 160, 12, '#5e2f15'); for (let x = 4; x < 160; x += 10) R(x, 62, 1, 9, '#4a2414');
+  drawIvy();
+  // floor
+  R(0, 72, 160, 28, '#2e160d');
+  for (let y = 72; y < 100; y += 5) { R(0, y, 160, 1, '#3d1d11'); for (let x = (y % 10) ? 8 : 0; x < 160; x += 16) R(x, y, 1, 5, '#3d1d11'); }
+  // window with night town
+  arch(12, 10, 40, 42, '#8a4a22'); arch(14, 12, 36, 38, '#0f2a3b');
+  [[18,19],[23,25],[27,16],[36,22],[45,27],[20,30],[44,17],[39,29]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k) % 6 < 3 ? '#ffd27a' : '#f4ac3c'));
+  R(41, 15, 5, 5, '#f4ac3c'); R(40, 14, 5, 5, '#0f2a3b'); R(42, 15, 4, 1, '#0f2a3b');
+  R(14, 43, 36, 7, '#1b1013'); R(16, 39, 7, 4, '#1b1013'); R(25, 37, 6, 6, '#1b1013'); R(36, 40, 9, 3, '#1b1013');
+  R(26, 33, 4, 4, '#3b1a1a'); R(27, 32, 2, 1, '#3b1a1a'); R(27, 31, 2, 1, '#f4ac3c');
+  [[18,45],[27,40],[39,44],[45,46],[21,47],[33,46]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k * 2) % 9 ? '#f4ac3c' : '#ef7b2b'));
+  R(31, 12, 2, 38, '#8a4a22'); R(14, 33, 36, 2, '#8a4a22'); R(10, 50, 44, 3, '#b0662e');
+  // door or portal
+  if (have(4)) {
+    rtop(130, 32, 22, 40, '#f4ac3c', [6, 4, 2, 2, 1, 1]);
+    rtop(132, 34, 18, 38, '#2a140d', [5, 3, 2, 1, 1]);
+    rtop(133, 35, 16, 37, '#7a48b5', [5, 3, 2, 1, 1]);
+    // soft drifting motes, low contrast so the door stays calm
+    for (let k = 0; k < 9; k++) {
+      const mx = 134 + ((k * 5) % 14) + Math.round(Math.sin((t / 6) + k));
+      const my = 70 - ((Math.floor(t / 2) + k * 7) % 31);
+      R(mx, my, 1, 1, k % 3 ? '#9466cc' : '#a77ad8');
+    }
+  } else {
+    R(130, 32, 22, 40, '#2a140d');
+    R(132, 35, 18, 37, '#5e2f15'); R(134, 33, 14, 2, '#5e2f15');
+    [137, 142, 147].forEach(x => R(x, 35, 1, 37, '#4a2414')); R(146, 54, 2, 2, '#f4ac3c');
+  }
+  // curtains + garland
+  if (have(6)) {
+    [[9, 9], [49, 9]].forEach(([x, y]) => { R(x, y, 6, 46, '#b5151f'); R(x + 2, y, 1, 46, '#7e0e15'); R(x + 4, y, 1, 46, '#7e0e15'); R(x, 34, 6, 2, '#f4ac3c'); });
+    R(8, 6, 48, 4, '#b5151f'); for (let x = 9; x < 56; x += 4) R(x, 10, 2, 1, '#f4ac3c');
+    for (let x = 106; x < 160; x += 6) { const c = (x / 6) % 2 ? '#b5151f' : '#f4ac3c'; R(x, 1, 5, 1, c); R(x + 1, 2, 3, 1, c); R(x + 2, 3, 1, 1, c); }
+  }
+  // sign
+  if (have(0)) {
+    R(70, 0, 1, 3, '#7d6a5e'); R(93, 0, 1, 3, '#7d6a5e');
+    R(60, 3, 44, 13, '#8a4a22'); R(61, 4, 42, 11, '#3b1d14');
+    text(65, 7, 'ПИКСЕЛЬ', t % 10 === 0 ? '#ffd27a' : '#f4ac3c');
+  }
+  // shelf with potions
+  if (have(8)) {
+    R(57, 27, 30, 2, '#8a4a22'); R(59, 29, 1, 3, '#5e2f15'); R(84, 29, 1, 3, '#5e2f15');
+    spr(60, 20, BOTTLE, { X: 'r' }); spr(70, 20, BOTTLE, { X: 'T' }); spr(80, 20, BOTTLE, { X: 'p' });
+  }
+  // chalkboard menu
+  if (have(3)) {
+    R(98, 18, 24, 20, '#8a4a22'); R(100, 20, 20, 16, '#1f2e28'); R(103, 22, 14, 1, '#f4ac3c');
+    for (let k = 0; k < 4; k++) { R(102, 26 + k * 3, 9 + (k % 2) * 3, 1, '#d9d2c3'); R(115, 26 + k * 3, 3, 1, '#d9d2c3'); }
+  }
+  // lanterns
+  if (have(9)) {
+    [[66, 0], [118, 4]].forEach(([x, y]) => { R(x + 2, 0, 1, y, '#120a07'); spr(x, y, LANTERN, t % 4 < 2 ? null : { Y: 'y', y: 'Y' }); });
+  }
+  if (have(10)) { R(103, 15, 14, 1, '#8a4a22'); R(104, 16, 1, 2, '#5e2f15'); R(115, 16, 1, 2, '#5e2f15'); spr(106, 5, OWL, T % 37 === 0 ? { y: 'b', k: 'b' } : null); if (T % 50 < 3) R(114, 9, 3, 2, '#fde9c8'); }
+  // Marta + counter
+  if (have(1)) {
+    spr(81, 33, MARTA, t % 28 === 0 ? { w: 'k' } : null);
+    R(56, 48, 66, 3, '#b0662e'); R(58, 51, 62, 21, '#8a4a22');
+    [62, 81, 100].forEach(x => R(x, 55, 16, 13, '#7a3e1c'));
+    sparkle(89, 61, '#f4ac3c');
+  }
+  // cauldron + steam
+  if (have(2)) {
+    spr(62, 40, CAULDRON, t % 6 < 3 ? null : { y: 'Y', Y: 'y' });
+    for (let s = 0; s < 3; s++) for (let p = 0; p < 2; p++) {
+      const k = (t + s * 4 + p * 5) % 10;
+      R(64 + s * 3 + Math.round(Math.sin((t + s * 3 + p) / 2)), 38 - k, 1, 1, k < 6 ? '#fde9c8' : '#a8968a');
+    }
+  }
+  // bell + order note
+  if (have(5)) { const bc = bellFlash > 0 ? '#ffffff' : '#f4ac3c'; if (bellFlash > 0) { R(102, 43, 1, 1, '#ffd27a'); R(111, 43, 1, 1, '#ffd27a'); R(103, 41, 1, 1, '#ffd27a'); R(110, 41, 1, 1, '#ffd27a'); } R(106, 43, 2, 1, bc); R(105, 44, 4, 3, bc); R(104, 47, 6, 1, '#c4561c'); R(112, 45, 5, 3, '#fde9c8'); R(113, 46, 3, 1, '#7d6a5e'); }
+  // table, chairs, guests
+  if (have(7)) {
+    R(6, 66, 2, 16, '#8a4a22'); R(6, 80, 9, 2, '#b0662e'); R(7, 82, 1, 8, '#5e2f15'); R(13, 82, 1, 8, '#5e2f15');
+    R(54, 66, 2, 16, '#8a4a22'); R(47, 80, 9, 2, '#b0662e'); R(48, 82, 1, 8, '#5e2f15'); R(54, 82, 1, 8, '#5e2f15');
+    drawSeated(7);
+    R(16, 76, 30, 3, '#fde9c8'); R(16, 79, 3, 5, '#fde9c8'); R(43, 79, 3, 5, '#fde9c8'); R(22, 79, 2, 11, '#3b1d14'); R(38, 79, 2, 11, '#3b1d14');
+    R(30, 72, 2, 4, '#fff3e0'); R(30, 70, 2, 2, t % 3 ? '#f4ac3c' : '#ef7b2b');
+    drawCups(7);
+  }
+  drawFurniture();
+  drawPlants();
+  drawGuests();
+  if (have(9)) { cx.fillStyle = 'rgba(255,180,80,0.07)'; cx.fillRect(0, 0, 160, 100); }
+  if (!have(0) && !have(1)) { text(61, 84, 'ПИКСЕЛЬ', '#5e2f15'); }
+  // fresh items twinkle
+  [...freshSet].filter(i => i <= 10).forEach(i => [BOX[i], PBOX[i], FBOX[i]].filter(Boolean).forEach(([x, y, w, h]) => { const c = t % 4 < 2 ? '#ffd27a' : '#ffffff'; sparkle(x, y + 1, c); sparkle(x + w - 1, y + 1, c); sparkle(x, y + h - 2, c); sparkle(x + w - 1, y + h - 2, c); }));
+}
+
+const IV = '#2f5d3a', IL = '#4f8a4a', IL2 = '#6fa856';
+function leaf(x, y, k) { const c = k % 3 ? IL : IL2; R(x, y, 2, 1, c); R(x + (k % 2 ? 0 : 1), y + 1, 1, 1, c); }
+function tendril(x, y, len) { for (let j = 0; j < len; j++) { R(x + (j % 4 === 2 ? 1 : 0), y + j, 1, 1, IV); if (j % 2) leaf(j % 4 === 1 ? x + 1 : x - 2, y + j, j + x); } }
+function drawIvy() {
+  for (let x = 0; x < 46; x++) { const y = 1 + Math.round(1.5 * Math.sin(x / 5)) + (x > 32 ? Math.floor((x - 32) / 4) : 0); R(x, y, 1, 1, IV); if (x % 3 === 0) leaf(x - 1, y + (x % 6 ? 1 : -2), x); }
+  tendril(9, 3, 8); tendril(22, 3, 5); tendril(38, 6, 6);
+  for (let y = 0; y < 58; y++) { const x = 2 + Math.round(Math.sin(y / 6)); R(x, y, 1, 1, IV); if (y % 3 === 1) leaf(y % 6 < 3 ? x + 1 : x - 2, y, y); }
+  for (let x = 132; x < 160; x++) { const y = 7 + Math.round(1.5 * Math.sin(x / 5)); R(x, y, 1, 1, IV); if (x % 3 === 0) leaf(x - 1, y + (x % 6 ? 1 : -2), x); }
+  tendril(138, 8, 7); tendril(148, 8, 4);
+  for (let y = 6; y < 58; y++) { const x = 156 + Math.round(Math.sin(y / 5)); R(x, y, 1, 1, IV); if (y % 3 === 0) leaf(y % 6 < 3 ? x + 1 : x - 2, y, y); }
+}
+function drawSeated(lvl) {
+  SEATS.forEach((S, k) => { const g = seats[k]; if (S.lvl === lvl && g && g.st === 'sit') spr(S.x, S.y, GUEST, { g: GCOL[g.col][0], G: GCOL[g.col][1], y: GCOL[g.col][2] }); });
+}
+function drawCups(lvl) {
+  SEATS.forEach((S, k) => { const g = seats[k]; if (S.lvl !== lvl || !S.cup || !g || g.st !== 'sit') return; const [x, y] = S.cup;
+    R(x, y, 3, 2, '#fff3e0'); R(x + 3, y, 1, 1, '#fff3e0'); if ((T + k * 5) % 12 < 6) R(x + 1, y - 2 - ((T >> 1) % 2), 1, 1, '#a8968a'); });
+}
+function drawFurniture() {
+  if (have(3)) { // bar stools at the counter
+    [61, 73].forEach(x => { R(x, 76, 9, 2, '#b0662e'); R(x + 4, 78, 1, 6, '#3b1d14'); R(x + 2, 83, 5, 1, '#3b1d14'); });
+    drawSeated(3);
+  }
+  if (have(5)) { // round table with two stools
+    [61, 85].forEach(x => { R(x, 94, 9, 2, '#b0662e'); R(x + 1, 96, 1, 3, '#5e2f15'); R(x + 7, 96, 1, 3, '#5e2f15'); });
+    drawSeated(5);
+    R(76, 90, 2, 8, '#3b1d14'); R(73, 97, 8, 1, '#3b1d14'); R(70, 88, 14, 2, '#8a4a22'); R(71, 88, 12, 1, '#b0662e');
+    drawCups(5);
+  }
+  if (have(9)) { // big table with a runner
+    R(101, 82, 2, 16, '#8a4a22'); R(101, 94, 9, 2, '#b0662e'); R(102, 96, 1, 3, '#5e2f15'); R(108, 96, 1, 3, '#5e2f15');
+    R(143, 82, 2, 16, '#8a4a22'); R(136, 94, 9, 2, '#b0662e'); R(137, 96, 1, 3, '#5e2f15'); R(143, 96, 1, 3, '#5e2f15');
+    drawSeated(9);
+    R(110, 88, 24, 3, '#8a4a22'); R(110, 88, 24, 1, '#b0662e'); R(118, 88, 8, 3, '#b5151f'); R(112, 91, 2, 7, '#3b1d14'); R(130, 91, 2, 7, '#3b1d14');
+    R(121, 86, 2, 2, '#fde9c8'); R(121, 85, 2, 1, T % 3 ? '#f4ac3c' : '#ef7b2b');
+    drawCups(9);
+  }
+}
+function drawPlants() {
+  const t = T, pot = '#a0522d', rim = '#c0703a';
+  if (have(2)) {
+    R(15, 46, 8, 1, rim); R(16, 47, 6, 3, pot);
+    [[19,45],[19,44],[19,43],[19,42],[19,41],[18,40],[20,40],[18,44],[17,43],[16,42],[15,41],[20,44],[21,43],[22,42],[23,41],[17,45],[21,45]]
+      .forEach(([x, y], k) => R(x, y, 1, 1, k % 2 ? IL : IL2));
+  }
+  if (have(4)) {
+    R(118, 41, 2, 6, IL); R(116, 43, 2, 1, IL); R(116, 42, 1, 1, IL); R(120, 44, 1, 1, IL); R(120, 42, 1, 2, IL); R(119, 42, 1, 1, IL2);
+    R(117, 46, 4, 2, pot); R(118, 40, 1, 1, t % 14 < 7 ? '#ffd27a' : '#f4ac3c');
+  }
+  if (have(6)) {
+    R(121, 65, 9, 1, '#b0662e'); R(122, 66, 7, 6, '#8a4a22'); R(122, 68, 7, 1, '#5e2f15');
+    R(125, 57, 1, 8, IV); R(121, 58, 3, 2, IL); R(127, 57, 3, 2, IL2); R(122, 61, 3, 2, IL2); R(127, 61, 2, 2, IL); R(124, 55, 2, 2, IL);
+    R(124, 63, 3, 2, '#c9a27a'); R(124, 63, 1, 1, '#120a07'); R(126, 63, 1, 1, '#120a07');
+  }
+  if (have(7)) {
+    R(36, 72, 3, 4, '#3a8a8f'); R(36, 71, 1, 1, IV); R(38, 71, 1, 1, IV);
+    R(35, 70, 1, 1, '#b5151f'); R(37, 69, 1, 1, '#f4ac3c'); R(39, 70, 1, 1, '#b5151f'); R(37, 70, 1, 1, IL);
+  }
+  if (have(8)) {
+    R(129, 0, 1, 8, '#7d6a5e'); R(125, 8, 9, 1, rim); R(126, 9, 7, 3, pot);
+    tendril(126, 12, 7); tendril(131, 12, 9); tendril(128, 12, 4);
+  }
+  if (have(9)) {
+    const cap = t % 20 < 10 ? '#7fd1c7' : '#93dad1';
+    [[2, 93], [6, 95], [151, 92], [155, 95]].forEach(([x, y]) => { R(x + 1, y + 2, 1, 2, '#e8dcc8'); R(x, y, 3, 2, cap); R(x + 1, y, 1, 1, '#c8f0ea'); });
+  }
+}
+
+/* terrace scene */
+const OWL = ['.s.....s.', '.sbbbbbs.', 'sbccbccbs', 'sbykbykbs', 'sbccyccbs', '.bbBBBbb.', '.bBcBcBb.', '.bBBBBBb.', '..bBBBb..', '..y...y..'];
+const STAR = ['...y...', '...y...', '..yYy..', 'yyYYYyy', '..yYy..', '...y...', '...y...'];
+const TBOX = { 11: [60, 72, 14, 19], 12: [138, 62, 22, 30], 13: [31, 53, 17, 9], 14: [4, 45, 12, 12], 15: [50, 21, 12, 72], 16: [0, 28, 50, 10], 17: [74, 87, 40, 12], 18: [76, 58, 30, 23], 19: [52, 36, 100, 40], 20: [104, 47, 36, 40], 21: [80, 37, 28, 28] };
+let cafeScene = 'hall';
+function drawTerrace() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 60, '#0f2a3b');
+  [[60,8],[75,20],[92,6],[104,16],[118,28],[146,24],[70,34],[150,6],[86,30],[110,4],[56,22],[134,36]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k) % 7 < 3 ? '#ffd27a' : '#f4ac3c'));
+  R(130, 6, 7, 7, '#f4ac3c'); R(128, 5, 7, 7, '#0f2a3b');
+  R(48, 40, 112, 14, '#1b1013'); R(54, 34, 10, 6, '#1b1013'); R(70, 30, 8, 10, '#1b1013'); R(96, 36, 14, 4, '#1b1013'); R(122, 32, 9, 8, '#1b1013'); R(140, 37, 12, 3, '#1b1013');
+  R(72, 25, 4, 5, '#3b1a1a'); R(73, 24, 2, 1, '#3b1a1a'); R(73, 23, 2, 1, '#f4ac3c');
+  [[57,42],[74,36],[100,44],[125,40],[146,45],[86,46],[112,47]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k * 3) % 11 ? '#f4ac3c' : '#ef7b2b'));
+  R(48, 52, 112, 6, '#4a2216'); R(48, 52, 112, 1, '#8a4a22'); for (let x = 52; x < 160; x += 8) R(x, 53, 1, 5, '#3b1a10');
+  R(0, 58, 160, 42, '#2e2018');
+  for (let y = 58; y < 100; y += 4) for (let x = ((y / 4) % 2) * 3; x < 160; x += 6) R(x, y, 5, 3, hash(x, y) < 0.5 ? '#3d2c20' : '#463325');
+  // facade with door and warm window
+  R(0, 18, 50, 44, '#4a2216'); for (let y = 20; y < 62; y += 5) { R(0, y, 50, 1, '#3b1a10'); for (let x = (y % 10) ? 0 : 5; x < 50; x += 10) R(x, y, 1, 5, '#3b1a10'); }
+  R(0, 16, 52, 3, '#2a140d');
+  R(17, 41, 14, 21, '#2a140d'); R(18, 43, 12, 19, '#5e2f15'); R(20, 42, 8, 1, '#5e2f15'); R(23, 43, 1, 19, '#4a2414'); R(27, 52, 1, 2, '#f4ac3c');
+  R(33, 39, 14, 13, '#8a4a22'); R(34, 40, 12, 11, '#f4ac3c'); R(39, 40, 1, 11, '#8a4a22'); R(34, 45, 12, 1, '#8a4a22');
+  for (let x = 0; x < 50; x++) { const y = 20 + Math.round(1.2 * Math.sin(x / 4)); R(x, y, 1, 1, IV); if (x % 3 === 0) leaf(x - 1, y + (x % 6 ? 1 : -2), x); }
+  tendril(6, 21, 9); tendril(13, 21, 5); tendril(46, 21, 7);
+  if (H(16)) { for (let x = 0; x < 50; x += 4) { const c = (x / 4) % 2 ? '#fde9c8' : '#b5151f'; R(x, 30, 4, 6, c); R(x + 1, 36, 2, 1, c); } R(0, 29, 50, 1, '#7e0e15'); }
+  if (H(13)) { R(32, 54, 15, 7, '#8a4a22'); R(33, 55, 13, 5, '#fde9c8'); R(35, 56, 7, 1, '#5e2f15'); R(35, 58, 9, 1, '#5e2f15'); }
+  if (H(14)) { R(5, 46, 10, 2, '#7e0e15'); R(6, 48, 8, 8, '#b5151f'); R(8, 50, 4, 1, '#120a07'); sparkle(10, 53, '#f4ac3c'); if (t % 30 < 12) R(9, 49, 3, 1, '#fde9c8'); }
+  if (H(21)) { // star fountain
+    R(82, 58, 24, 6, '#8a7a70'); R(83, 57, 22, 1, '#bdb0a6'); R(84, 58, 20, 2, '#3a8a8f'); R(84 + (t % 18), 58, 2, 1, '#7fd1c7');
+    R(92, 46, 4, 11, '#8a7a70'); R(88, 46, 12, 2, '#bdb0a6'); spr(91, 38, STAR, t % 16 < 8 ? null : { Y: 'w' });
+    for (let k = 0; k < 6; k++) R(87 + (k * 3) % 15, 48 + ((t + k * 2) % 9), 1, 1, '#7fd1c7');
+  }
+  if (H(15)) { // lamp post with a soft cone of light
+    cx.fillStyle = 'rgba(255,210,122,0.08)'; cx.beginPath(); cx.moveTo(52, 30); cx.lineTo(61, 30); cx.lineTo(82, 97); cx.lineTo(32, 97); cx.closePath(); cx.fill();
+    R(55, 30, 3, 62, '#120a07'); R(53, 90, 7, 2, '#120a07'); R(52, 23, 9, 2, '#120a07'); R(55, 21, 3, 2, '#120a07'); R(53, 25, 7, 5, '#ffd27a'); R(54, 26, 5, 3, t % 23 ? '#fff3e0' : '#ffd27a');
+  }
+  if (H(18)) { // carved bench with a dozing cat
+    R(78, 64, 1, 16, '#5e2f15'); R(103, 64, 1, 16, '#5e2f15'); R(78, 64, 26, 1, '#5e2f15'); R(78, 66, 26, 1, '#8a4a22'); R(78, 68, 26, 1, '#8a4a22'); R(90, 63, 2, 1, '#f4ac3c');
+    spr(84, 62, GUEST, { g: 'O', G: 'c', y: 'k' });
+    R(76, 72, 30, 3, '#b0662e'); R(78, 75, 2, 6, '#5e2f15'); R(102, 75, 2, 6, '#5e2f15');
+    if (t % 24 < 12) { R(95, 58, 3, 1, '#fde9c8'); R(96, 59, 1, 1, '#fde9c8'); R(95, 60, 3, 1, '#fde9c8'); }
+  }
+  if (H(11)) { // A-frame sign with a coffee cup picture
+    R(61, 73, 12, 1, '#b0662e'); R(62, 74, 1, 16, '#5e2f15'); R(71, 74, 1, 16, '#5e2f15'); R(62, 74, 10, 12, '#8a4a22'); R(63, 75, 8, 10, '#1f2e28');
+    R(65, 79, 3, 3, '#fde9c8'); R(68, 80, 1, 1, '#fde9c8'); R(66, 77, 1, 1, '#a8968a');
+  }
+  if (H(20)) { // umbrella table, already taken
+    for (let j = 0; j < 7; j++) { const w = 4 + j * 4, x0 = 124 - w / 2; for (let xx = 0; xx < w; xx++) R(x0 + xx, 48 + j, 1, 1, ((x0 + xx) >> 2) % 2 ? '#b5151f' : '#fde9c8'); }
+    R(123, 55, 2, 25, '#5e2f15');
+    R(108, 84, 6, 2, '#8a4a22'); R(134, 84, 6, 2, '#8a4a22'); R(110, 86, 1, 4, '#5e2f15'); R(137, 86, 1, 4, '#5e2f15');
+    spr(105, 74, GUEST, { g: 'g', G: 'G' }); spr(132, 74, GUEST, { g: 'k', G: 's' });
+    R(114, 76, 20, 2, '#b0662e'); R(116, 78, 1, 9, '#5e2f15'); R(131, 78, 1, 9, '#5e2f15');
+    R(117, 74, 3, 2, '#fff3e0'); R(128, 74, 3, 2, '#fff3e0'); if (t % 12 < 6) { R(118, 72, 1, 1, '#a8968a'); R(129, 71, 1, 1, '#a8968a'); }
+  }
+  if (H(12)) { // potion cart
+    R(136, 76, 4, 1, '#5e2f15'); R(140, 72, 20, 13, '#8a4a22'); R(140, 76, 20, 1, '#5e2f15'); R(140, 80, 20, 1, '#5e2f15');
+    spr(142, 65, BOTTLE, { X: 'r' }); spr(148, 65, BOTTLE, { X: 'T' }); spr(154, 65, BOTTLE, { X: 'p' });
+    [143, 153].forEach(x => { R(x, 85, 5, 5, '#120a07'); R(x + 2, 87, 1, 1, '#8a7a70'); });
+  }
+  if (H(17)) { // flowerbeds
+    R(76, 92, 36, 6, '#3b1d14'); R(76, 91, 36, 1, '#5e2f15');
+    const fc = ['#b5151f', '#f4ac3c', '#c3a0ec', '#fde9c8'];
+    for (let x = 78; x < 112; x += 4) { R(x, 88, 1, 3, IL); R(x - 1, 87, 3, 1, fc[(x / 4) % 4]); R(x, 86, 1, 1, fc[(x / 4) % 4]); }
+  }
+  if (H(19)) { // fireflies
+    for (let k = 0; k < 12; k++) {
+      const x = 52 + ((k * 37 + Math.round(18 * Math.sin((t + k * 9) / 15))) % 104 + 104) % 104;
+      const y = 36 + (k * 13) % 44 + Math.round(4 * Math.sin((t + k * 5) / 9));
+      if ((t + k * 3) % 10 < 7) R(x, y, 1, 1, '#e3f59a');
+    }
+  }
+  [...freshSet].filter(i => i > 10 && TBOX[i]).forEach(i => { const [x, y, w, h] = TBOX[i]; const c = t % 4 < 2 ? '#ffd27a' : '#ffffff'; sparkle(x, y + 1, c); sparkle(x + w - 1, y + 1, c); sparkle(x, y + h - 2, c); sparkle(x + w - 1, y + h - 2, c); });
+}
+
+function sparkleFresh(boxes) { [...freshSet].filter(i => boxes[i]).forEach(i => { const [x, y, w, h] = boxes[i]; const c = T % 4 < 2 ? '#ffd27a' : '#ffffff'; sparkle(x, y + 1, c); sparkle(x + w - 1, y + 1, c); sparkle(x, y + h - 2, c); sparkle(x + w - 1, y + h - 2, c); }); }
+function ring(ox, oy, rx, ry, c) { for (let a = 0; a < 72; a++) { const t = a / 72 * Math.PI * 2; R(Math.round(ox + rx * Math.cos(t)), Math.round(oy + ry * Math.sin(t)), 1, 1, c); } }
+function line(x1, y1, x2, y2, c, step) { const n = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) || 1; for (let k = 0; k <= n; k += (step || 1)) R(Math.round(x1 + (x2 - x1) * k / n), Math.round(y1 + (y2 - y1) * k / n), 1, 1, c); }
+
+/* laboratory */
+const FLASKSPR = ['..e..', '..e..', '.eXe.', 'eXXXe', 'eXXXe', '.eee.'];
+const LABBOX = { 22: [40, 14, 12, 10], 23: [60, 19, 40, 13], 24: [44, 57, 76, 18], 25: [40, 85, 84, 11], 26: [104, 7, 40, 14], 27: [71, 46, 25, 12], 28: [48, 46, 66, 12], 29: [124, 64, 28, 31], 30: [8, 10, 26, 30], 31: [95, 45, 17, 14], 32: [8, 56, 30, 36] };
+function drawLab() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 76, '#3a3442');
+  for (let y = 0; y < 76; y += 8) { R(0, y, 160, 1, '#2e2936'); for (let x = (y / 8) % 2 ? 0 : 8; x < 160; x += 16) R(x, y, 1, 8, '#2e2936'); }
+  R(0, 75, 160, 1, '#5e5468');
+  R(0, 76, 160, 24, '#3b2418');
+  for (let y = 76; y < 100; y += 6) { R(0, y, 160, 1, '#2e1a10'); for (let x = (y % 12) ? 10 : 0; x < 160; x += 20) R(x, y, 1, 6, '#2e1a10'); }
+  // round-topped window
+  arch(8, 10, 26, 30, H(30) ? '#8a4a22' : '#5e5468');
+  const ins = [9, 6, 4, 3, 2, 1, 1];
+  if (H(30)) {
+    const g = ['#c3a0ec', '#b9a0e8', '#ab9be2', '#c69fd0', '#dca5a0', '#eaa87c', '#f4ac3c', '#f7bb4c'];
+    for (let j = 0; j < 26; j++) { const k = j < ins.length ? ins[j] : 0; R(10 + k, 12 + j, 22 - 2 * k, 1, g[Math.floor(j / 26 * g.length)]); }
+    R(20, 12, 2, 26, '#5e2f15'); R(10, 24, 22, 1, '#5e2f15'); R(14, 31, 14, 1, '#5e2f15');
+  } else {
+    for (let j = 0; j < 26; j++) { const k = j < ins.length ? ins[j] : 0; R(10 + k, 12 + j, 22 - 2 * k, 1, '#0f2a3b'); }
+    [[14, 20], [26, 18], [18, 30], [27, 28]].forEach(([x, y], k) => R(x, y, 1, 1, (t + k) % 6 < 3 ? '#ffd27a' : '#f4ac3c'));
+    R(22, 15, 4, 4, '#fde9c8'); R(21, 14, 4, 4, '#0f2a3b');
+  }
+  R(6, 40, 30, 2, '#5e5468');
+  tendril(150, 0, 12); tendril(155, 0, 7); for (let x = 132; x < 160; x++) { const y = 1 + Math.round(Math.sin(x / 4)); R(x, y, 1, 1, IV); if (x % 3 === 0) leaf(x - 1, y + 1, x); }
+  if (H(25)) { for (let x = 40; x < 124; x += 4) R(x, 86, 4, 9, (x / 4) % 2 ? '#7a48b5' : '#c3a0ec'); R(40, 86, 84, 1, '#5a2f8a'); R(40, 94, 84, 1, '#5a2f8a'); }
+  if (H(29)) {
+    R(124, 92, 28, 3, '#21140e'); R(126, 72, 24, 18, '#b0662e'); R(125, 74, 26, 14, '#b0662e'); R(128, 74, 3, 12, '#d98a4a'); R(124, 70, 28, 3, '#8a4a22');
+    R(127, 70, 22, 1, t % 6 < 3 ? '#7fd1c7' : '#93dad1'); R(128, 90, 3, 3, '#5e2f15'); R(145, 90, 3, 3, '#5e2f15');
+    for (let k = 0; k < 3; k++) { const j = (t + k * 4) % 10; R(132 + k * 5 + Math.round(Math.sin((t + k) / 2)), 68 - j, 1, 1, j < 6 ? '#fde9c8' : '#a8968a'); }
+  }
+  if (H(22)) { R(40, 14, 12, 10, '#f4ac3c'); R(41, 15, 10, 8, '#b5151f'); R(45, 16, 2, 4, '#fde9c8'); R(45, 21, 2, 1, '#fde9c8'); }
+  if (H(26)) {
+    R(104, 8, 40, 1, '#5e2f15'); const hc = [IL, '#c3a0ec', IL2, '#f4ac3c', IL, '#b5151f'];
+    for (let k = 0; k < 6; k++) { const x = 106 + k * 6; R(x + 2, 9, 1, 3, '#8a7a70'); R(x + 1, 12, 3, 1, '#8a7a70'); R(x, 13, 5, 4, hc[k]); R(x + 1, 17, 3, 2, hc[k]); }
+  }
+  if (H(23)) {
+    R(60, 30, 40, 2, '#8a4a22'); R(62, 32, 1, 2, '#5e2f15'); R(97, 32, 1, 2, '#5e2f15');
+    const cc = ['#f4ac3c', null, '#7fd1c7', '#c3a0ec'];
+    [62, 72, 82, 92].forEach((x, k) => { R(x, 21, 6, 1, '#8a7a70'); R(x, 22, 6, 8, '#cfe3e8'); R(x + 1, 24, 4, 6, cc[k] || (t % 8 < 4 ? '#ffd27a' : '#ef7b2b')); });
+    R(71, 20, 1, 1, t % 8 < 4 ? '#ffd27a' : '#cfe3e8'); R(78, 25, 1, 1, '#ffd27a');
+  }
+  if (H(31)) { spr(96, 49, GUEST, { g: 'c', G: 'e', y: 'k' }); R(97, 52, 3, 1, '#f4ac3c'); R(102, 52, 3, 1, '#f4ac3c'); R(100, 52, 2, 1, '#8a7a70'); R(106, 46, 5, 4, '#b5151f'); R(107, 47, 3, 1, '#fde9c8'); }
+  if (H(24)) { R(44, 58, 76, 3, '#8a4a22'); R(44, 58, 76, 1, '#b0662e'); R(46, 61, 2, 14, '#5e2f15'); R(116, 61, 2, 14, '#5e2f15'); R(46, 68, 72, 1, '#5e2f15'); }
+  if (H(27)) { R(80, 51, 6, 7, '#5e2f15'); R(72, 47, 23, 4, '#fff3e0'); R(71, 48, 1, 3, '#8a4a22'); R(95, 48, 1, 3, '#8a4a22'); R(83, 47, 1, 4, '#a8968a'); R(74, 48, 6, 1, '#a8968a'); R(74, 50, 5, 1, '#a8968a'); R(86, 48, 6, 1, '#a8968a'); R(86, 50, 4, 1, '#a8968a'); }
+  if (H(28)) { spr(50, 52, FLASKSPR, { e: '#cfe3e8', X: '#7a48b5' }); spr(108, 52, FLASKSPR, { e: '#cfe3e8', X: '#3a8a8f' }); R(52, 51 - (t % 4), 1, 1, '#c3a0ec'); R(110, 51 - ((t + 2) % 4), 1, 1, '#7fd1c7'); }
+  if (H(32)) {
+    R(10, 82, 14, 6, '#5e5468'); R(11, 88, 2, 4, '#2e2936'); R(21, 88, 2, 4, '#2e2936'); R(15, 79, 4, 3, t % 4 < 2 ? '#f4ac3c' : '#ef7b2b'); R(16, 78, 2, 1, '#ffd27a');
+    R(11, 66, 12, 12, '#cfe3e8'); R(10, 68, 14, 8, '#cfe3e8'); R(12, 70, 10, 7, '#7a48b5'); R(13, 71, 2, 2, '#c3a0ec'); R(15, 58, 4, 8, '#cfe3e8');
+    for (let k = 0; k < 12; k++) R(19 + k, 58 + Math.floor(k / 2), 1, 1, '#cfe3e8');
+    R(29, 66, 6, 8, '#cfe3e8'); R(30, 69, 4, 5, '#c3a0ec'); const d = t % 8; if (d < 4) R(31, 64 + d, 1, 1, '#c3a0ec');
+  }
+  sparkleFresh(LABBOX);
+}
+
+/* cellar */
+const FISH = ['.k.', 'kGk', 'GGG', 'GgG', 'GGG', '.G.', 'G.G'];
+const CELBOX = { 33: [40, 14, 36, 36], 34: [85, 63, 56, 16], 35: [143, 51, 14, 28], 36: [30, 53, 18, 26], 37: [79, 2, 78, 14], 38: [0, 14, 30, 60], 39: [49, 66, 36, 13], 40: [95, 19, 42, 13], 41: [78, 25, 68, 17], 42: [146, 14, 14, 18], 43: [68, 77, 28, 18] };
+function barrel(x, y, w, h) { R(x + 1, y, w - 2, h, '#8a4a22'); R(x, y + 2, w, h - 4, '#8a4a22'); R(x + 2, y + 1, 1, h - 2, '#a8622e'); R(x + Math.floor(w / 2), y, 1, h, '#7a3e1c'); R(x, y + 3, w, 1, '#3b3238'); R(x, y + h - 4, w, 1, '#3b3238'); R(x + 1, y, w - 2, 1, '#5e2f15'); }
+function crate(x, y, sz) { R(x, y, sz, sz, '#a0703a'); R(x, y, sz, 1, '#6a4a22'); R(x, y + sz - 1, sz, 1, '#6a4a22'); R(x, y, 1, sz, '#6a4a22'); R(x + sz - 1, y, 1, sz, '#6a4a22'); for (let k = 1; k < sz - 1; k++) R(x + k, y + k, 1, 1, '#6a4a22'); }
+function sack(x, y) { R(x + 1, y, 8, 10, '#b89a78'); R(x, y + 2, 10, 8, '#b89a78'); R(x + 3, y - 1, 4, 1, '#5e2f15'); R(x + 2, y, 6, 1, '#a88a6a'); R(x + 4, y + 5, 2, 2, '#5e2f15'); R(x + 1, y + 9, 8, 1, '#8a7458'); }
+function drawCellar() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 80, '#2f2930');
+  for (let y = 0; y < 80; y += 7) { R(0, y, 160, 1, '#241f26'); for (let x = (y / 7) % 2 ? 0 : 9; x < 160; x += 18) R(x, y, 1, 7, '#241f26'); }
+  for (let x = 0; x < 160; x++) R(x, 0, 1, Math.round(5 * Math.abs(Math.sin(x / 26))), '#1b171d');
+  R(0, 78, 160, 22, '#2a2018'); for (let k = 0; k < 40; k++) R(Math.floor(hash(k, 9) * 156), 80 + Math.floor(hash(9, k) * 18), 3, 2, '#33281e');
+  R(0, 0, 16, 24, '#3a3238'); R(2, 2, 12, 20, '#4a3a2a'); R(2, 2, 12, 1, '#6a5038');
+  for (let i = 0; i < 8; i++) { R(0, 22 + i * 7, 8 + i * 3, 2, '#6a5e64'); R(0, 24 + i * 7, 8 + i * 3, 5, '#463c43'); }
+  if (H(38)) for (let i = 0; i < 8; i++) { const x = 3 + i * 3, y = 18 + i * 7; R(x, y + 1, 2, 3, '#fde9c8'); R(x, y, 1, 1, (t + i) % 4 < 2 ? '#f4ac3c' : '#ffd27a'); }
+  if (H(33)) {
+    R(40, 14, 36, 36, '#5e2f15');
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) { const x = 42 + c * 11, y = 16 + r * 11, k = r * 3 + c; R(x, y, 10, 10, '#1e140f'); if (k % 2 === 0) spr(x + 2, y + 2, BOTTLE, { X: ['r', 'T', 'p', 'y', 'r'][k / 2] }); else { R(x + 2, y + 5, 6, 4, '#b89a78'); R(x + 3, y + 4, 4, 1, '#b89a78'); } }
+  }
+  if (H(37)) {
+    R(80, 3, 76, 1, '#8a7a70'); for (let x = 81; x < 156; x += 6) { R(x + 1, 4, 1, 1, '#8a7a70'); R(x, 5, 3, 3, '#e8dcc8'); R(x + 1, 5, 1, 1, '#fff3e0'); }
+    R(80, 10, 52, 1, '#8a7a70'); for (let x = 81; x < 130; x += 6) { R(x + 1, 11, 1, 1, '#8a7a70'); R(x, 12, 3, 2, IL); R(x + 1, 14, 1, 1, IL2); }
+  }
+  if (H(40)) { R(96, 20, 40, 1, '#5e2f15'); for (let k = 0; k < 5; k++) { const x = 99 + k * 8; R(x + 1, 21, 1, 2, '#8a7a70'); spr(x, 23, FISH, { G: '#8aa0b0', g: '#6f8494' }); } }
+  if (H(42)) {
+    R(146, 14, 14, 1, '#8a8a95'); R(159, 14, 1, 16, '#8a8a95'); line(146, 14, 159, 27, '#8a8a95');
+    [4, 8, 12].forEach(d => line(159 - d, 14, 159, 14 + d, '#6a6a75'));
+    const sy = 22 + Math.round(3 * Math.sin(t / 8)); R(152, 14, 1, sy - 14, '#8a8a95'); R(151, sy, 3, 2, '#120a07'); R(150, sy, 1, 1, '#120a07'); R(154, sy, 1, 1, '#120a07'); R(152, sy, 1, 1, '#b5151f');
+  }
+  if (H(41)) [82, 140].forEach((x, k) => { cx.fillStyle = 'rgba(244,172,60,0.10)'; cx.fillRect(x - 8, 25, 18, 18); R(x, 34, 2, 7, '#5e2f15'); R(x - 1, 33, 4, 2, '#3b3238'); const f = (t + k) % 4 < 2; R(x - 1, 29, 4, 4, f ? '#ef7b2b' : '#f4ac3c'); R(x, 27, 2, 3, f ? '#ffd27a' : '#ef7b2b'); R(x, 30, 2, 2, '#ffd27a'); });
+  if (H(36)) barrel(31, 54, 16, 24);
+  if (H(34)) [86, 100, 114, 128].forEach(x => barrel(x, 64, 12, 14));
+  if (H(35)) { crate(144, 66, 12); crate(144, 52, 12); }
+  if (H(39)) [50, 62, 74].forEach(x => sack(x, 68));
+  if (H(43)) {
+    R(68, 93, 26, 2, '#1b140e'); R(70, 85, 22, 9, '#8a4a22'); R(70, 80, 22, 5, '#a0602a'); R(71, 79, 20, 1, '#a0602a'); R(70, 84, 22, 1, '#5e2f15');
+    [73, 87].forEach(x => R(x, 79, 2, 15, '#f4ac3c')); R(80, 83, 3, 4, '#f4ac3c'); R(81, 85, 1, 1, '#120a07'); R(65, 92, 3, 1, '#f4ac3c'); R(95, 91, 2, 1, '#f4ac3c');
+    if (t % 20 < 6) sparkle(90, 80, '#ffffff');
+  }
+  sparkleFresh(CELBOX);
+}
+
+/* observatory on the roof */
+const ROOFBOX = { 44: [88, 42, 30, 36], 45: [20, 6, 34, 18], 46: [62, 8, 28, 24], 47: [8, 24, 14, 20], 48: [25, 51, 34, 24], 49: [40, 2, 80, 30], 50: [63, 45, 18, 30], 51: [118, 82, 38, 11], 52: [10, 26, 130, 16], 53: [124, 64, 22, 18], 54: [0, 6, 160, 24] };
+const WCAT = ['k...k.', 'kk.kk.', 'kkkkk.', '.kkkkk', '.k..k.'];
+function drawRoof() {
+  cx = $('cafec').getContext('2d');
+  const t = T, H = have;
+  R(0, 0, 160, 100, '#0b1a2a'); R(0, 30, 160, 30, '#0f2a3b'); R(0, 50, 160, 20, '#143246');
+  if (H(54)) { const cols = ['rgba(95,211,157,0.30)', 'rgba(127,209,199,0.22)', 'rgba(195,160,236,0.16)']; for (let x = 0; x < 160; x++) { const y0 = 10 + Math.round(5 * Math.sin((x + t * 0.7) / 14) + 2 * Math.sin(x / 5)); cols.forEach((c, k) => { cx.fillStyle = c; cx.fillRect(x, y0 + k * 4, 1, 6); }); } }
+  if (H(45)) { cx.fillStyle = 'rgba(195,160,236,0.22)'; [[22, 12, 14, 6], [30, 8, 18, 10], [42, 12, 10, 7], [26, 16, 24, 5]].forEach(([x, y, w, h]) => cx.fillRect(x, y, w, h)); cx.fillStyle = 'rgba(244,172,60,0.14)'; cx.fillRect(33, 11, 8, 5); }
+  for (let k = 0; k < 40; k++) { const x = Math.floor(hash(k, 17) * 160), y = Math.floor(hash(17, k) * 56); R(x, y, 1, 1, (t + k) % 9 < 2 ? '#ffd27a' : '#c8d4dc'); }
+  if (H(46)) { const P = [[64, 26], [66, 10], [72, 18], [80, 18], [86, 10], [88, 26], [76, 30]]; for (let k = 0; k < P.length; k++) { const [x1, y1] = P[k], [x2, y2] = P[(k + 1) % P.length]; line(x1, y1, x2, y2, '#3c5a8a', 2); } P.forEach(([x, y]) => { R(x - 1, y, 3, 1, '#ffd27a'); R(x, y - 1, 1, 3, '#ffd27a'); }); R(72, 22, 1, 1, '#ffd27a'); R(80, 22, 1, 1, '#ffd27a'); }
+  if (H(49)) { const a = t % 50; if (a < 14) { const x = 44 + a * 5, y = 4 + a * 2; for (let k = 0; k < 6; k++) R(x - k * 2, y - k, 1, 1, k ? '#c8d4dc' : '#ffffff'); } const b = (t + 25) % 70; if (b < 10) { const x = 90 + b * 4, y = 6 + b * 2; for (let k = 0; k < 4; k++) R(x - k * 2, y - k, 1, 1, k ? '#c8d4dc' : '#ffffff'); } }
+  R(132, 8, 12, 12, '#fde9c8'); R(131, 10, 14, 8, '#fde9c8'); R(134, 7, 8, 14, '#fde9c8'); R(135, 11, 2, 2, '#e8dcc8'); R(139, 15, 3, 2, '#e8dcc8');
+  if (H(52)) {
+    const kx = 66 + Math.round(55 * Math.sin(t / 30)), ky = 30 + Math.round(3 * Math.sin(t / 7));
+    for (let k = 0; k < 4; k++) { R(kx + 3 - k, ky + k, 1 + k * 2, 1, '#b5151f'); R(kx + k, ky + 4 + k, 7 - k * 2, 1, '#f4ac3c'); }
+    for (let k = 0; k < 7; k++) R(kx + 3 - Math.round(Math.sin((t + k) / 3)), ky + 8 + k, 1, 1, k % 3 === 2 ? '#fde9c8' : '#c8d4dc');
+  }
+  [[0, 52, 20], [24, 55, 16], [44, 50, 22], [70, 54, 18], [92, 49, 20], [116, 53, 16], [136, 51, 24]].forEach(([x, y, w], k) => { R(x, y, w, 70 - y, '#1b1013'); R(x + 2, y - 2, w - 4, 2, '#1b1013'); R(x + 4, y - 4, w - 8, 2, '#1b1013'); if (k % 2 === 0) R(x + 5, y + 5, 2, 2, (t + k) % 30 < 26 ? '#f4ac3c' : '#1b1013'); });
+  R(0, 66, 160, 1, '#3b1d14'); R(0, 73, 160, 1, '#3b1d14'); for (let x = 0; x < 160; x += 8) R(x, 66, 1, 8, '#3b1d14');
+  R(0, 74, 160, 26, '#5e2f15'); for (let y = 74; y < 100; y += 4) { R(0, y, 160, 1, '#4a2414'); for (let x = (y / 4) % 2 ? 0 : 4; x < 160; x += 8) R(x, y, 1, 4, '#4a2414'); }
+  R(8, 46, 12, 28, '#7a3e1c'); for (let y = 48; y < 74; y += 4) R(8, y, 12, 1, '#5e2f15'); R(6, 44, 16, 3, '#5e2f15');
+  for (let k = 0; k < 3; k++) { const j = (t + k * 5) % 15; R(12 + k * 2 + Math.round(Math.sin((t + k * 3) / 4)), 42 - j, 2, 1, j < 9 ? '#8a7a70' : '#5e5468'); }
+  if (H(47)) { R(14, 31, 1, 13, '#120a07'); R(10, 35, 9, 1, '#120a07'); R(18, 34, 1, 3, '#120a07'); const dir = Math.floor(t / 40) % 2; spr(dir ? 9 : 12, 26, dir ? WCAT.map(r => [...r].reverse().join('')) : WCAT); }
+  if (H(48)) {
+    R(26, 52, 2, 22, '#5e2f15'); R(56, 52, 2, 22, '#5e2f15');
+    spr(37, 52, GUEST, { g: 'G', G: 'w' });
+    for (let x = 28; x < 56; x++) { const y = 57 + Math.round(5 * Math.sin(Math.PI * (x - 28) / 27)); R(x, y, 1, 2, (x >> 1) % 2 ? '#b5151f' : '#fde9c8'); }
+    if (t % 24 < 12) { R(48, 49, 3, 1, '#fde9c8'); R(49, 50, 1, 1, '#fde9c8'); R(48, 51, 3, 1, '#fde9c8'); }
+  }
+  if (H(50)) { R(70, 62, 4, 12, '#8a7a70'); R(66, 72, 12, 2, '#bdb0a6'); ring(72, 54, 7, 7, '#f4ac3c'); ring(72, 54, Math.max(1, Math.round(7 * Math.abs(Math.cos(t / 8)))), 7, '#c99a3a'); ring(72, 54, 7, 2, '#ffd27a'); R(71, 53, 3, 3, '#7fd1c7'); }
+  if (H(44)) {
+    line(106, 61, 98, 76, '#3b1d14'); line(106, 61, 106, 76, '#3b1d14'); line(106, 61, 114, 76, '#3b1d14');
+    for (let k = 0; k <= 12; k++) R(104 - k, 57 - k, 5, 3, k === 4 || k === 9 ? '#f4ac3c' : '#b0662e');
+    R(90, 43, 4, 4, '#7fd1c7'); R(91, 44, 1, 1, '#ffffff'); R(108, 59, 3, 2, '#5e2f15');
+  }
+  if (H(51)) { R(118, 84, 12, 6, '#b5151f'); R(119, 83, 10, 1, '#b5151f'); R(132, 85, 12, 5, '#7a48b5'); R(146, 84, 10, 6, '#f4ac3c'); R(120, 89, 34, 3, '#1c4a55'); for (let x = 122; x < 154; x += 4) R(x, 89, 1, 3, '#fde9c8'); }
+  if (H(53)) { spr(126, 66, MARTA); R(141, 75, 3, 2, '#fff3e0'); R(144, 75, 1, 1, '#fff3e0'); if (t % 12 < 6) R(142, 73 - ((t >> 1) % 2), 1, 1, '#a8968a'); }
+  sparkleFresh(ROOFBOX);
+}
+
+/* map */
+const CH = [
+  { learn: ['первые теги: заголовки и абзацы', 'выделение текста', 'списки и ссылки', 'кнопки и классы', 'первые стили: цвет и выравнивание', 'фон, отступы и скругления', 'flexbox: элементы в ряд'], from: 0, short: '1 · Зал', blurb: 'Тропа ведёт от городских ворот к башне-кофейне.', title: 'Глава 1 · Зал', stops: [[14,96],[36,90],[56,98],[76,90],[70,72],[46,66],[24,54],[34,36],[60,40],[94,24],[106,58]], ground: ['#5c3d22', '#62422a', '#573a20', '#7a5a2a'], tree: null, dome: null },
+  { learn: ['картинки и описание alt', 'нумерованные списки', 'таблицы', 'формы и поля ввода', 'шрифты и размер текста', 'внешние отступы и рамки', 'реакцию на курсор :hover', 'шапку сайта на flexbox'], from: 11, short: '2 · Терраса', blurb: 'Летняя тропа ведёт через сад к беседке у фонтана.', title: 'Глава 2 · Терраса', stops: [[14,14],[36,22],[58,12],[80,22],[72,42],[48,48],[24,60],[34,80],[60,86],[92,94],[108,72]], ground: ['#3d4a2c', '#435030', '#38452a', '#5a6b36'], tree: { O: '#2f5d3a', o: '#4f8a4a', y: '#9fcf6a' }, dome: { r: 't', y: 'y' } },
+  { learn: ['id и несколько классов сразу', 'селекторы «внутри» и :nth-child', 'меню без маркеров', 'центрирование блока', 'круги, тени и градиенты', 'position: absolute'], from: 22, short: '3 · Лаборатория', blurb: 'Зимняя тропа петляет по заснеженному лесу к башне-лаборатории.', title: 'Глава 3 · Лаборатория', stops: [[106,96],[84,90],[64,98],[44,90],[50,72],[74,66],[96,54],[86,36],[60,40],[26,24],[14,58]], ground: ['#c9d6e3', '#d3dee9', '#bfcedc', '#ffffff'], tree: { O: '#2c4a52', o: '#e8f0f6', y: '#ffffff' }, dome: { r: 'p' } },
+  { learn: ['сетку CSS Grid', 'repeat, gap и span', 'перенос и столбики во flexbox', 'проценты и rem', 'адаптив: сайт для телефона и компьютера'], from: 33, short: '4 · Погреб', blurb: 'Подземная тропа вьётся между кристаллами к старому погребу.', title: 'Глава 4 · Погреб', stops: [[106,14],[84,22],[62,12],[40,22],[48,42],[72,48],[96,60],[86,80],[60,86],[28,94],[12,72]], ground: ['#2f2a33', '#352f3a', '#2a2530', '#4a4252'], tree: { O: '#5a2f8a', o: '#8a5cc4', y: '#c3a0ec', s: '#3b2a4a' }, dome: { r: 'B' } },
+  { learn: ['CSS-переменные', 'прозрачность и свечение текста', 'плавные переходы transition', 'transform: рост и поворот', 'псевдоэлемент ::before', 'анимации @keyframes', 'липкую шапку sticky'], from: 44, short: '5 · Обсерватория', blurb: 'Звёздная тропа поднимается по ночному лугу к обсерватории.', title: 'Глава 5 · Обсерватория', stops: [[16,100],[40,96],[64,100],[88,92],[82,72],[56,70],[30,64],[22,42],[48,34],[76,30],[100,52]], ground: ['#1d2b4a', '#22325a', '#1a2744', '#33477a'], tree: { O: '#1f3a5a', o: '#2f5d8a', y: '#f4ac3c' }, dome: { r: 'n', y: 'Y' } },
+];
+const REG = LEVELS.filter(l => !l.extra).length;
+const displayNum = i => LEVELS.slice(0, i + 1).filter(l => !l.extra).length;
+const levelLabel = i => LEVELS[i].extra ? '★' : String(displayNum(i));
+const chapterOf = i => { let c = 0; CH.forEach((ch, k) => { if (i >= ch.from) c = k; }); return c; };
+let mapCh = 0;
+function distSeg(px_, py, [ax, ay], [bx, by]) { const dx = bx - ax, dy = by - ay; const u = Math.max(0, Math.min(1, ((px_ - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy))); return Math.hypot(px_ - ax - u * dx, py - ay - u * dy); }
+const TREES = CH.map(c => {
+  const out = [], [lx, ly] = c.stops[9];
+  for (let y = 4; y < 106; y += 9) for (let x = 2; x < 112; x += 9) {
+    const jx = x + Math.floor(hash(x, y) * 6), jy = y + Math.floor(hash(y, x) * 6);
+    if (hash(x + 7, y + 3) < 0.25) continue;
+    let near = Infinity; for (let k = 1; k < c.stops.length; k++) near = Math.min(near, distSeg(jx + 3, jy + 6, c.stops[k - 1], c.stops[k]));
+    if (near > 9 && Math.hypot(jx - lx, jy - (ly - 10)) > 14) out.push([jx, jy]);
+  }
+  return out;
+});
+function drawMap() {
+  cx = $('mapc').getContext('2d');
+  const t = T, c = CH[mapCh], S = c.stops, g = c.ground;
+  for (let y = 0; y < 110; y += 4) for (let x = 0; x < 160; x += 4) { const h = hash(x + mapCh * 3, y); R(x, y, 4, 4, h < 0.33 ? g[0] : h < 0.66 ? g[1] : g[2]); if (h > 0.93) R(x + 1, y + 1, 1, 2, g[3]); }
+  for (let y = 0; y < 110; y++) { const x0 = 120 + Math.round(3 * Math.sin(y / 9)); R(x0, y, 9, 1, '#1c4a55'); if ((y + t) % 7 === 0) R(x0 + 2 + (y % 3), y, 3, 1, '#3a8a8f'); }
+  R(130, 0, 30, 110, '#26333d');
+  for (let k = 0; k < 6; k++) { const yy = k * 19 + 4, xx = 132 + ((k * 7 + Math.floor(t / 3)) % 10); R(xx, yy, 14, 5, '#3c4b57'); R(xx + 3, yy - 2, 8, 2, '#3c4b57'); R(xx + 2, yy + 1, 8, 2, '#56677a'); }
+  for (let k = 1; k < S.length; k++) {
+    const [ax, ay] = S[k - 1], [bx, by] = S[k], n = Math.ceil(Math.hypot(bx - ax, by - ay) * 2), gold = k === S.length - 1;
+    for (let s = 0; s <= n; s++) { const x = Math.round(ax + (bx - ax) * s / n), y = Math.round(ay + (by - ay) * s / n); R(x - 3, y - 3, 6, 6, gold ? '#8a6a2a' : '#7d6448'); }
+    for (let s = 0; s <= n; s++) { const x = Math.round(ax + (bx - ax) * s / n), y = Math.round(ay + (by - ay) * s / n); R(x - 2, y - 2, 4, 4, gold ? ((x + y) % 4 ? '#c99a3a' : '#f4ac3c') : ((x + y) % 5 ? '#a88a6a' : '#b89a78')); }
+  }
+  TREES[mapCh].forEach(([x, y]) => spr(x, y, TREE, c.tree));
+  S.forEach(([x, y], k) => {
+    const i = c.from + k;
+    if (k === 9) { spr(x - 7, y - 20, TOWER, Object.assign({}, c.dome || {}, have(i) ? (t % 6 < 3 ? {} : { Y: 'y' }) : { Y: 'k' })); return; }
+    R(x - 5, y - 2, 10, 5, '#3b2a1e'); R(x - 4, y - 3, 8, 1, '#3b2a1e'); R(x - 4, y - 2, 8, 3, '#6a5442');
+    if (k === 10) { spr(x - 3, y - 10, STAR, have(i) ? (t % 8 < 4 ? null : { Y: 'w' }) : { y: 'g', Y: 'G' }); return; }
+    if (have(i)) spr(x + 3, y - 8, FLAG);
+  });
+  if (chapterOf(st.cur) === mapCh) { const k = st.cur - c.from, [mx, my] = S[k]; spr(mx - 4, my - 13 - (t % 4 < 2 ? 0 : 1) - (k === 9 ? 14 : 0) - (k === 10 ? 9 : 0), MINI); }
+}
+
+function renderMapSide() {
+  const c = CH[mapCh];
+  $('stops').innerHTML = c.stops.map(([x, y], k) => {
+    const i = c.from + k, cls = (i === st.cur ? 'cur' : have(i) ? 'done' : '') + (LEVELS[i].extra ? ' extra' : '');
+    return `<button class="stop ${cls}" type="button" data-i="${i}" ${i > st.unlocked ? 'disabled' : ''} style="left:${x / 160 * 100}%;top:${(y + 6) / 110 * 100}%" aria-label="${LEVELS[i].extra ? 'Экстра-уровень' : 'Уровень ' + displayNum(i)}: ${esc(LEVELS[i].title)}">${levelLabel(i)}</button>`;
+  }).join('');
+  const doneIn = ch => { const a = CH[ch].from, b = CH[ch + 1] ? CH[ch + 1].from : LEVELS.length; let n = 0; for (let i = a; i < b; i++) if (have(i)) n++; return [n, b - a]; };
+  const L = LEVELS[st.cur];
+  $('mapside').innerHTML = `<h2>Карта гильдии</h2>
+    <div class="helpers" role="group" aria-label="Глава">${CH.map((ch, k) => `<button class="btn${k === mapCh ? ' primary' : ''}" type="button" data-ch="${k}">${esc(ch.short)}</button>`).join('')}</div>
+    <p>${esc(c.blurb)}</p>
+    <div><b style="font-size:14px">Тропа научит тебя:</b></div>
+    <ul class="topics">${c.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    <p>Золотая звезда в конце главы — экстра-уровень на повторение, за него двойная награда.</p>
+    <div class="tip"><b>Сейчас: ${L.extra ? 'экстра' : displayNum(st.cur)}. ${esc(L.title)}</b></div>
+    <button class="btn primary" type="button" data-go="quest">Продолжить квест →</button>
+    ${testOpen(mapCh) ? `<div class="skip"><span><b>Знаешь тему главы?</b> ${QN} вопросов, нужно ${QPASS} правильных. Сдашь — глава засчитается.</span><button class="btn" type="button" data-test="${mapCh}">Сдать тест главы ${mapCh + 1}</button></div>`
+      : chapterDone(mapCh) ? '' : `<div class="skip"><span>Тест этой главы откроется, когда дойдёшь до неё или сдашь тест предыдущей.</span></div>`}
+    <ul class="seasons">
+      ${CH.map((ch, k) => { const [d, n] = doneIn(k); return `<li class="${k === mapCh ? 'on' : ''}">${esc(ch.title)} <em>${d}/${n}</em></li>`; }).join('')}
+      <li>Сезон 2 · JavaScript <em>за рекой</em></li>
+    </ul>`;
+}
+
+const SCENES = [
+  { key: 'hall', name: 'Зал', from: 0, to: 10, plate: 'КОФЕЙНЯ «ПИКСЕЛЬ»' },
+  { key: 'terrace', name: 'Терраса', from: 11, to: 21, plate: 'ТЕРРАСА «ПИКСЕЛЬ»' },
+  { key: 'lab', name: 'Лаборатория', from: 22, to: 32, plate: 'ЛАБОРАТОРИЯ МАРТЫ' },
+  { key: 'cellar', name: 'Погреб', from: 33, to: 43, plate: 'ПОГРЕБ ГИЛЬДИИ' },
+  { key: 'roof', name: 'Обсерватория', from: 44, to: 54, plate: 'ОБСЕРВАТОРИЯ' },
+];
+const sceneOf = i => (SCENES.find(sc => i >= sc.from && i <= sc.to) || SCENES[0]).key;
+function renderCafeSide() {
+  const S = SCENES.find(sc => sc.key === cafeScene) || SCENES[0];
+  const ids = CAFE.map((_, i) => i).filter(i => i >= S.from && i <= S.to);
+  const n = ids.filter(have).length;
+  const lockText = i => LEVELS[i].extra ? 'Откроется после экстра-уровня' : 'Откроется после уровня ' + displayNum(i);
+  const chap = SCENES.indexOf(S) + 1;
+  $('cafeside').innerHTML = `<h2>Окно в кофейню</h2>
+    <div class="helpers" role="group" aria-label="Помещение">${SCENES.map(sc => `<button class="btn${sc.key === cafeScene ? ' primary' : ''}" type="button" data-scene="${sc.key}">${esc(sc.name)}</button>`).join('')}</div>
+    <p>${S.key === 'hall' && !n ? 'Пока здесь пусто. Пройди первый уровень, и над прилавком появится вывеска.'
+      : n ? `${esc(S.name)}: собрано ${n} из ${ids.length}. За каждый уровень появляется что-то новое.`
+      : `Здесь пока пусто. Это помещение обустраивается в главе ${chap}, начиная с уровня ${displayNum(S.from)}.`}</p>
+    ${S.key === 'hall' && have(1) ? `<div class="tip">Гостей обслужено: <b id="servedN">${st.served || 0}</b><br>Нажми на гостя, чтобы узнать, что он заказал.</div>` : ''}
+    <ul class="items">${ids.map(i => { const it = CAFE[i]; return `<li class="${have(i) ? (freshSet.has(i) ? 'fresh' : '') : 'lock'}${LEVELS[i].extra ? ' xtra' : ''}"><span class="n">${levelLabel(i)}</span><span><b>${have(i) ? esc(it.name) : '???'}</b>${have(i) ? esc(it.d) : lockText(i)}${FURN[i] ? `<em class="furn">${have(i) ? '+ ' + esc(FURN[i].name) : '+ мебель'}</em>` : ''}${PLANTS[i] ? `<em class="plant">${have(i) ? '+ ' + esc(PLANTS[i].name) : '+ растение'}</em>` : ''}</span></li>`; }).join('')}</ul>`;
+  $('cafeplate').textContent = S.plate;
+}
+
+/* views */
+let view = 'quest';
+function show(v) {
+  view = v;
+  ['quest', 'map', 'cafe'].forEach(k => { $('v-' + k).hidden = k !== v; $('t-' + k).setAttribute('aria-selected', String(k === v)); });
+  if (v === 'cafe') {
+    freshSet = new Set(Object.keys(st.stars).map(Number).filter(i => i > (st.seen ?? -1)));
+    if (freshSet.size) cafeScene = sceneOf(Math.max(...freshSet));
+    st.seen = Math.max(st.seen ?? -1, ...Object.keys(st.stars).map(Number), -1); save(); updateBadge();
+    if (REDUCED && !guests.length && have(1)) { const g = newGuest('order'); g.x = SLOTS[0]; g.y = 84; guests.push(g); }
+    renderCafeSide(); drawCafe();
+  }
+  if (v === 'quest') update(false);
+  if (v === 'map') { mapCh = chapterOf(st.cur); renderMapSide(); drawMap(); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateBadge() { const max = Math.max(-1, ...Object.keys(st.stars).map(Number)); $('newbadge').hidden = !(max > (st.seen ?? -1)); }
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+setInterval(() => { if (REDUCED) return; T++; if (view === 'cafe') { simGuests(); drawCafe(); } else if (view === 'map') drawMap(); }, 140);
+
+/* ---------- guests ---------- */
+// body, accent, eye colour
+const GCOL = [['o', 'O', 'k'], ['g', 'G', 'k'], ['k', 's', 'y'], ['c', 'e', 'k'], ['G', 'w', 'n'], ['O', 'c', 'k']];
+const GNAME = ['Рыжий кот', 'Серая кошка', 'Чёрный кот', 'Кремовая кошка', 'Дымчатая кошка', 'Полосатый кот'];
+const ORDERS = [
+  { n: 'эспрессо «Полнолуние»', i: 'cup' }, { n: 'капучино со звёздной корицей', i: 'cup' }, { n: 'какао с облачным зефиром', i: 'cocoa' },
+  { n: 'раф «Комета»', i: 'potion', c: 'r', need: 8 }, { n: 'лунный латте', i: 'potion', c: 'T', need: 8 }, { n: 'матча-эликсир', i: 'potion', c: 'p', need: 8 },
+];
+const WALK = ['.X....X.', '.XX..XX.', '.XXXXXX.', 'XEXXXXEX', 'XXArrAXX', '.XAAAAX.', '..XXXX..', '.XXXXXX.', '.XXAAXX.', '.XXXXXX.'];
+const LEGS = ['.X....X.', '..X..X..'];
+const HAT = ['...nn...', '..nnyn..', '.nnnnnn.'];
+const ICON = {
+  cup: ['.....', 'bbbb.', 'bBBbb', 'bBBb.', '.bb..'],
+  cocoa: ['.ccc.', 'bbbb.', 'bOObb', 'bOOb.', '.bb..'],
+  potion: ['..b..', '.gXg.', 'gXXXg', 'gXXXg', '.ggg.'],
+  heart: ['.r.r.', 'rrrrr', 'rrrrr', '.rrr.', '..r..'],
+};
+const SLOTS = [104, 116, 126];
+let guests = [], seats = SEATS.map(() => null), bellFlash = 0, nextSpawn = 6;
+const maxGuests = () => !have(1) ? 0 : 1 + [3, 4, 5, 7].filter(have).length + (have(9) ? 2 : 0);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+function newGuest(state) {
+  const orders = ORDERS.filter(o => !o.need || have(o.need));
+  return { x: 137, y: 72, col: Math.floor(Math.random() * GCOL.length), hat: Math.random() < 0.35, order: pick(orders), st: state || 'enter', t: 0, ph: Math.floor(Math.random() * 2), item: false };
+}
+const step = (g, tx, ty, v) => { if (g.x < tx) g.x = Math.min(tx, g.x + v); else if (g.x > tx) g.x = Math.max(tx, g.x - v); if (g.y < ty) g.y = Math.min(ty, g.y + 1); else if (g.y > ty) g.y = Math.max(ty, g.y - 1); return g.x === tx && g.y === ty; };
+
+function simGuests() {
+  if (bellFlash > 0) bellFlash--;
+  const cap = maxGuests();
+  if (--nextSpawn <= 0) {
+    nextSpawn = 30 + Math.floor(Math.random() * 40) - (have(9) ? 15 : 0);
+    const busy = guests.some(g => g.st === 'enter');
+    if (guests.length < cap && !busy) guests.push(newGuest());
+  }
+  const queue = guests.filter(g => g.st === 'queue' || g.st === 'order');
+  for (const g of [...guests]) {
+    g.t++;
+    if (g.st === 'enter' && step(g, 137, 84, 1)) { g.st = 'queue'; g.t = 0; }
+    else if (g.st === 'queue') {
+      const idx = queue.indexOf(g);
+      const tx = SLOTS[Math.min(idx, SLOTS.length - 1)] - (idx >= SLOTS.length ? 0 : 0);
+      if (step(g, tx, 84, 2) && idx === 0) { g.st = 'order'; g.t = 0; }
+    }
+    else if (g.st === 'order' && g.t > 20) {
+      g.st = 'happy'; g.t = 0; g.item = true; bellFlash = have(5) ? 5 : 0;
+      st.served = (st.served || 0) + 1; save();
+      const el = document.getElementById('servedN'); if (el) el.textContent = st.served;
+    }
+    else if (g.st === 'happy' && g.t > 9) {
+      const free = SEATS.map((S, k) => k).filter(k => have(SEATS[k].lvl) && !seats[k]);
+      if (free.length && Math.random() < 0.7) { const k = pick(free); g.st = 'toSeat'; g.seat = k; seats[k] = g; }
+      else g.st = 'leave';
+      g.t = 0;
+    }
+    else if (g.st === 'toSeat' && step(g, SEATS[g.seat].tx, SEATS[g.seat].ty, 2)) { g.st = 'sit'; g.t = 0; seats[g.seat] = g; }
+    else if (g.st === 'sit' && g.t > 80) { seats[g.seat] = null; g.st = 'leave'; g.t = 0; }
+    else if (g.st === 'leave') {
+      const tx = 137;
+      if (g.y > 84) step(g, g.x, 84, 1);
+      else if (g.x !== tx) step(g, tx, 84, 2);
+      else if (step(g, tx, 72, 1)) guests.splice(guests.indexOf(g), 1);
+    }
+  }
+}
+
+function drawGuests() {
+  // walkers drawn back-to-front so the ones lower on screen overlap
+  [...guests].filter(g => g.st !== 'sit').sort((a, b) => a.y - b.y).forEach(g => {
+    const [b, a, e] = GCOL[g.col], top = g.y - 11;
+    const moving = g.st === 'enter' || g.st === 'toSeat' || g.st === 'leave' || (g.st === 'queue' && !(g.x === SLOTS[0] || g.x === SLOTS[1] || g.x === SLOTS[2]));
+    spr(g.x, top, WALK.concat([moving ? LEGS[(T + g.ph) % 2] : LEGS[0]]), { X: b, A: a, E: e });
+    if (g.hat) spr(g.x, top - 3, HAT);
+    if (g.item) { R(g.x + 7, top + 7, 2, 2, '#fff3e0'); R(g.x + 7, top + 7, 2, 1, '#8a4a22'); }
+    if (g.st === 'enter' && have(4) && g.y < 80) { const c = T % 2 ? '#c3a0ec' : '#ffd27a'; sparkle(g.x - 2, top + 2, c); sparkle(g.x + 9, top + 5, c); }
+    let icon = null;
+    if (g.st === 'order') icon = g.order.i;
+    if (g.st === 'happy') icon = 'heart';
+    if (g.st === 'queue' && g.x <= SLOTS[2] && g.t % 30 < 12) icon = g.order.i;
+    if (icon) {
+      const bx = g.x - 1, by = top - (g.hat ? 13 : 10);
+      R(bx, by, 10, 8, '#120a07'); R(bx + 1, by + 1, 8, 6, '#fff3e0');
+      R(bx + 2, by + 8, 2, 1, '#120a07'); R(bx + 2, by + 7, 2, 1, '#fff3e0');
+      spr(bx + 2, by + 1, ICON[icon], { X: g.order.c || 'r', B: '#5e2f15', b: '#7a3e1c', g: 'g' });
+    }
+  });
+}
+
+function guestAt(x, y) {
+  for (let k = 0; k < SEATS.length; k++) { const g = seats[k], S = SEATS[k]; if (g && g.st === 'sit' && x >= S.x && x < S.x + 10 && y >= S.y && y < S.y + 11) return g; }
+  return [...guests].reverse().find(g => g.st !== 'sit' && x >= g.x - 1 && x < g.x + 9 && y >= g.y - 14 && y <= g.y);
+}
+
+
+/* ---------- state ---------- */
+const KEY = 'pixel-quest-v2';
+let st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {} };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s.cur === 'number') st = Object.assign(st, s); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+/* ---------- reference styles ---------- */
+(function () {
+  const h = document.createElement('div');
+  h.style.cssText = 'position:absolute;left:-9999px;top:0;width:300px';
+  document.body.appendChild(h);
+  const sr = h.attachShadow({ mode: 'open' });
+  sr.innerHTML = BASE + '<div class="__root"><h1>x</h1><h2>x</h2><p>x</p><button>x</button></div>';
+  REF.pFont = cs(sr.querySelector('p')).fontFamily;
+  REF.h1color = cs(sr.querySelector('h1')).color;
+  const b = sr.querySelector('button');
+  REF.btnBg = cs(b).backgroundColor; REF.btnColor = cs(b).color;
+})();
+
+/* ---------- elements ---------- */
+const $ = id => document.getElementById(id);
+const ta = $('code'), hl = $('hl'), brief = $('brief'), seal = $('seal');
+const shadow = $('host').attachShadow({ mode: 'open' });
+shadow.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a');
+  if (a) { e.preventDefault(); toast('Портал работает! На настоящем сайте он открыл бы ' + (a.getAttribute('href') || 'страницу') + '.'); }
+});
+shadow.addEventListener('submit', e => { e.preventDefault(); toast('Форма работает! Настоящий сайт отправил бы бронь на сервер.'); });
+
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const SPARK = '<svg aria-hidden="true"><use href="#spark"/></svg>';
+
+function highlight(src) {
+  let out = '';
+  const re = /(<\!--[\s\S]*?(?:-->|$)|\/\*[\s\S]*?(?:\*\/|$))|(<\/?)([a-zA-Z][\w-]*)([^<>]*?)(\/?>)|([^<\/]+|<|\/)/g;
+  let m;
+  while ((m = re.exec(src))) {
+    if (m[1]) out += `<span class="t-c">${esc(m[1])}</span>`;
+    else if (m[3]) {
+      const attrs = esc(m[4]).replace(/([\w-]+)(\s*=\s*)("[^"]*"?|'[^']*'?|[^\s"']+)?/g,
+        (_, n, eq, v) => `<span class="t-a">${n}</span><span class="t-p">${eq}</span>${v ? `<span class="t-v">${v}</span>` : ''}`);
+      out += `<span class="t-p">${esc(m[2])}</span><span class="t-n">${m[3]}</span>${attrs}<span class="t-p">${esc(m[5])}</span>`;
+    } else out += esc(m[6]);
+    if (m.index === re.lastIndex) re.lastIndex++;
+  }
+  return out + (src.endsWith('\n') ? ' ' : '');
+}
+
+/* ---------- typo helper: browsers ignore unknown CSS/HTML silently, so we point it out ---------- */
+const CSS_PROPS = ['list-style-type','text-shadow','animation','animation-name','animation-duration','animation-iteration-count','animation-direction','animation-delay','animation-timing-function','grid-column','grid-row','grid-template-rows','grid-gap','box-sizing','content','z-index','object-fit','aspect-ratio','min-height','max-height','border-top','border-bottom','border-left','border-right','white-space','vertical-align','filter','font','background-size','background-position','background-repeat','align-self','justify-self','flex-grow','flex-shrink','flex-basis','order','visibility','overflow-x','overflow-y','word-spacing','text-indent','place-items','align-content','inset','border-collapse','color','background','background-color','background-image','text-align','text-decoration','text-transform','padding','padding-top','padding-right','padding-bottom','padding-left',
+  'margin','margin-top','margin-right','margin-bottom','margin-left','border','border-radius','border-color','border-width','border-style','display','gap','row-gap','column-gap','flex','flex-direction',
+  'flex-wrap','justify-content','align-items','font-size','font-family','font-weight','font-style','line-height','letter-spacing','width','height','max-width','min-width','cursor','opacity','box-shadow',
+  'transition','transform','position','top','left','right','bottom','list-style','overflow','grid-template-columns','outline'];
+const CSS_VALUES = { position: ['static', 'relative', 'absolute', 'fixed', 'sticky'], 'flex-direction': ['row', 'column', 'row-reverse', 'column-reverse'], 'flex-wrap': ['wrap', 'nowrap', 'wrap-reverse'], 'text-transform': ['uppercase', 'lowercase', 'capitalize', 'none'], 'justify-content': ['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end', 'left', 'right', 'stretch', 'normal'], 'align-items': ['flex-start', 'flex-end', 'center', 'stretch', 'baseline', 'start', 'end', 'normal'], 'text-align': ['left', 'right', 'center', 'justify', 'start', 'end'], display: ['flex', 'block', 'inline', 'inline-block', 'inline-flex', 'grid', 'none'],
+  cursor: ['pointer', 'default', 'text', 'move', 'not-allowed'], 'font-weight': ['bold', 'normal', 'lighter', 'bolder'] };
+const COLORS = ['red','blue','green','white','black','orange','yellow','purple','pink','brown','gray','grey','gold','crimson','navy','teal','violet','tomato','coral','beige','transparent','maroon','olive','silver','lime','cyan','magenta','indigo','salmon','chocolate','tan','ivory','khaki','orchid','plum','sienna','wheat','darkred','darkblue','darkgreen','lightblue','lightgreen','skyblue','hotpink','firebrick','peru','linen','lavender','turquoise','aqua','fuchsia','inherit','currentcolor'];
+const TAGS = ['h1','h2','h3','h4','h5','h6','p','strong','em','b','i','u','ul','ol','li','a','button','div','span','style','br','hr','img','section','header','footer','nav','main','article','small','mark','code','pre','label','input','form','table','tr','td','th','blockquote'];
+function lev(a, b) { const d = Array.from({ length: a.length + 1 }, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; }
+function closest(w, list) { let best = null, bd = 3; list.forEach(x => { const v = lev(w, x); if (v < bd) { bd = v; best = x; } }); return bd <= Math.max(1, Math.min(2, Math.floor(w.length / 3))) ? best : null; }
+function lint(code) {
+  const out = [], seen = new Set();
+  const add = m => { if (!seen.has(m)) { seen.add(m); out.push(m); } };
+  const tags = code.replace(/<\!--[\s\S]*?-->/g, '').matchAll(/<\/?([a-zA-Z][a-zA-Z0-9-]*)/g);
+  for (const [, t] of tags) { const tl = t.toLowerCase(); if (!TAGS.includes(tl)) { const c = closest(tl, TAGS); add(c ? `Тег \`${t}\` — похоже на опечатку. Может быть, \`${c}\`?` : `Браузер не знает тега \`${t}\`.`); } }
+  // attribute typos like clas= / hre=
+  for (const [, a] of code.matchAll(/<[a-zA-Z][\w-]*\s+([^>]*)>/g)) for (const [, n] of a.matchAll(/([a-zA-Z-]+)\s*=/g)) {
+    const nl = n.toLowerCase(); if (!['class', 'href', 'id', 'style', 'src', 'alt', 'type', 'title', 'target', 'for', 'placeholder', 'name', 'value', 'width', 'height'].includes(nl)) { const c = closest(nl, ['class', 'href', 'id', 'src', 'alt']); if (c) add(`Атрибут \`${n}\` — опечатка? Правильно: \`${c}\`.`); }
+  }
+  const htmlClasses = new Set(); for (const [, v] of code.replace(/<style[\s\S]*?(<\/style>|$)/gi, '').matchAll(/class\s*=\s*["']([^"']*)["']/gi)) v.split(/\s+/).filter(Boolean).forEach(c => htmlClasses.add(c));
+  for (const [, css] of code.matchAll(/<style[^>]*>([\s\S]*?)(?:<\/style>|$)/gi)) {
+    const clean = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const stack = []; let nested = null;
+    for (const m of clean.matchAll(/([^{}]*)([{}])/g)) {
+      if (m[2] === '{') { const head = m[1].split(/[;\n]/).pop().trim(); const parent = stack[stack.length - 1]; if (parent !== undefined && !parent.startsWith('@') && !nested) nested = head; stack.push(head); } else stack.pop();
+    }
+    const depth = stack.length;
+    if (nested) add(`Правило \`${nested}\` оказалось внутри другого правила. Проверь, что у предыдущего правила есть закрывающая скобка \`}\`.`);
+    else if (depth > 0) add('В стилях не хватает закрывающей скобки `}`.');
+    for (const [, sel] of clean.matchAll(/(?:^|[}\s,])\.([a-zA-Z][\w-]*)(?=[^{}]*\{)/g)) {
+      if (!htmlClasses.has(sel)) { const c = closest(sel, [...htmlClasses]); add(c ? `В стилях есть \`.${sel}\`, а в HTML класс называется \`${c}\`. Названия должны совпадать.` : `Правило \`.${sel}\` не находит ни одного элемента: в HTML нет тега с \`class="${sel}"\`.`); }
+    }
+    for (const [, body] of clean.matchAll(/\{([^{}]*)\}?/g)) {
+      body.split(';').forEach(decl => {
+        const m = decl.match(/^\s*([a-zA-Z-]+)\s*:\s*([\s\S]*?)\s*$/); if (!m) return;
+        const prop = m[1].toLowerCase(), val = m[2].trim().toLowerCase();
+        if (prop.startsWith('--')) return;
+        if (!CSS_PROPS.includes(prop)) { const c = closest(prop, CSS_PROPS); add(c ? `Свойство \`${m[1]}\` — опечатка? Правильно: \`${c}\`.` : `Браузер не знает свойства \`${m[1]}\` и пропустит его.`); return; }
+        if (/:/.test(val) && !/https?:/.test(val)) { add(`После \`${prop}: ${val.split(/\s/)[0]}\` пропущена точка с запятой \`;\`.`); return; }
+        if (CSS_VALUES[prop] && val && !CSS_VALUES[prop].includes(val)) { const c = closest(val, CSS_VALUES[prop]); if (c) add(`Значение \`${val}\` у \`${prop}\` — опечатка? Правильно: \`${c}\`.`); }
+        if ((prop === 'color' || prop === 'background-color' || prop === 'background') && /^[a-z]+$/.test(val) && !COLORS.includes(val)) { const c = closest(val, COLORS); if (c) add(`Цвет \`${val}\` — опечатка? Может быть, \`${c}\`?`); }
+      });
+    }
+  }
+  return out.slice(0, 3);
+}
+
+/* ---------- render ---------- */
+const xpPer = i => LEVELS[i] && LEVELS[i].extra ? 60 : 30;
+function totalXP() { return Object.entries(st.stars).reduce((a, [i, s]) => a + s * xpPer(+i), 0); }
+
+function renderTop() {
+  const xp = totalXP();
+  updateBadge();
+  $('xp').textContent = xp;
+  $('xpbar').style.width = Math.round(xp / LEVELS.reduce((a, _, i) => a + 3 * xpPer(i), 0) * 100) + '%';
+  $('map').innerHTML = LEVELS.map((L, i) => {
+    const s = st.stars[i];
+    const cls = i === st.cur ? 'cur' : (s ? 'done' : '');
+    const chHere = CH.findIndex(ch => ch.from === i);
+    return (chHere >= 0 ? `<span class="chap">Глава ${chHere + 1}</span>` : '<span class="dash" aria-hidden="true"></span>') +
+      `<button class="node ${cls}${L.extra ? ' extra' : ''}" data-i="${i}" ${i > st.unlocked ? 'disabled' : ''} title="${esc(L.title)}" aria-label="${L.extra ? 'Экстра-уровень' : 'Уровень ' + displayNum(i)}: ${esc(L.title)}">${levelLabel(i)}${s ? `<small>${'★'.repeat(s)}</small>` : ''}</button>`;
+  }).join('');
+}
+
+function scrollStrip() { const m = $('map'), c = m.querySelector('.node.cur'); if (c) m.scrollLeft = Math.max(0, c.offsetLeft - m.clientWidth / 2); }
+function renderBrief(results) {
+  const L = LEVELS[st.cur], i = st.cur;
+  const passed = results.every(Boolean);
+  const stars = st.stars[i];
+  const warns = lint(ta.value);
+  let helper = '';
+  if (st.sol[i]) helper = `<div class="tip"><b>Готовое заклинание</b><pre>${esc(L.solution)}</pre><button class="btn" id="useSol" type="button">Вставить в книгу</button></div>`;
+  else if (st.hint[i]) helper = `<div class="tip"><b>Подсказка от совы.</b> ${esc(L.hint)}</div>`;
+
+  brief.innerHTML = `
+    <div><div class="eyebrow">${L.extra ? 'Экстра-уровень · повторение главы ' + L.chapter : 'Уровень ' + displayNum(i) + ' из ' + REG}</div><h2>${esc(L.title)}</h2></div>
+    ${(() => { const k = CH.findIndex(ch => ch.from === i); if (k < 0) return ''; const ch = CH[k]; return `<div class="chapintro"><b>Начинается ${esc(ch.title)}</b><p>${esc(ch.blurb)} Тропа научит тебя:</p><ul class="topics">${ch.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`; })()}
+    <div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>Марта, кошка-магиня</b>${esc(L.say)}</div></div>
+    <div class="learn"><h3>${SPARK}${esc(L.learn.t)}</h3><p>${esc(L.learn.p)}</p><pre>${highlight(L.learn.code)}</pre></div>
+    ${L.extra ? '<div class="xtra-note"><b>Экстра-уровень.</b> Новой теории нет, только то, что ты уже знаешь. Награда двойная.</div>' : ''}
+    <div class="task"><h3>${SPARK}Задание</h3><p>${fmt(L.task)}</p>
+      <ul class="checks">${L.checks.map((c, k) => `<li class="${results[k] ? 'pass' : ''}">${fmt(c[0])}</li>`).join('')}</ul>
+      ${warns.length ? `<div class="warn"><b>Сова заметила опечатку</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+    </div>
+    ${passed && stars ? `<div class="win"><h3>${i === LEVELS.length - 1 ? 'Сайт наколдован!' : 'Заклинание сработало'}</h3>
+      <div class="stars" aria-label="${stars} из 3 звёзд">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
+      <p>+${stars * xpPer(i)} магической силы.${stars < 3 ? ' Пройди без подсказок, чтобы собрать все три звезды.' : ' Марта довольно мурлычет.'}</p>
+      <div class="newitem">В кофейне появилось: <b>${esc(CAFE[i].name)}</b>${FURN[i] ? `, <b>${esc(FURN[i].name)}</b>` : ''}${PLANTS[i] ? ` и растение <b>${esc(PLANTS[i].name)}</b>` : ''}</div>
+      <div class="helpers">${i < LEVELS.length - 1 ? '<button class="btn primary" id="next" type="button">Следующий уровень →</button>' : '<button class="btn primary" id="fin" type="button">Завершить сезон</button>'}<button class="btn" id="peek" type="button">Заглянуть в окно</button></div></div>` : `
+    <div class="helpers">
+      ${!st.hint[i] ? '<button class="btn" id="hint" type="button">Подсказка</button>' : ''}
+      ${st.hint[i] && !st.sol[i] ? '<button class="btn" id="sol" type="button">Показать решение</button>' : ''}
+    </div>`}
+    ${helper}
+    ${(() => { const k = chapterOf(i); if (!testOpen(k) || (passed && stars)) return ''; return `<div class="skip"><span><b>Уже знаешь эту тему?</b> Сдай тест главы и переходи дальше.</span><button class="btn" id="quiz" type="button">Тест главы ${k + 1}</button></div>`; })()}
+    ${st.tested && st.tested[i] ? '<div class="skip"><span><b>Уровень зачтён тестом.</b> Пройди его, чтобы получить больше звёзд.</span></div>' : ''}`;
+}
+
+function prep(code) { return code.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>|$)/gi, (m, a, b, c) => a + b.replace(/:root\b/g, ':host').replace(/(^|[\s,}])(html|body)(?=\s*[,{:.#\[])/g, (mm, p1, tag) => p1 + (tag === 'html' ? ':host' : '.__root')) + c); }
+function check(code) {
+  shadow.innerHTML = BASE + '<div class="__root">' + prep(code) + '</div>';
+  const root = shadow.querySelector('.__root');
+  return LEVELS[st.cur].checks.map(c => { try { return !!c[1](root); } catch (e) { return false; } });
+}
+
+function update(fromInput) {
+  const code = ta.value;
+  hl.innerHTML = highlight(code);
+  st.code[st.cur] = code;
+  const res = check(code);
+  const i = st.cur;
+  const passed = res.every(Boolean);
+  if (passed && fromInput && (!st.stars[i] || (st.tested && st.tested[i]))) {
+    st.stars[i] = Math.max(st.tested && st.tested[i] ? 1 : 0, st.sol[i] ? 1 : st.hint[i] ? 2 : 3);
+    if (st.tested) delete st.tested[i];
+    st.unlocked = Math.max(st.unlocked, Math.min(i + 1, LEVELS.length - 1));
+    seal.classList.remove('on'); void seal.offsetWidth; seal.classList.add('on');
+    renderTop();
+  }
+  if (!passed) seal.classList.remove('on');
+  else if (st.stars[i]) seal.classList.add('on');
+  save();
+  renderBrief(res);
+}
+
+function openLevel(i) {
+  st.cur = i;
+  ta.value = st.code[i] != null ? st.code[i] : LEVELS[i].starter;
+  ta.scrollTop = 0;
+  setTimeout(scrollStrip, 0);
+  seal.classList.remove('on');
+  renderTop();
+  update(false);
+  save();
+}
+
+/* ---------- events ---------- */
+let tmr;
+ta.addEventListener('input', () => { hl.innerHTML = highlight(ta.value); clearTimeout(tmr); tmr = setTimeout(() => update(true), 250); });
+ta.addEventListener('scroll', () => { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; });
+ta.addEventListener('keydown', e => {
+  if (e.key === 'Tab' && !e.shiftKey) {
+    e.preventDefault();
+    ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end');
+    ta.dispatchEvent(new Event('input'));
+  }
+});
+$('map').addEventListener('click', e => { const b = e.target.closest('.node'); if (b && !b.disabled) openLevel(+b.dataset.i); });
+$('reset').addEventListener('click', () => { ta.value = LEVELS[st.cur].starter; update(false); toast('Страница книги очищена'); });
+brief.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  const id = t.id, i = st.cur;
+  if (id === 'hint') { st.hint[i] = true; update(false); }
+  if (id === 'sol') { st.sol[i] = true; update(false); }
+  if (id === 'useSol') { ta.value = LEVELS[i].solution; update(true); }
+  if (id === 'next') openLevel(i + 1);
+  if (id === 'fin') finale();
+  if (id === 'peek') show('cafe');
+  if (id === 'quiz') openQuiz(chapterOf(st.cur));
+});
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) show(b.dataset.v); });
+$('stops').addEventListener('click', e => { const b = e.target.closest('.stop'); if (b && !b.disabled) { openLevel(+b.dataset.i); show('quest'); } });
+$('cafec').addEventListener('click', e => {
+  if (cafeScene !== 'hall') return;
+  const r = e.currentTarget.getBoundingClientRect();
+  const g = guestAt((e.clientX - r.left) / r.width * 160, (e.clientY - r.top) / r.height * 100);
+  if (!g) { if (!have(1)) toast('Гости придут, когда за прилавком появится Марта.'); return; }
+  const who = GNAME[g.col] + (g.hat ? ' в колпаке' : '');
+  const what = { enter: 'идёт за заказом', queue: 'ждёт в очереди и хочет', order: 'заказывает', happy: 'получил', toSeat: 'несёт к столику', sit: 'пьёт', leave: 'уходит, унося' }[g.st] || 'хочет';
+  toast(`${who} ${what} ${g.order.n}`);
+});
+$('mapside').addEventListener('click', e => { if (e.target.closest('[data-go]')) show('quest'); const tq = e.target.closest('[data-test]'); if (tq) openQuiz(+tq.dataset.test); const c = e.target.closest('[data-ch]'); if (c) { mapCh = +c.dataset.ch; renderMapSide(); drawMap(); } });
+$('cafeside').addEventListener('click', e => { const b = e.target.closest('[data-scene]'); if (b) { cafeScene = b.dataset.scene; renderCafeSide(); drawCafe(); } });
+
+let tt;
+function toast(msg) {
+  let t = document.querySelector('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+/* ---------- chapter tests ---------- */
+const QUIZ = [
+  [
+    { q: 'Какой тег делает главный заголовок страницы?', o: ['`h1`', '`head`', '`header`', '`title`'], a: 0, e: '`h1` — главный заголовок. `head` и `title` — служебные части документа, а `header` — шапка сайта.' },
+    { q: 'Что покажет браузер?', c: '<p>Варим <strong>кофе</strong></p>', o: ['Слово «кофе» жирным', 'Слово «кофе» курсивом', 'Слово «кофе» ссылкой', 'Ничего, тег strong сломает абзац'], a: 0, e: '`strong` выделяет важные слова, браузер показывает их жирным.' },
+    { q: 'Какой тег — пункт списка?', o: ['`li`', '`ul`', '`item`', '`list`'], a: 0, e: '`ul` — сам список, а каждый пункт в нём — `li`.' },
+    { q: 'В каком атрибуте ссылки пишут адрес?', o: ['`href`', '`src`', '`link`', '`alt`'], a: 0, e: 'Адрес ссылки — `href`. `src` нужен картинкам.' },
+    { q: 'Как в CSS выбрать элемент с `class="order"`?', o: ['`.order`', '`#order`', '`order`', '`<order>`'], a: 0, e: 'Класс выбирают через точку. Решётка # — для id.' },
+    { q: 'Что делает `display: flex` с детьми блока?', o: ['Ставит их в ряд', 'Прячет их', 'Делает текст жирным', 'Растягивает блок на весь экран'], a: 0, e: 'flexbox по умолчанию выстраивает детей в один ряд.' },
+    { q: 'Что такое `padding`?', o: ['Внутренний отступ', 'Внешний отступ', 'Рамка', 'Скругление углов'], a: 0, e: '`padding` — отступ внутри коробки, между краем и содержимым.' },
+  ],
+  [
+    { q: 'Какой атрибут `img` описывает картинку словами?', o: ['`alt`', '`src`', '`href`', '`title`'], a: 0, e: '`alt` показывается, если картинка не загрузилась, и его читают экранные дикторы.' },
+    { q: 'Какой тег делает нумерованный список?', o: ['`ol`', '`ul`', '`nl`', '`li`'], a: 0, e: '`ol` — ordered list, список с номерами.' },
+    { q: 'Какой тег — строка таблицы?', o: ['`tr`', '`td`', '`row`', '`table`'], a: 0, e: '`tr` — строка, а `td` — ячейка в ней.' },
+    { q: 'Как связать подпись `label` с полем `input`?', o: ['`for` у label и такой же `id` у input', '`name` у обоих', '`href` у label', 'Никак, они связаны сами'], a: 0, e: 'Значение `for` у label должно совпадать с `id` поля.' },
+    { q: 'Что такое `margin`?', o: ['Внешний отступ', 'Внутренний отступ', 'Толщина рамки', 'Размер шрифта'], a: 0, e: '`margin` — расстояние снаружи коробки, до соседей.' },
+    { q: 'Когда работает правило `.order:hover`?', o: ['Пока курсор над элементом', 'Всегда', 'Только при загрузке страницы', 'После двойного клика'], a: 0, e: ':hover — состояние «курсор над элементом».' },
+    { q: 'Что делает `justify-content: space-between`?', o: ['Прижимает крайних детей к краям', 'Ставит всех в центр', 'Ставит всех столбиком', 'Убирает расстояние между детьми'], a: 0, e: 'Свободное место делится между элементами, крайние уходят к краям.' },
+  ],
+  [
+    { q: 'Как в CSS выбрать элемент с `id="warning"`?', o: ['`#warning`', '`.warning`', '`warning`', '`*warning`'], a: 0, e: 'id выбирают через решётку #.' },
+    { q: 'Что выбирает селектор `.lab p`?', o: ['Абзацы внутри блока .lab', 'Элементы с классами lab и p', 'Абзац сразу после .lab', 'Только первый абзац'], a: 0, e: 'Пробел между селекторами значит «внутри».' },
+    { q: 'Что выбирает `li:nth-child(even)`?', o: ['Чётные пункты списка', 'Нечётные пункты', 'Последний пункт', 'Все пункты'], a: 0, e: 'even — чётные (2, 4, 6…), odd — нечётные.' },
+    { q: 'Как поставить блок с `max-width` по центру?', o: ['`margin: 0 auto`', '`text-align: center`', '`position: center`', '`align: middle`'], a: 0, e: 'auto слева и справа делит свободное место поровну.' },
+    { q: 'Как сделать из блока круг?', o: ['Одинаковые width и height + `border-radius: 50%`', '`shape: circle`', 'Только `border-radius: 50%`', '`display: round`'], a: 0, e: 'Круг получается только из квадрата: ширина должна равняться высоте.' },
+    { q: 'От чего отсчитывается `position: absolute`?', o: ['От ближайшего предка с `position: relative`', 'Всегда от окна браузера', 'От предыдущего элемента', 'От центра страницы'], a: 0, e: 'Предок с position, отличным от static, становится точкой отсчёта.' },
+    { q: 'В какое свойство пишут `linear-gradient`?', o: ['`background`', '`color`', '`border-color`', '`font`'], a: 0, e: 'Градиент — это картинка, поэтому его пишут в background или background-image.' },
+  ],
+  [
+    { q: 'Что значит `grid-template-columns: repeat(3, 1fr)`?', o: ['Три равные колонки', 'Три ряда', 'Колонка шириной 3px', 'Три пустых ячейки'], a: 0, e: 'repeat(3, 1fr) = 1fr 1fr 1fr, три равные доли.' },
+    { q: 'Что делает `gap` в сетке?', o: ['Расстояние между ячейками', 'Отступ вокруг всей сетки', 'Прячет пустые ячейки', 'Рамку у ячеек'], a: 0, e: 'gap задаёт зазоры между колонками и рядами.' },
+    { q: 'Что делает `grid-column: span 2`?', o: ['Растягивает ячейку на 2 колонки', 'Ставит ячейку во 2-ю колонку', 'Делает 2 колонки в сетке', 'Сдвигает ячейку на 2px'], a: 0, e: 'span — «занять столько колонок».' },
+    { q: 'Что делает `flex-wrap: wrap`?', o: ['Разрешает переносить детей на новую строку', 'Сжимает детей в одну строку', 'Ставит детей столбиком', 'Оборачивает блок рамкой'], a: 0, e: 'Без wrap flexbox держит всех в одном ряду.' },
+    { q: 'Когда работают правила внутри `@media (max-width: 600px)`?', o: ['На экранах не шире 600px', 'На экранах шире 600px', 'Всегда', 'Только при печати'], a: 0, e: 'max-width — «до этой ширины включительно».' },
+    { q: 'Сколько пикселей в `1.5rem`, если базовый шрифт 16px?', o: ['24px', '15px', '1.5px', '16px'], a: 0, e: '1.5 × 16 = 24.' },
+    { q: 'Что делает `flex-direction: column`?', o: ['Ставит детей столбиком', 'Ставит детей в ряд', 'Делит блок на колонки сетки', 'Переворачивает текст'], a: 0, e: 'column — направление сверху вниз.' },
+  ],
+  [
+    { q: 'Как использовать CSS-переменную `--gold`?', o: ['`var(--gold)`', '`$gold`', '`--gold()`', '`@gold`'], a: 0, e: 'Переменную объявляют через два дефиса, а используют через var().' },
+    { q: 'Что будет с элементом при `opacity: 0`?', o: ['Он невидим, но место занимает', 'Он удалён со страницы', 'Он станет чёрным', 'Он начнёт мигать'], a: 0, e: 'opacity меняет только прозрачность, место остаётся.' },
+    { q: 'Что делает `transition: all 0.3s`?', o: ['Делает изменения стилей плавными за 0.3 с', 'Запускает анимацию через 0.3 с', 'Прячет элемент на 0.3 с', 'Поворачивает элемент'], a: 0, e: 'transition растягивает изменение во времени.' },
+    { q: 'Что делает `transform: scale(1.1)`?', o: ['Увеличивает элемент на 10%', 'Сдвигает на 1.1px', 'Поворачивает на 1.1°', 'Меняет шрифт'], a: 0, e: 'scale — масштаб, 1 = как было.' },
+    { q: 'Без какого свойства `::before` не появится?', o: ['`content`', '`display`', '`color`', '`position`'], a: 0, e: 'Псевдоэлемент существует, только если у него есть content.' },
+    { q: 'Что такое `twinkle`?', c: '.star {\n  animation: twinkle 1s infinite alternate;\n}', o: ['Имя @keyframes', 'Название класса', 'Встроенный эффект браузера', 'Цвет звезды'], a: 0, e: 'Первое слово в animation — имя кадров из @keyframes.' },
+    { q: 'Что делает `position: sticky; top: 0`?', o: ['Прилипает к верху при прокрутке', 'Всегда стоит в верху окна, даже до прокрутки', 'Прячет элемент при прокрутке', 'Ставит элемент в начало страницы'], a: 0, e: 'sticky едет со страницей, пока не упрётся в верх, и там прилипает.' },
+  ],
+];
+const QN = 6, QPASS = 5;
+const chEnd = k => CH[k + 1] ? CH[k + 1].from - 1 : LEVELS.length - 1;
+const chapterDone = k => { for (let i = CH[k].from; i <= chEnd(k); i++) if (!have(i)) return false; return true; };
+const testOpen = k => st.unlocked >= CH[k].from && !chapterDone(k);
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+let qz = null;
+function openQuiz(k) {
+  qz = { k, items: shuffle(QUIZ[k]).slice(0, QN).map(it => { const order = shuffle(it.o.map((_, n) => n)); return { ...it, order }; }), n: 0, picked: null, right: 0, marks: [] };
+  let box = document.querySelector('.quizbox');
+  if (!box) { box = document.createElement('div'); box.className = 'quizbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Тест главы'); document.body.appendChild(box); box.addEventListener('click', quizClick); }
+  box.hidden = false; renderQuiz();
+}
+function closeQuiz() { const box = document.querySelector('.quizbox'); if (box) box.hidden = true; qz = null; }
+function renderQuiz() {
+  const box = document.querySelector('.quizbox'); if (!box || !qz) return;
+  const ch = CH[qz.k], dots = qz.items.map((_, n) => `<i class="${qz.marks[n] === true ? 'ok' : qz.marks[n] === false ? 'no' : n === qz.n ? 'now' : ''}"></i>`).join('');
+  const head = `<div class="qtop"><div class="eyebrow">Тест · ${esc(ch.title)}</div><button class="qclose" type="button" data-q="close" aria-label="Закрыть тест">×</button></div><div class="qdots" aria-hidden="true">${dots}</div>`;
+  if (qz.n >= qz.items.length) {
+    const ok = qz.right >= QPASS, last = qz.k === CH.length - 1;
+    box.innerHTML = `<div class="qcard">${head}<div class="qres"><div class="big">${qz.right} / ${qz.items.length}</div>
+      <h3>${ok ? 'Глава зачтена!' : 'Пока не зачтено'}</h3>
+      <p>${ok ? `Все уровни главы засчитаны с одной звездой, а помещение обустроено. ${last ? 'Это была последняя глава сезона.' : `Открыта ${esc(CH[qz.k + 1].title)}.`} Любой уровень можно перепройти и получить три звезды.`
+        : `Нужно хотя бы ${QPASS} правильных ответов из ${qz.items.length}. Пройди несколько уровней главы и попробуй снова — вопросы перемешаются.`}</p>
+      <div class="helpers">${ok ? (last ? '<button class="btn primary" type="button" data-q="cafe">Посмотреть кофейню</button>' : `<button class="btn primary" type="button" data-q="go">К главе ${qz.k + 2} →</button><button class="btn" type="button" data-q="cafe">Заглянуть в окно</button>`)
+        : '<button class="btn primary" type="button" data-q="retry">Попробовать снова</button><button class="btn" type="button" data-q="close">Вернуться к урокам</button>'}</div></div></div>`;
+    box.querySelector('.btn.primary').focus();
+    return;
+  }
+  const it = qz.items[qz.n], done = qz.picked !== null;
+  box.innerHTML = `<div class="qcard">${head}<h3>${fmt(it.q)}</h3>${it.c ? `<pre>${highlight(it.c)}</pre>` : ''}
+    <div class="qopts">${it.order.map(n => `<button class="qopt${done && n === it.a ? ' right' : ''}${done && n === qz.picked && n !== it.a ? ' wrong' : ''}" type="button" data-opt="${n}" ${done ? 'disabled' : ''}>${fmt(it.o[n])}</button>`).join('')}</div>
+    ${done ? `<p class="qexp"><b>${qz.picked === it.a ? 'Верно.' : 'Не совсем.'}</b> ${fmt(it.e)}</p><div class="helpers"><button class="btn primary" type="button" data-q="next">${qz.n === qz.items.length - 1 ? 'Узнать результат' : 'Дальше →'}</button></div>` : ''}</div>`;
+  (box.querySelector(done ? '[data-q="next"]' : '.qopt') || box).focus();
+}
+function quizClick(e) {
+  if (!qz) return;
+  if (e.target === e.currentTarget) { closeQuiz(); return; }
+  const o = e.target.closest('[data-opt]'), b = e.target.closest('[data-q]');
+  if (o && qz.picked === null) { qz.picked = +o.dataset.opt; const ok = qz.picked === qz.items[qz.n].a; qz.marks[qz.n] = ok; if (ok) qz.right++; renderQuiz(); return; }
+  if (!b) return;
+  const act = b.dataset.q, k = qz.k;
+  if (act === 'close') closeQuiz();
+  if (act === 'next') { qz.n++; qz.picked = null; if (qz.n >= qz.items.length) finishQuiz(); renderQuiz(); }
+  if (act === 'retry') openQuiz(k);
+  if (act === 'go') { closeQuiz(); openLevel(CH[k + 1].from); show('quest'); }
+  if (act === 'cafe') { closeQuiz(); show('cafe'); }
+}
+function finishQuiz() {
+  const k = qz.k; st.quiz = st.quiz || {}; st.quiz[k] = Math.max(st.quiz[k] || 0, qz.right);
+  if (qz.right < QPASS) { save(); return; }
+  st.tested = st.tested || {};
+  for (let i = CH[k].from; i <= chEnd(k); i++) if (!st.stars[i]) { st.stars[i] = 1; st.tested[i] = true; }
+  if (CH[k + 1]) st.unlocked = Math.max(st.unlocked, CH[k + 1].from);
+  save(); renderTop(); update(false);
+  if (view === 'map') { renderMapSide(); drawMap(); }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); });
+
+function finale() {
+  const total = Object.values(st.stars).reduce((a, b) => a + b, 0);
+  const d = document.createElement('div');
+  d.className = 'finale';
+  d.innerHTML = `<div class="card"><svg aria-hidden="true"><use href="#cat"/></svg><h2>Первый сезон пройден!</h2>
+    <p>Ты наколдовал сайт с нуля: ${total} из ${LEVELS.length * 3} звёзд, ${totalXP()} магической силы. Твои новые чары:</p>
+    <ul><li>HTML: теги, списки, ссылки, картинки, таблицы, формы</li><li>CSS: селекторы, цвета, шрифты, отступы, тени, градиенты</li><li>раскладка: flexbox, grid, позиционирование</li><li>адаптив, переменные, переходы и анимации</li></ul>
+    <div class="helpers"><button class="btn primary" id="closeFin" type="button">Посмотреть кофейню</button><button class="btn" id="restart" type="button">Пройти заново</button></div></div>`;
+  document.body.appendChild(d);
+  d.addEventListener('click', e => {
+    if (e.target === d) d.remove();
+    if (e.target.id === 'closeFin') { d.remove(); show('cafe'); }
+    if (e.target.id === 'restart') { st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {}, seen: -1 }; save(); d.remove(); openLevel(0); show('quest'); }
+  });
+}
+
+openLevel(Math.min(st.cur, LEVELS.length - 1));
+</script>
+</body>
+</html>
