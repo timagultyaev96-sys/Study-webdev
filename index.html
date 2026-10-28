@@ -203,6 +203,34 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .residents em{font-style:normal;color:var(--muted);font-size:12px}
 .skip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1.5px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--muted)}
 .skip b{color:var(--ink)}
+.bookbtn{position:absolute;top:14px;right:14px;z-index:3;display:flex;align-items:center;gap:6px;background:#2a140d;border:2px solid #8a4a22;color:#f4ac3c;
+  font:8px/1 "Press Start 2P",monospace;padding:5px 8px 5px 6px;box-shadow:2px 2px 0 #000;animation:bob 2.4s ease-in-out infinite}
+.bookbtn:hover{border-color:#f4ac3c;color:#ffd27a}
+.bookicon{width:24px;height:21px;image-rendering:pixelated;flex:0 0 auto}
+.tab .bookicon{width:20px;height:18px}
+.booktab{margin-left:auto}
+@keyframes bob{50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.bookbtn{animation:none}}
+@media (max-width:520px){.bookbtn span{display:none}.booktab{margin-left:0}}
+.bk{display:grid;gap:12px}
+.bk h3{margin:0;font:700 22px/1.2 var(--display)}
+.bk p{margin:0;color:var(--muted);font-size:14px}
+.bksearch{width:100%;border:2px solid var(--line);border-radius:12px;padding:9px 12px;font:15px var(--body);background:var(--panel);color:var(--ink)}
+.bksearch:focus{border-color:var(--orange);outline:none}
+.bkchaps{display:flex;flex-wrap:wrap;gap:6px}
+.bkchaps button{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:700}
+.bkchaps button[aria-pressed="true"]{background:var(--night);border-color:var(--night);color:var(--gold)}
+.bkchaps button:disabled{opacity:.45;cursor:not-allowed}
+.bklist{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:min(46vh,420px);overflow:auto}
+.bklist button{width:100%;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:8px 10px}
+.bklist button:hover:not(:disabled){border-color:var(--orange)}
+.bklist button:disabled{opacity:.5;cursor:not-allowed}
+.bklist .num{font:9px/1 "Press Start 2P",monospace;color:var(--red);text-align:center}
+.bklist b{display:block;font-size:14px}
+.bklist small{display:block;color:var(--muted);font-size:12.5px}
+.bklist .st{color:var(--gold);letter-spacing:2px;font-size:13px;white-space:nowrap}
+.bkopts{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.bkopts label{display:flex;align-items:center;gap:6px;cursor:pointer}
 .quizbox{position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--night) 70%,transparent);display:grid;place-items:center;
   padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -325,6 +353,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     <button class="tab" role="tab" id="t-quest" data-v="quest" type="button" aria-selected="true">Квест</button>
     <button class="tab" role="tab" id="t-map" data-v="map" type="button" aria-selected="false">Карта мира</button>
     <button class="tab" role="tab" id="t-cafe" data-v="cafe" type="button" aria-selected="false">Окно в кофейню <span class="new" id="newbadge" hidden>NEW</span></button>
+    <button class="tab booktab" type="button" data-book="1"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg>Книга повторения</button>
   </div>
 
   <section class="view" id="v-map" hidden>
@@ -333,6 +362,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
         <canvas id="mapc" width="160" height="110" aria-label="Пиксельная карта уровней"></canvas>
         <div id="stops"></div>
         <div class="fog-label" id="foglabel">СЕЗОН 2<br>JAVA<br>SCRIPT<br>скоро</div>
+        <button class="bookbtn" type="button" data-book="1" aria-label="Открыть книгу повторения"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg><span>ПОВТОРИТЬ</span></button>
         <div class="plate">ЗЕМЛИ ГИЛЬДИИ</div>
       </div>
       <aside class="panel side" id="mapside"></aside>
@@ -343,6 +373,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     <div class="pixel-view">
       <div class="frame">
         <canvas id="cafec" width="160" height="100" aria-label="Пиксельная кофейня изнутри"></canvas>
+        <button class="bookbtn" type="button" data-book="1" aria-label="Открыть книгу повторения"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg><span>ПОВТОРИТЬ</span></button>
         <div class="plate" id="cafeplate">КОФЕЙНЯ «ПИКСЕЛЬ»</div>
       </div>
       <aside class="panel side" id="cafeside"></aside>
@@ -3724,7 +3755,7 @@ brief.addEventListener('click', e => {
   if (id === 'peek') show('cafe');
   if (id === 'quiz') openQuiz(chapterOf(st.cur));
 });
-document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) show(b.dataset.v); });
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b && b.dataset.v) show(b.dataset.v); });
 $('stops').addEventListener('click', e => { const b = e.target.closest('.stop'); if (b && !b.disabled) { openLevel(+b.dataset.i); show('quest'); } });
 $('cafec').addEventListener('click', e => {
   if (cafeScene !== 'hall') { npcClick(e); return; }
@@ -3895,7 +3926,58 @@ function finishQuiz() {
   save(); renderTop(); update(false);
   if (view === 'map') { renderMapSide(); drawMap(); }
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); if (e.key === 'Escape' && bk) closeBook(); });
+
+/* ---------- book of review ---------- */
+let bk = null;
+function openBook() {
+  bk = { ch: chapterOf(st.cur), q: '', fresh: true };
+  let box = document.querySelector('.bookbox');
+  if (!box) { box = document.createElement('div'); box.className = 'quizbox bookbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Книга повторения'); document.body.appendChild(box);
+    box.addEventListener('click', bookClick); box.addEventListener('input', e => { if (e.target.id === 'bkq') { bk.q = e.target.value; renderBookList(); } if (e.target.id === 'bkfresh') bk.fresh = e.target.checked; }); }
+  box.hidden = false; renderBook(); const f = box.querySelector('#bkq'); if (f) f.focus();
+}
+function closeBook() { const box = document.querySelector('.bookbox'); if (box) box.hidden = true; bk = null; }
+function renderBook() {
+  const box = document.querySelector('.bookbox'); if (!box || !bk) return;
+  const done = Object.keys(st.stars).length;
+  box.innerHTML = `<div class="qcard bk"><div class="qtop"><div class="eyebrow">Книга повторения</div><button class="qclose" type="button" data-bk="close" aria-label="Закрыть книгу">×</button></div>
+    <h3>Что повторим?</h3>
+    <p>Выбери главу или найди тему словом. Пройденных уроков: ${done}. Повтор не отнимает звёзды, а если пройдёшь лучше — звёзд станет больше.</p>
+    <input class="bksearch" id="bkq" type="search" placeholder="Например: flex, таймер, массив, :hover" value="${esc(bk.q)}" autocomplete="off">
+    <div class="bkchaps" role="group" aria-label="Глава">${CH.map((c, k) => `<button type="button" data-bkch="${k}" aria-pressed="${!bk.q && k === bk.ch}" ${st.unlocked >= c.from ? '' : 'disabled'} title="${esc(c.title)}">${esc(c.short)}</button>`).join('')}</div>
+    <ul class="bklist" id="bklist"></ul>
+    <div class="bkopts"><label><input type="checkbox" id="bkfresh" ${bk.fresh ? 'checked' : ''}> Начать с чистого листа</label><button class="btn" type="button" data-bk="random">Случайный пройденный урок</button></div></div>`;
+  renderBookList();
+}
+function renderBookList() {
+  const list = document.querySelector('#bklist'); if (!list || !bk) return;
+  const qq = bk.q.trim().toLowerCase();
+  let ids = LEVELS.map((_, i) => i);
+  if (qq) ids = ids.filter(i => { const L = LEVELS[i]; return [L.title, L.learn.t, L.learn.p, L.task].join(' ').toLowerCase().includes(qq); });
+  else { const c = CH[bk.ch], end = CH[bk.ch + 1] ? CH[bk.ch + 1].from : LEVELS.length; ids = ids.filter(i => i >= c.from && i < end); }
+  document.querySelectorAll('[data-bkch]').forEach(b => b.setAttribute('aria-pressed', String(!qq && +b.dataset.bkch === bk.ch)));
+  list.innerHTML = ids.length ? ids.map(i => { const L = LEVELS[i], s = st.stars[i] || 0, open = i <= st.unlocked;
+    return `<li><button type="button" data-lv="${i}" ${open ? '' : 'disabled'}><span class="num">${levelLabel(i)}</span><span><b>${esc(L.title)}</b><small>${esc(L.learn.t)}${qq ? ' · ' + esc(CH[chapterOf(i)].title) : ''}</small></span><span class="st" aria-label="${s} из 3 звёзд">${open ? '★'.repeat(s) + '☆'.repeat(3 - s) : 'закрыт'}</span></button></li>`; }).join('')
+    : '<li><p>Ничего не нашлось. Попробуй другое слово: тег, свойство или тему.</p></li>';
+}
+function bookClick(e) {
+  if (!bk) return;
+  if (e.target === e.currentTarget) { closeBook(); return; }
+  const ch = e.target.closest('[data-bkch]'); if (ch && !ch.disabled) { bk.ch = +ch.dataset.bkch; bk.q = ''; const f = document.querySelector('#bkq'); if (f) f.value = ''; renderBookList(); return; }
+  const lv = e.target.closest('[data-lv]'); if (lv && !lv.disabled) { goRepeat(+lv.dataset.lv); return; }
+  const act = e.target.closest('[data-bk]'); if (!act) return;
+  if (act.dataset.bk === 'close') closeBook();
+  if (act.dataset.bk === 'random') { const done = Object.keys(st.stars).map(Number); if (!done.length) { toast('Сначала пройди хотя бы один урок.'); return; } goRepeat(done[Math.floor(Math.random() * done.length)]); }
+}
+function goRepeat(i) {
+  const fresh = bk && bk.fresh;
+  closeBook();
+  if (fresh) { delete st.code[i]; if (typeof visStores !== 'undefined') delete visStores[i]; }
+  openLevel(i); show('quest');
+  toast(`Повторяем: ${LEVELS[i].title}`);
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-book]')) openBook(); });
 
 function finale(season) {
   const s1 = season === 1, from = s1 ? 0 : CH[5].from, to = s1 ? CH[5].from - 1 : LEVELS.length - 1;
