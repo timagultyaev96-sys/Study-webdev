@@ -31,6 +31,8 @@ A browser game that teaches web development to complete beginners. Marta, a cat 
 
 It's one self-contained `index.html` with no build step and no server. Open the file in a browser, or use the GitHub Pages link above. Progress is saved in your browser's localStorage.
 
+On a phone the game has its own layout: a bottom bar switches between the task, the code and the site, and a row of symbol keys (`< > / = " { } ;` and more) sits above the keyboard. From the GitHub Pages link you can add the game to your home screen (Share → Add to Home Screen on iPhone, ⋮ → Install app on Android). It then opens like an app and works offline.
+
 ---
 
 ## Русский
@@ -57,3 +59,5 @@ It's one self-contained `index.html` with no build step and no server. Open the 
 ### Как запустить
 
 Вся игра — это один файл `index.html`: без сборки и без сервера. Открой его в браузере или перейди по ссылке на GitHub Pages выше. Прогресс сохраняется в localStorage браузера.
+
+На телефоне у игры своя раскладка: нижняя панель переключает задание, код и сайт, а над клавиатурой появляется ряд символов (`< > / = " { } ;` и другие). С сайта на GitHub Pages игру можно добавить на главный экран (iPhone: «Поделиться» → «На экран „Домой“», Android: ⋮ → «Установить приложение»). Тогда она открывается как приложение и работает без интернета.

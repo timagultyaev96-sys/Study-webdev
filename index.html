@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Веб-квест «Пиксель»: учи HTML, CSS и JavaScript, помогая кошке-магине Марте собрать сайт кофейни. Pixel Web Quest: learn HTML, CSS and JavaScript by building a café website with Marta the cat wizard.">
+<meta name="theme-color" content="#0f2a3b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Пиксель">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Веб-квест «Пиксель» · Pixel Web Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;700;800&family=Philosopher:wght@400;700&family=Press+Start+2P&display=swap">
@@ -351,9 +359,70 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .seasons li em{font-style:normal;color:var(--muted);font-size:12px;white-space:nowrap}
 .win .newitem{background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;font-size:13px;color:#fde9c8}
 .win .newitem b{color:var(--gold)}
+/* ---------- phone ---------- */
+.mnav,.keybar{display:none}
+.keybar button{flex:0 0 auto;min-width:38px;height:38px;padding:0 9px;border-radius:9px;border:1px solid var(--code-line);background:#0f2433;color:#fbe9de;font:600 16px var(--mono);touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.keybar button:active{background:#1f4a5c;border-color:#f7bb4c}
+.keybar button.k-act{color:#f7bb4c;font-size:14px}
+@media (max-width:760px){
+  .wrap{gap:12px;padding-top:max(10px,env(safe-area-inset-top,0px));padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .hero{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 12px;padding:10px 14px 14px;border-radius:16px}
+  .hero::after{height:5px}
+  .moon{display:none}
+  .arch{width:50px;height:58px;border-radius:25px 25px 0 0;align-self:end;margin-bottom:-14px}
+  .arch svg{width:46px;height:54px}
+  .brand{padding-bottom:0}
+  .brand .eyebrow{display:none}
+  .brand h1{font-size:20px;margin:0;line-height:1.1}
+  .xp{grid-column:auto;grid-template-columns:none;justify-items:end;gap:5px;padding:0;margin:0}
+  .xp>span{display:none}
+  .xp strong{font-size:20px}
+  .xpbar{width:64px;height:6px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:6px;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:8px 12px;font-size:13px;border-radius:10px;white-space:nowrap;gap:6px}
+  .booktab{margin-left:0}
+  .booktab>span{display:none}
+  .langtab{padding:3px}
+  .map{gap:6px;padding-bottom:8px}
+  .node{width:42px;height:42px;font-size:15px}
+  .brief{padding:16px;gap:14px}
+  .bench[data-m="task"] .editor,.bench[data-m="task"] .preview,
+  .bench[data-m="code"] .brief,.bench[data-m="code"] .preview,
+  .bench[data-m="site"] .brief,.bench[data-m="site"] .editor{display:none}
+  .ed{height:max(300px,calc(100dvh - 300px))}
+  .ed pre,.ed textarea{font-size:16px;line-height:1.6;padding:12px}
+  .screen{height:max(320px,calc(100dvh - 250px))}
+  .preview.js .screen{height:max(220px,calc(100dvh - 420px))}
+  .seal{right:12px;bottom:12px;transform:scale(.8);transform-origin:bottom right}
+  .keybar{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:#0a1a24;border-bottom:1px solid var(--code-line);scrollbar-width:none}
+  .keybar::-webkit-scrollbar{display:none}
+  body.kb .keybar{position:fixed;left:0;right:0;top:0;z-index:60;border-top:1px solid var(--code-line);box-shadow:0 -6px 18px rgba(0,0,0,.25);will-change:transform}
+  body.kb .editor .bar{display:none}
+  body.vq .mnav{display:grid}
+  body.kb .mnav{display:none}
+  .mnav{position:fixed;z-index:40;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));grid-template-columns:repeat(3,1fr);gap:4px;padding:5px;background:var(--night);border-radius:18px;box-shadow:0 10px 30px rgba(15,42,59,.35),0 0 0 2px #1f4a5c inset}
+  .mnav button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;color:#9fb3c0;border-radius:13px;padding:7px 4px 6px;font:700 12px var(--body);position:relative}
+  .mnav button i{font:700 15px/1 var(--mono);font-style:normal;height:17px}
+  .mnav button[aria-pressed="true"]{background:#1f4a5c;color:var(--gold)}
+  .mnav .cnt{position:absolute;top:5px;right:8px;font:700 10px/1 var(--mono);background:#2a4a5a;color:#fbe9de;padding:3px 5px;border-radius:999px}
+  .mnav .cnt.ok{background:var(--gold);color:var(--night)}
+  .mnav .pulse{animation:mpulse 1s ease-in-out 3}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 32px);text-align:center}
+  .achpops{top:calc(10px + env(safe-area-inset-top,0px));bottom:auto;left:12px;right:12px;max-width:none;justify-items:center}
+  .achpop{grid-template-columns:40px minmax(0,1fr);padding:7px 12px 7px 7px;border-radius:12px}
+  .achpop .badge{width:40px;height:44px}
+  .achpop .badge img{width:30px}
+  .achpop:nth-child(n+3){display:none}
+  .frame{margin:4px}
+}
+@keyframes mpulse{50%{transform:scale(1.08);background:#2a5a6c}}
+@media (prefers-reduced-motion:reduce){.mnav .pulse{animation:none}}
 </style>
 </head>
 <body>
+
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="spark" viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10z"/></symbol>
@@ -443,14 +512,15 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
   <section class="view" id="v-quest">
   <nav class="map" id="map" aria-label="Уровни" data-en-aria="Levels"></nav>
 
-  <main class="bench">
+  <main class="bench" id="bench" data-m="task">
     <section class="panel brief" id="brief" aria-live="polite"></section>
 
     <section class="panel editor" aria-label="Редактор кода" data-en-aria="Code editor">
       <div class="bar"><span class="file"><span class="ft" data-en="Spell book">Книга заклинаний</span><span>index.html</span></span><button id="reset" type="button" data-en="Reset">Сбросить</button></div>
+      <div class="keybar" id="keybar" role="toolbar" aria-label="Символы" data-en-aria="Symbols"><button type="button" data-k="⇥" aria-label="Tab">⇥</button><button type="button" data-k="<" aria-label="<">&lt;</button><button type="button" data-k=">" aria-label=">">&gt;</button><button type="button" data-k="/" aria-label="/">/</button><button type="button" data-k="=" aria-label="=">=</button><button type="button" data-k="&quot;" aria-label="&quot;">"</button><button type="button" data-k="'" aria-label="'">'</button><button type="button" data-k="{" aria-label="{">{</button><button type="button" data-k="}" aria-label="}">}</button><button type="button" data-k="(" aria-label="(">(</button><button type="button" data-k=")" aria-label=")">)</button><button type="button" data-k=";" aria-label=";">;</button><button type="button" data-k=":" aria-label=":">:</button><button type="button" data-k="." aria-label=".">.</button><button type="button" data-k="#" aria-label="#">#</button><button type="button" data-k="-" aria-label="-">-</button><button type="button" data-k="[" aria-label="[">[</button><button type="button" data-k="]" aria-label="]">]</button><button type="button" data-k="`" aria-label="`">`</button><button type="button" data-k="$" aria-label="$">$</button><button type="button" data-k="+" aria-label="+">+</button><button type="button" data-k="*" aria-label="*">*</button><button type="button" data-k="!" aria-label="!">!</button><button type="button" data-k="&" aria-label="&">&</button><button type="button" data-k="|" aria-label="|">|</button><button type="button" data-k="_" aria-label="_">_</button><button type="button" class="k-act" data-k="undo" aria-label="Отменить" data-en-aria="Undo">↶</button><button type="button" class="k-act" data-k="hide" aria-label="Скрыть клавиатуру" data-en-aria="Hide keyboard">⌄</button></div>
       <div class="ed">
         <pre id="hl" aria-hidden="true"></pre>
-        <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Код страницы" data-en-aria="Page code"></textarea>
+        <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" enterkeyhint="enter" aria-label="Код страницы" data-en-aria="Page code"></textarea>
       </div>
     </section>
 
@@ -467,6 +537,11 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
   </section>
 </div>
 
+<nav class="mnav" id="mnav" aria-label="Уровень" data-en-aria="Level">
+  <button type="button" data-m="task" aria-pressed="true"><i>✦</i><span data-en="Task">Задание</span><b class="cnt" id="mcnt">0/0</b></button>
+  <button type="button" data-m="code" aria-pressed="false"><i>&lt;/&gt;</i><span data-en="Code">Код</span></button>
+  <button type="button" data-m="site" aria-pressed="false"><i>▣</i><span data-en="Site">Сайт</span></button>
+</nav>
 <script>
 /* ---------- i18n ---------- */
 const LANGKEY = 'pixel-quest-lang';
@@ -3264,7 +3339,7 @@ function renderCafeSide() {
 /* views */
 let view = 'quest';
 function show(v) {
-  view = v;
+  view = v; document.body.classList.toggle('vq', v === 'quest');
   ['quest', 'map', 'cafe', 'stats'].forEach(k => { $('v-' + k).hidden = k !== v; $('t-' + k).setAttribute('aria-selected', String(k === v)); });
   if (v === 'cafe') {
     freshSet = new Set(Object.keys(st.stars).map(Number).filter(i => i > (st.seen ?? -1)));
@@ -3911,6 +3986,7 @@ function scrollStrip() { const m = $('map'), c = m.querySelector('.node.cur'); i
 function renderBrief(results) {
   const L = LEVELS[st.cur], i = st.cur;
   const passed = results.every(Boolean);
+  const mc = $('mcnt'); if (mc) { mc.textContent = passed ? '✓' : `${results.filter(Boolean).length}/${results.length}`; mc.classList.toggle('ok', passed); }
   const stars = st.stars[i];
   const warns = lint(ta.value);
   const jsWarns = L.js && visEnv ? [...new Set(visEnv.errors.map(jsErrText))].slice(0, 2) : [];
@@ -3974,6 +4050,7 @@ function update(fromInput) {
     st.stars[i] = Math.max(st.tested && st.tested[i] ? 1 : 0, st.sol[i] ? 1 : st.hint[i] ? 2 : 3);
     if (st.tested) delete st.tested[i];
     onWin(i);
+    if (isPhone() && benchM() !== 'task') { setTimeout(() => { setM('task'); const w = brief.querySelector('.win'); if (w) w.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 800); }
     st.unlocked = Math.max(st.unlocked, Math.min(i + 1, LEVELS.length - 1));
     seal.classList.remove('on'); void seal.offsetWidth; seal.classList.add('on');
     renderTop();
@@ -3986,7 +4063,7 @@ function update(fromInput) {
 }
 
 function openLevel(i) {
-  st.cur = i;
+  st.cur = i; if (isPhone() && $('bench')) setM('task', true);
   ta.value = st.code[i] != null ? st.code[i] : LEVELS[i].starter;
   ta.scrollTop = 0;
   setTimeout(scrollStrip, 0);
@@ -4327,8 +4404,39 @@ applyLangData();
 if (LANG === 'en') dropStarters(RU0.lv.map(r => r.starter));
 applyStatic();
 
+/* ---------- phone mode ---------- */
+function isPhone() { return matchMedia('(max-width:760px)').matches; }
+function benchM() { return $('bench').dataset.m; }
+function setM(m, quiet) {
+  const b = $('bench'); if (!b) return;
+  b.dataset.m = m;
+  document.querySelectorAll('#mnav [data-m]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.m === m)));
+  if (!quiet && isPhone()) window.scrollTo({ top: Math.max(0, b.getBoundingClientRect().top + scrollY - 8), behavior: 'auto' });
+}
+$('mnav').addEventListener('click', e => { const t = e.target.closest('[data-m]'); if (t) setM(t.dataset.m); });
+(() => {
+  const bar = $('keybar'), vv = window.visualViewport;
+  const place = () => { if (!document.body.classList.contains('kb')) { bar.style.transform = ''; return; }
+    const h = vv ? vv.height : innerHeight, top = vv ? vv.offsetTop : 0; bar.style.transform = `translateY(${top + h - bar.offsetHeight}px)`; };
+  ta.addEventListener('focus', () => { if (!isPhone() || !matchMedia('(pointer:coarse)').matches) return; document.body.classList.add('kb'); place(); setTimeout(place, 300); });
+  ta.addEventListener('blur', () => { document.body.classList.remove('kb'); place(); });
+  if (vv) { vv.addEventListener('resize', place); vv.addEventListener('scroll', place); }
+  bar.addEventListener('pointerdown', e => { if (e.target.closest('[data-k]')) e.preventDefault(); });
+  bar.addEventListener('click', e => {
+    const k = e.target.closest('[data-k]'); if (!k) return;
+    const v = k.dataset.k;
+    if (v === 'hide') { ta.blur(); return; }
+    ta.focus({ preventScroll: true });
+    if (v === 'undo') { document.execCommand('undo'); return; }
+    const s = v === '⇥' ? '  ' : v;
+    if (!document.execCommand('insertText', false, s)) { ta.setRangeText(s, ta.selectionStart, ta.selectionEnd, 'end'); ta.dispatchEvent(new Event('input')); }
+  });
+})();
+document.body.classList.toggle('vq', view === 'quest');
+
 openLevel(Math.min(st.cur, LEVELS.length - 1));
 checkAch(true); achBadge();
 </script>
+<script>if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 </body>
 </html>
