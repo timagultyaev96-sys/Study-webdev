@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Веб-квест «Пиксель»: учи HTML, CSS и JavaScript, помогая кошке-магине Марте собрать сайт кофейни. Pixel Web Quest: learn HTML, CSS and JavaScript by building a café website with Marta the cat wizard.">
-<meta name="theme-color" content="#0f2a3b">
+<meta name="theme-color" content="#07141d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,24 +21,20 @@ body{font-size:14px}
 
 /* Layout: a night-sky arch window holds the cat-mage; below, the workshop bench — spell order | spellbook editor | crystal-ball preview */
 :root{
-  --bg:#fbe5eb; --panel:#fff9f4; --ink:#10283a; --muted:#5e6b78; --line:#efcbd5;
-  --night:#0f2a3b; --night-2:#163d4c; --orange:#ef7b2b; --gold:#f4ac3c; --red:#b5151f; --cream:#fde9c8;
-  --on-orange:#10283a; --ok:#1d7f5b; --ok-soft:#e2f2ea; --soft:#fbeee9;
-  --code-bg:#0f2a3b; --code-line:#1f4556; --code-fg:#fbe9de;
+  --bg:#0a1822; --panel:#112a3a; --ink:#fbe9de; --muted:#a9b8c3; --line:#21485a;
+  --night:#07141d; --night-2:#123444; --orange:#ff8a3d; --gold:#f7bb4c; --red:#e2464e; --cream:#3a2a16;
+  --on-orange:#10283a; --ok:#5fd39d; --ok-soft:#133126; --soft:#16313f;
+  --code-bg:#07141d; --code-line:#1a3a4a; --code-fg:#fbe9de; color-scheme:dark;
   --display:"Philosopher","Georgia",serif;
   --body:"Nunito","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0a1822; --panel:#112a3a; --ink:#fbe9de; --muted:#a9b8c3; --line:#21485a;
-  --night:#07141d; --night-2:#123444; --orange:#ff8a3d; --gold:#f7bb4c; --red:#e2464e; --cream:#3a2a16;
-  --on-orange:#10283a; --ok:#5fd39d; --ok-soft:#133126; --soft:#16313f;
-  --code-bg:#07141d; --code-line:#1a3a4a; --code-fg:#fbe9de; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0a1822; --panel:#112a3a; --ink:#fbe9de; --muted:#a9b8c3; --line:#21485a;
-  --night:#07141d; --night-2:#123444; --orange:#ff8a3d; --gold:#f7bb4c; --red:#e2464e; --cream:#3a2a16;
-  --on-orange:#10283a; --ok:#5fd39d; --ok-soft:#133126; --soft:#16313f;
-  --code-bg:#07141d; --code-line:#1a3a4a; --code-fg:#fbe9de; color-scheme:dark}
+:root[data-theme="light"]{
+  --bg:#fbe5eb; --panel:#fff9f4; --ink:#10283a; --muted:#5e6b78; --line:#efcbd5;
+  --night:#0f2a3b; --night-2:#163d4c; --orange:#ef7b2b; --gold:#f4ac3c; --red:#b5151f; --cream:#fde9c8;
+  --on-orange:#10283a; --ok:#1d7f5b; --ok-soft:#e2f2ea; --soft:#fbeee9;
+  --code-bg:#0f2a3b; --code-line:#1f4556; --code-fg:#fbe9de;
+  color-scheme:light}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
