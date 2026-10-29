@@ -4532,7 +4532,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTip(); 
 addEventListener('scroll', closeTip, { passive: true });
 
 /* ---------- sandbox ---------- */
-let sbx = false;
+let sbx = false, dlNS = null;
+try { if (window.claude && typeof window.claude.use === 'function') window.claude.use('downloads').then(n => { dlNS = n; }).catch(() => {}); } catch (e) {}
 const SBX = { js: true, checks: [], exports: [] };
 const sbxTpl = () => ({
   html: TR('<h1>Мой сайт</h1>\n<p>Привет! Это моя страница.</p>\n<ul>\n  <li>Первый пункт</li>\n  <li>Второй пункт</li>\n</ul>', '<h1>My site</h1>\n<p>Hi! This is my page.</p>\n<ul>\n  <li>First item</li>\n  <li>Second item</li>\n</ul>'),
@@ -4578,6 +4579,7 @@ brief.addEventListener('click', e => {
   if (e.target.closest('#sbxback')) { openLevel(st.cur); return; }
   if (e.target.closest('#sbxdl')) {
     const html = `<!doctype html>\n<html lang="${LANG}">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${TR('Мой сайт', 'My site')}</title>\n</head>\n<body>\n${ta.value}\n</body>\n</html>\n`;
+    if (dlNS) { dlNS.save({ filename: 'index.html', data: html }).then(r => { if (r && r.status === 'saved') toast(TR('Файл index.html сохранён. Открой его в браузере!', 'index.html saved. Open it in a browser!')); }).catch(err => { if (!err || err.code !== 'declined') toast(TR('Не получилось сохранить файл здесь.', 'Could not save the file here.')); }); return; }
     try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = 'index.html'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast(TR('Файл index.html скачан. Открой его в браузере!', 'index.html downloaded. Open it in a browser!')); }
     catch (err) { toast(TR('Не получилось скачать файл в этом окне.', 'Could not download the file in this window.')); }
   }
