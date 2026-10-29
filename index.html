@@ -153,7 +153,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
 .dots i:first-child{background:var(--red)}.dots i:nth-child(2){background:var(--gold)}
 .url{flex:1;min-width:0;background:var(--soft);border-radius:999px;padding:3px 12px;font:12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.screen{height:clamp(320px,58vh,560px);overflow:auto;background:#fffaf5}
+.screen{height:clamp(320px,58vh,560px);overflow:auto;background:#fffaf5;color-scheme:light}
 .preview.js{grid-template-rows:auto 1fr auto}
 .preview.js .screen{height:clamp(230px,40vh,400px)}
 .rerun{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:2px 10px;font:12px var(--mono);white-space:nowrap}
@@ -549,7 +549,7 @@ const W = s => LANG === 'en' && hasKey(I18N.chk, s) ? I18N.chk[s] : s;
 const RX = (r, e) => LANG === 'en' ? e : r;
 const RUNRE = /[«А-Яа-яЁё][А-Яа-яЁё0-9 ,.!?:«»—–\-…()]*[А-Яа-яЁё0-9!?.…»)]|[А-Яа-яЁё]/g;
 const trCode = s => typeof s === 'string' ? s.replace(RUNRE, m => hasKey(I18N.dict, m) ? I18N.dict[m] : m) : s;
-const BASE = `<style>.__root{font-family:Georgia,"Times New Roman",serif;color:#1d1d1f;background:#fffaf5;padding:20px 24px;line-height:1.5;min-height:100%;box-sizing:border-box}.__root img{max-width:100%}.__root:focus{outline:none}</style>`;
+const BASE = `<style>:host{color-scheme:light}.__root{font-family:Georgia,"Times New Roman",serif;color:#1d1d1f;background:#fffaf5;padding:20px 24px;line-height:1.5;min-height:100%;box-sizing:border-box}.__root img{max-width:100%}.__root:focus{outline:none}</style>`;
 const C = '<' + '!--';
 const CC = '/*';
 
