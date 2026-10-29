@@ -25,6 +25,8 @@ A browser game that teaches web development to complete beginners. Marta, a cat 
   - A review book for repeating any lesson.
   - Achievements with pixel-cat portraits.
   - Statistics.
+- **Calm lessons.** Theory folds away once you've seen it; help comes in three steps (a free nudge, a hint, the solution); `code` words in a task open a pop-up reminder from the lesson where they were taught.
+- **Cheat sheet and sandbox.** The review book collects a card for every completed lesson, and the Sandbox tab is a free editor with no checks, where you can also download your page as `index.html`.
 - **Two languages.** Switch between Russian and English with the RU / EN button. The lessons, the code and the checks all switch.
 
 ### Running it
@@ -54,6 +56,8 @@ On a phone the game has its own layout: a bottom bar switches between the task, 
   - Книга повторения: любой урок можно пройти ещё раз.
   - Достижения с портретами пиксельных котиков.
   - Статистика.
+- **Спокойные уроки.** Теорию после первого прочтения можно свернуть; помощь идёт ступеньками (бесплатный намёк, подсказка, решение); слова `кода` в задании открывают напоминание из урока, где их проходили.
+- **Шпаргалка и песочница.** В книге повторения копятся карточки по пройденным урокам, а вкладка «Песочница» — свободный редактор без проверок, где страницу можно скачать как `index.html`.
 - **Два языка.** Кнопка RU / EN переключает игру между русским и английским. Вместе с языком меняются уроки, код и проверки.
 
 ### Как запустить

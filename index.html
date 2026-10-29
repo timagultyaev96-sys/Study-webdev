@@ -355,6 +355,41 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .seasons li em{font-style:normal;color:var(--muted);font-size:12px;white-space:nowrap}
 .win .newitem{background:rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;font-size:13px;color:#fde9c8}
 .win .newitem b{color:var(--gold)}
+/* ---------- calmer lessons ---------- */
+details.learn>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+details.learn>summary::-webkit-details-marker{display:none}
+details.learn>summary h3{flex:1 1 auto}
+details.learn>summary .more{font:700 11.5px var(--body);color:var(--muted);border:1.5px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap}
+details.learn[open]>summary .more{display:none}
+details.learn:not([open]){padding-bottom:0}
+details.learn .client{margin-top:2px}
+.ladder{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--muted)}
+.ladder i{width:22px;height:4px;border-radius:2px;background:var(--line)}
+.ladder i.on{background:var(--gold)}
+.btn .cost{color:var(--muted);font-weight:600;margin-left:4px}
+.nudge pre{margin:8px 0 0}
+.brief code.term{cursor:help;text-decoration:underline dotted color-mix(in srgb,var(--red) 60%,transparent);text-underline-offset:3px}
+.termtip{position:fixed;z-index:70;max-width:min(340px,calc(100vw - 24px));background:var(--night);color:#fbe9de;border:1.5px solid var(--gold);border-radius:14px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,0,0,.35);font-size:14px;display:grid;gap:6px}
+.termtip small{color:var(--gold);font:700 10.5px var(--body);letter-spacing:.1em;text-transform:uppercase}
+.termtip b{font:700 16px var(--display);color:#fff}
+.termtip p{margin:0;color:#c8d4dc}
+.termtip pre{margin:2px 0 0;background:#07141d;border-radius:8px;padding:8px 10px;font:12.5px/1.5 var(--mono);overflow-x:auto;color:#fbe9de}
+.termtip .btn{justify-self:start;margin-top:2px}
+.bkmode{display:flex;gap:4px;background:var(--soft);border-radius:12px;padding:4px}
+.bkmode button{flex:1;border:0;background:transparent;color:var(--muted);border-radius:9px;padding:7px 10px;font-weight:800;font-size:13.5px}
+.bkmode button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.cheat{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-height:min(50vh,460px);overflow:auto}
+.cheat li{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:5px;background:var(--panel)}
+.cheat li b{font:700 15px var(--display)}
+.cheat li b span{font:700 11px var(--mono);color:var(--muted);margin-right:6px}
+.cheat li p{margin:0;font-size:13.5px;color:var(--muted)}
+.cheat li pre{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:8px;padding:8px 10px;font:12.5px/1.5 var(--mono);overflow-x:auto}
+.cheat .empty{border-style:dashed;color:var(--muted);font-size:14px}
+.tab.sbxtab[aria-pressed="true"]{background:var(--night);border-color:var(--gold);color:var(--gold)}
+.sbx-tpl{display:flex;flex-wrap:wrap;gap:6px}
+.sbx-note{font-size:14px;color:var(--muted);margin:0}
+.map.sbxdim .node{opacity:.55}
+
 /* ---------- phone ---------- */
 .mnav,.keybar{display:none}
 .keybar button{flex:0 0 auto;min-width:38px;height:38px;padding:0 9px;border-radius:9px;border:1px solid var(--code-line);background:#0f2433;color:#fbe9de;font:600 16px var(--mono);touch-action:manipulation;-webkit-user-select:none;user-select:none}
@@ -475,6 +510,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
     <button class="tab" role="tab" id="t-map" data-v="map" type="button" aria-selected="false" data-en="World map">Карта мира</button>
     <button class="tab" role="tab" id="t-cafe" data-v="cafe" type="button" aria-selected="false"><span data-en="Café window">Окно в кофейню</span> <span class="new" id="newbadge" hidden>NEW</span></button>
     <button class="tab" role="tab" id="t-stats" data-v="stats" type="button" aria-selected="false"><span data-en="Achievements">Достижения</span> <span class="new" id="achbadge" hidden>0</span></button>
+    <button class="tab sbxtab" id="t-sbx" type="button" aria-pressed="false"><span data-en="Sandbox">Песочница</span></button>
     <button class="tab booktab" type="button" data-book="1"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg><span data-en="Review book">Книга повторения</span></button>
     <button class="tab langtab" id="langbtn" type="button" aria-label="Язык / Language"><span data-l="ru">RU</span><span data-l="en">EN</span></button>
   </div>
@@ -3460,6 +3496,8 @@ function sanitizeState() {
   st.code = lvKeys(st.code, v => typeof v === 'string');
   st.hint = lvKeys(st.hint, v => v === true); st.sol = lvKeys(st.sol, v => v === true);
   st.tested = lvKeys(st.tested, v => v === true);
+  st.vis = lvKeys(st.vis, v => v === true); st.nudge = lvKeys(st.nudge, v => v === true);
+  if (typeof st.sandbox !== 'string') delete st.sandbox;
   st.cur = int(st.cur, 0, N - 1, 0);
   st.unlocked = int(st.unlocked, 0, N - 1, 0);
   st.unlocked = Math.max(st.unlocked, st.cur, ...Object.keys(st.stars).map(i => Math.min(N - 1, +i + 1)));
@@ -4010,15 +4048,19 @@ function renderBrief(results) {
   const stars = st.stars[i];
   const warns = lint(ta.value);
   const jsWarns = L.js && visEnv ? [...new Set(visEnv.errors.map(jsErrText))].slice(0, 2) : [];
+  st.nudge = st.nudge || {};
+  const firstFail = L.checks.find((c, k) => !results[k]);
   let helper = '';
   if (st.sol[i]) helper = `<div class="tip"><b>${TR('Готовое заклинание', 'Ready-made spell')}</b><pre>${esc(L.solution)}</pre><button class="btn" id="useSol" type="button">${TR('Вставить в книгу', 'Insert into the book')}</button></div>`;
   else if (st.hint[i]) helper = `<div class="tip"><b>${TR('Подсказка от совы.', 'A hint from the owl.')}</b> ${esc(L.hint)}</div>`;
+  else if (st.nudge[i] && !passed) helper = `<div class="tip nudge"><b>${TR('Намёк от совы.', 'A nudge from the owl.')}</b> ${firstFail ? TR('Начни с пункта', 'Start with the item') + ` «${fmt(firstFail[0])}». ` : ''}${L.extra ? TR('Вспомни уроки этой главы — всё нужное там уже было.', 'Think back to this chapter\'s lessons: everything you need was there.') : TR('Посмотри ещё раз на пример из урока «', 'Look again at the example from the lesson “') + esc(L.learn.t) + TR('»:', '”:') + `<pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre>`}</div>`;
+  const step = st.sol[i] ? 3 : st.hint[i] ? 2 : st.nudge[i] ? 1 : 0;
 
   brief.innerHTML = `
     <div><div class="eyebrow">${L.extra ? TR('Экстра-уровень · повторение главы ', 'Extra level · chapter review ') + L.chapter : TR('Уровень ', 'Level ') + displayNum(i) + TR(' из ', ' of ') + REG}</div><h2>${esc(L.title)}</h2></div>
-    ${(() => { const k = CH.findIndex(ch => ch.from === i); if (k < 0) return ''; const ch = CH[k]; return `<div class="chapintro"><b>${TR('Начинается', 'Starting:')} ${esc(ch.title)}</b><p>${esc(ch.blurb)} ${TR('Тропа научит тебя:', 'The path will teach you:')}</p><ul class="topics">${ch.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`; })()}
-    <div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>
-    <div class="learn"><h3>${SPARK}${esc(L.learn.t)}</h3><p>${esc(L.learn.p)}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></div>
+    ${(() => { const k = CH.findIndex(ch => ch.from === i); if (k < 0 || !briefFirst) return ''; const ch = CH[k]; return `<div class="chapintro"><b>${TR('Начинается', 'Starting:')} ${esc(ch.title)}</b><p>${esc(ch.blurb)} ${TR('Тропа научит тебя:', 'The path will teach you:')}</p><ul class="topics">${ch.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`; })()}
+    ${briefFirst ? `<div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>` : ''}
+    <details class="learn"${learnOpen ? ' open' : ''}><summary><h3>${SPARK}${esc(L.learn.t)}</h3><span class="more">${TR('📖 напомнить теорию', '📖 show the theory')}</span></summary>${briefFirst ? '' : `<div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>`}<p>${esc(L.learn.p)}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></details>
     ${L.extra ? TR('<div class="xtra-note"><b>Экстра-уровень.</b> Новой теории нет, только то, что ты уже знаешь. Награда двойная.</div>', '<div class="xtra-note"><b>Extra level.</b> No new theory, only what you already know. Double reward.</div>') : ''}
     <div class="task"><h3>${SPARK}${TR('Задание', 'Task')}</h3><p>${fmt(L.task)}</p>
       <ul class="checks">${L.checks.map((c, k) => `<li class="${results[k] ? 'pass' : ''}"><span>${fmt(c[0])}</span></li>`).join('')}</ul>
@@ -4030,15 +4072,18 @@ function renderBrief(results) {
       <p>+${stars * xpPer(i)} ${TR('магической силы.', 'magic power.')}${stars < 3 ? TR(' Пройди без подсказок, чтобы собрать все три звезды.', ' Complete it without hints to collect all three stars.') : TR(' Марта довольно мурлычет.', ' Marta purrs happily.')}</p>
       <div class="newitem">${TR('В кофейне появилось', 'New in the café')}: <b>${esc(CAFE[i].name)}</b>${FURN[i] ? `, <b>${esc(FURN[i].name)}</b>` : ''}${PLANTS[i] ? ` ${TR('и растение', 'and a plant:')} <b>${esc(PLANTS[i].name)}</b>` : ''}</div>
       <div class="helpers">${SEASON_END.includes(i) ? `<button class="btn primary" id="fin" type="button">${TR('Завершить сезон', 'Finish the season')}</button>` : `<button class="btn primary" id="next" type="button">${TR('Следующий уровень →', 'Next level →')}</button>`}<button class="btn" id="peek" type="button">${TR('Заглянуть в окно', 'Peek through the window')}</button></div></div>` : `
-    <div class="helpers">
-      ${!st.hint[i] ? `<button class="btn" id="hint" type="button">${TR('Подсказка', 'Hint')}</button>` : ''}
-      ${st.hint[i] && !st.sol[i] ? `<button class="btn" id="sol" type="button">${TR('Показать решение', 'Show the solution')}</button>` : ''}
+    <div class="helpers" style="align-items:center">
+      ${step === 0 ? `<button class="btn" id="nudge" type="button">${TR('Намёк', 'Nudge')}<span class="cost">${TR('бесплатно', 'free')}</span></button>` : ''}
+      ${step === 1 ? `<button class="btn" id="hint" type="button">${TR('Подсказка', 'Hint')}<span class="cost">−1★</span></button>` : ''}
+      ${step === 2 ? `<button class="btn" id="sol" type="button">${TR('Показать решение', 'Show the solution')}<span class="cost">−1★</span></button>` : ''}
+      <span class="ladder" title="${TR('Ступени помощи', 'Help steps')}" aria-label="${TR('Ступени помощи', 'Help steps')}: ${step} / 3"><i class="${step >= 1 ? 'on' : ''}"></i><i class="${step >= 2 ? 'on' : ''}"></i><i class="${step >= 3 ? 'on' : ''}"></i></span>
     </div>`}
     ${helper}
     ${(() => { const k = chapterOf(i); if (!testOpen(k) || (passed && stars)) return ''; return `<div class="skip"><span>${TR('<b>Уже знаешь эту тему?</b> Сдай тест главы и переходи дальше.', '<b>Already know this topic?</b> Pass the chapter test and move on.')}</span><button class="btn" id="quiz" type="button">${TR('Тест главы', 'Chapter test')} ${k + 1}</button></div>`; })()}
     ${st.tested && st.tested[i] ? TR('<div class="skip"><span><b>Уровень зачтён тестом.</b> Пройди его, чтобы получить больше звёзд.</span></div>', '<div class="skip"><span><b>Level credited by the test.</b> Complete it to earn more stars.</span></div>') : ''}`;
 }
 
+function markTerms() { brief.querySelectorAll('code').forEach(c => { if (!c.closest('pre') && findTerm(c.textContent)) c.classList.add('term'); }); }
 function prep(code) { return code.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>|$)/gi, (m, a, b, c) => a + b.replace(/:root\b/g, ':host').replace(/(^|[\s,}])(html|body)(?=\s*[,{:.#\[])/g, (mm, p1, tag) => p1 + (tag === 'html' ? ':host' : '.__root')) + c); }
 function check(code) {
   const L = LEVELS[st.cur];
@@ -4057,6 +4102,7 @@ function check(code) {
 }
 
 function update(fromInput) {
+  if (sbx) { sbxUpdate(); return; }
   const code = ta.value;
   hl.innerHTML = highlight(code);
   st.code[st.cur] = code;
@@ -4078,11 +4124,14 @@ function update(fromInput) {
   if (!passed) seal.classList.remove('on');
   else if (st.stars[i]) seal.classList.add('on');
   save();
-  renderBrief(res);
+  renderBrief(res); markTerms();
   if (fromInput) checkAch();
 }
 
+let briefFirst = true, learnOpen = true;
 function openLevel(i) {
+  sbxOff();
+  st.vis = st.vis || {}; briefFirst = !st.vis[i] && !have(i); learnOpen = briefFirst; st.vis[i] = true;
   st.cur = i; if (isPhone() && $('bench')) setM('task', true);
   ta.value = st.code[i] != null ? st.code[i] : LEVELS[i].starter;
   ta.scrollTop = 0;
@@ -4105,12 +4154,13 @@ ta.addEventListener('keydown', e => {
   }
 });
 $('map').addEventListener('click', e => { const b = e.target.closest('.node'); if (b && !b.disabled) openLevel(+b.dataset.i); });
-$('reset').addEventListener('click', () => { ta.value = LEVELS[st.cur].starter; delete visStores[st.cur]; update(false); toast(TR('Страница книги очищена', 'The book page is cleared')); });
+$('reset').addEventListener('click', () => { if (sbx) { ta.value = ''; delete visStores.sbx; update(false); return; } ta.value = LEVELS[st.cur].starter; delete visStores[st.cur]; update(false); toast(TR('Страница книги очищена', 'The book page is cleared')); });
 $('rerun').addEventListener('click', () => { update(false); toast(TR('Превью перезапущено, как после обновления страницы', 'The preview restarted, like after a page refresh')); });
 brief.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   const id = t.id, i = st.cur;
-  if (id === 'hint') { st.hint[i] = true; update(false); }
+  if (id === 'nudge') { st.nudge = st.nudge || {}; st.nudge[i] = true; update(false); }
+  if (id === 'hint') { st.nudge = st.nudge || {}; st.nudge[i] = true; st.hint[i] = true; update(false); }
   if (id === 'sol') { st.sol[i] = true; update(false); }
   if (id === 'useSol') { ta.value = LEVELS[i].solution; update(true); }
   if (id === 'next') openLevel(i + 1);
@@ -4118,7 +4168,7 @@ brief.addEventListener('click', e => {
   if (id === 'peek') show('cafe');
   if (id === 'quiz') openQuiz(chapterOf(st.cur));
 });
-document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b && b.dataset.v) show(b.dataset.v); });
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.id === 't-sbx') { sbxOn(); return; } if (b.dataset.v === 'quest' && sbx) { openLevel(st.cur); } if (b.dataset.v) show(b.dataset.v); });
 $('stops').addEventListener('click', e => { const b = e.target.closest('.stop'); if (b && !b.disabled) { openLevel(+b.dataset.i); show('quest'); } });
 $('cafec').addEventListener('click', e => {
   if (cafeScene !== 'hall') { npcClick(e); return; }
@@ -4293,9 +4343,9 @@ function finishQuiz() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && qz) closeQuiz(); if (e.key === 'Escape' && bk) closeBook(); });
 
 /* ---------- book of review ---------- */
-let bk = null;
+let bk = null, bk0mode = null;
 function openBook() {
-  bk = { ch: chapterOf(st.cur), q: '', fresh: true };
+  bk = { ch: chapterOf(st.cur), q: '', fresh: true, mode: bk0mode || 'lessons' }; bk0mode = null;
   let box = document.querySelector('.bookbox');
   if (!box) { box = document.createElement('div'); box.className = 'quizbox bookbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', TR('Книга повторения', 'Review book')); document.body.appendChild(box);
     box.addEventListener('click', bookClick); box.addEventListener('input', e => { if (e.target.id === 'bkq') { bk.q = e.target.value; renderBookList(); } if (e.target.id === 'bkfresh') bk.fresh = e.target.checked; }); }
@@ -4306,12 +4356,13 @@ function renderBook() {
   const box = document.querySelector('.bookbox'); if (!box || !bk) return;
   const done = Object.keys(st.stars).length;
   box.innerHTML = `<div class="qcard bk"><div class="qtop"><div class="eyebrow">${TR('Книга повторения', 'Review book')}</div><button class="qclose" type="button" data-bk="close" aria-label="${TR('Закрыть книгу', 'Close the book')}">×</button></div>
-    <h3>${TR('Что повторим?', 'What shall we review?')}</h3>
-    <p>${TR(`Выбери главу или найди тему словом. Пройденных уроков: ${done}. Повтор не отнимает звёзды, а если пройдёшь лучше — звёзд станет больше.`, `Pick a chapter or search for a topic. Lessons completed: ${done}. Reviewing never takes stars away, and if you do better, you get more.`)}</p>
+    <div class="bkmode" role="group" aria-label="${TR('Раздел книги', 'Book section')}"><button type="button" data-bkmode="lessons" aria-pressed="${bk.mode !== 'cheat'}">${TR('Повторить урок', 'Repeat a lesson')}</button><button type="button" data-bkmode="cheat" aria-pressed="${bk.mode === 'cheat'}">${TR('Шпаргалка', 'Cheat sheet')}</button></div>
+    ${bk.mode === 'cheat' ? `<p>${TR('Карточка появляется здесь за каждый пройденный урок: главная мысль и пример кода.', 'A card appears here for every lesson you complete: the key idea and a code example.')}</p>` : `<h3>${TR('Что повторим?', 'What shall we review?')}</h3>
+    <p>${TR(`Выбери главу или найди тему словом. Пройденных уроков: ${done}. Повтор не отнимает звёзды, а если пройдёшь лучше — звёзд станет больше.`, `Pick a chapter or search for a topic. Lessons completed: ${done}. Reviewing never takes stars away, and if you do better, you get more.`)}</p>`}
     <input class="bksearch" id="bkq" type="search" placeholder="${TR('Например: flex, таймер, массив, :hover', 'For example: flex, timer, array, :hover')}" value="${esc(bk.q)}" autocomplete="off">
     <div class="bkchaps" role="group" aria-label="${TR('Глава', 'Chapter')}">${CH.map((c, k) => `<button type="button" data-bkch="${k}" aria-pressed="${!bk.q && k === bk.ch}" ${st.unlocked >= c.from ? '' : 'disabled'} title="${esc(c.title)}">${esc(c.short)}</button>`).join('')}</div>
-    <ul class="bklist" id="bklist"></ul>
-    <div class="bkopts"><label><input type="checkbox" id="bkfresh" ${bk.fresh ? 'checked' : ''}> ${TR('Начать с чистого листа', 'Start with a clean page')}</label><button class="btn" type="button" data-bk="random">${TR('Случайный пройденный урок', 'A random completed lesson')}</button></div></div>`;
+    <ul class="${bk.mode === 'cheat' ? 'cheat' : 'bklist'}" id="bklist"></ul>
+    <div class="bkopts"${bk.mode === 'cheat' ? ' hidden' : ''}><label><input type="checkbox" id="bkfresh" ${bk.fresh ? 'checked' : ''}> ${TR('Начать с чистого листа', 'Start with a clean page')}</label><button class="btn" type="button" data-bk="random">${TR('Случайный пройденный урок', 'A random completed lesson')}</button></div></div>`;
   renderBookList();
 }
 function renderBookList() {
@@ -4321,6 +4372,13 @@ function renderBookList() {
   if (qq) ids = ids.filter(i => { const L = LEVELS[i]; return [L.title, L.learn.t, L.learn.p, L.task].join(' ').toLowerCase().includes(qq); });
   else { const c = CH[bk.ch], end = CH[bk.ch + 1] ? CH[bk.ch + 1].from : LEVELS.length; ids = ids.filter(i => i >= c.from && i < end); }
   document.querySelectorAll('[data-bkch]').forEach(b => b.setAttribute('aria-pressed', String(!qq && +b.dataset.bkch === bk.ch)));
+  if (bk.mode === 'cheat') {
+    const got = ids.filter(i => have(i) && !LEVELS[i].extra);
+    list.innerHTML = got.length ? got.map(i => { const L = LEVELS[i];
+      return `<li><b><span>${levelLabel(i)}</span>${esc(L.learn.t)}</b><p>${esc(firstSentences(L.learn.p, 2))}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></li>`; }).join('')
+      : `<li class="empty">${qq ? TR('Ничего не нашлось среди пройденных уроков.', 'Nothing found among completed lessons.') : TR('Пройди уроки этой главы, и здесь появятся карточки.', 'Complete lessons in this chapter, and cards will appear here.')}</li>`;
+    return;
+  }
   list.innerHTML = ids.length ? ids.map(i => { const L = LEVELS[i], s = st.stars[i] || 0, open = i <= st.unlocked;
     return `<li><button type="button" data-lv="${i}" ${open ? '' : 'disabled'}><span class="num">${levelLabel(i)}</span><span><b>${esc(L.title)}</b><small>${esc(L.learn.t)}${qq ? ' · ' + esc(CH[chapterOf(i)].title) : ''}</small></span><span class="st" aria-label="${s} ${TR('из 3 звёзд', 'of 3 stars')}">${open ? '★'.repeat(s) + '☆'.repeat(3 - s) : TR('закрыт', 'locked')}</span></button></li>`; }).join('')
     : `<li><p>${TR('Ничего не нашлось. Попробуй другое слово: тег, свойство или тему.', 'Nothing found. Try another word: a tag, a property or a topic.')}</p></li>`;
@@ -4328,6 +4386,7 @@ function renderBookList() {
 function bookClick(e) {
   if (!bk) return;
   if (e.target === e.currentTarget) { closeBook(); return; }
+  const md = e.target.closest('[data-bkmode]'); if (md) { bk.mode = md.dataset.bkmode; renderBook(); return; }
   const ch = e.target.closest('[data-bkch]'); if (ch && !ch.disabled) { bk.ch = +ch.dataset.bkch; bk.q = ''; const f = document.querySelector('#bkq'); if (f) f.value = ''; renderBookList(); return; }
   const lv = e.target.closest('[data-lv]'); if (lv && !lv.disabled) { goRepeat(+lv.dataset.lv); return; }
   const act = e.target.closest('[data-bk]'); if (!act) return;
@@ -4408,7 +4467,7 @@ function applyStatic() {
 function dropStarters(old) { Object.keys(st.code).forEach(i => { if (st.code[i] === old[i]) delete st.code[i]; }); }
 function setLang(l) {
   if (l === LANG) return;
-  const old = LEVELS.map(L => L.starter), wasStarter = ta.value === old[st.cur];
+  const old = LEVELS.map(L => L.starter), wasStarter = !sbx && ta.value === old[st.cur];
   LANG = l; try { localStorage.setItem(LANGKEY, l); } catch (e) {}
   applyLangData(); applyStatic(); dropStarters(old);
   if (wasStarter) { ta.value = LEVELS[st.cur].starter; delete visStores[st.cur]; }
@@ -4423,6 +4482,106 @@ $('langbtn').addEventListener('click', () => setLang(LANG === 'en' ? 'ru' : 'en'
 applyLangData();
 if (LANG === 'en') dropStarters(RU0.lv.map(r => r.starter));
 applyStatic();
+
+/* ---------- term tooltips ---------- */
+function firstSentences(t, n) { const m = String(t).match(/[^.!?]+[.!?]+(\s|$)/g); return m ? m.slice(0, n).join('').trim() : t; }
+const termCache = new Map();
+function findTerm(raw) {
+  const t = String(raw).trim().replace(/;$/, '');
+  if (!t || t.length > 40) return null;
+  const key = LANG + '|' + st.cur + '|' + st.unlocked + '|' + t;
+  if (termCache.has(key)) return termCache.get(key);
+  const esc_ = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const tries = [t]; const head = t.split(/[\s:(=]/)[0]; if (head && head !== t && head.length > 1) tries.push(head);
+  let hit = null;
+  for (const q of tries) {
+    const re = new RegExp('(^|[^\\w-])' + esc_(q) + '(?![\\w-])', 'i');
+    for (const where of ['t', 'p', 'code']) {
+      for (let j = 0; j < LEVELS.length; j++) {
+        const L = LEVELS[j]; if (L.extra || j > st.unlocked) continue;
+        const txt = where === 't' ? L.learn.t : where === 'p' ? L.learn.p : L.learn.code;
+        if (re.test(txt)) { hit = j; break; }
+      }
+      if (hit != null) break;
+    }
+    if (hit != null) break;
+  }
+  termCache.set(key, hit);
+  return hit;
+}
+function closeTip() { const t = document.querySelector('.termtip'); if (t) t.remove(); }
+function openTip(el) {
+  closeTip();
+  const j = findTerm(el.textContent); if (j == null) return;
+  const L = LEVELS[j], here = j === st.cur;
+  const d = document.createElement('div'); d.className = 'termtip'; d.setAttribute('role', 'dialog');
+  d.innerHTML = `<small>${here ? TR('Тема этого урока', 'This lesson\'s topic') : TR('Урок', 'Lesson') + ' ' + levelLabel(j)}</small><b>${esc(L.learn.t)}</b><p>${esc(firstSentences(L.learn.p, 2))}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre>${here ? '' : `<button class="btn" type="button" data-tipgo="${j}">${TR('Открыть урок', 'Open the lesson')}</button>`}`;
+  document.body.appendChild(d);
+  const r = el.getBoundingClientRect(), w = d.offsetWidth, h = d.offsetHeight;
+  let x = Math.min(Math.max(12, r.left), innerWidth - w - 12), y = r.bottom + 8;
+  if (y + h > innerHeight - 12) y = Math.max(12, r.top - h - 8);
+  d.style.left = x + 'px'; d.style.top = y + 'px';
+}
+brief.addEventListener('click', e => { const c = e.target.closest('code.term'); if (c) { e.stopPropagation(); openTip(c); } });
+brief.addEventListener('toggle', e => { if (e.target.matches && e.target.matches('details.learn')) learnOpen = e.target.open; }, true);
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-tipgo]'); if (g) { closeTip(); goRepeat(+g.dataset.tipgo); return; }
+  if (!e.target.closest('.termtip')) closeTip();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTip(); });
+addEventListener('scroll', closeTip, { passive: true });
+
+/* ---------- sandbox ---------- */
+let sbx = false;
+const SBX = { js: true, checks: [], exports: [] };
+const sbxTpl = () => ({
+  html: TR('<h1>Мой сайт</h1>\n<p>Привет! Это моя страница.</p>\n<ul>\n  <li>Первый пункт</li>\n  <li>Второй пункт</li>\n</ul>', '<h1>My site</h1>\n<p>Hi! This is my page.</p>\n<ul>\n  <li>First item</li>\n  <li>Second item</li>\n</ul>'),
+  css: TR('<style>\n  body {\n    background-color: #fde9c8;\n  }\n  h1 {\n    color: #b5151f;\n    text-align: center;\n  }\n  .card {\n    background-color: white;\n    padding: 16px;\n    border-radius: 12px;\n  }\n</style>\n\n<h1>Мой сайт</h1>\n<div class="card">\n  <p>Поменяй цвета и посмотри, что получится.</p>\n</div>', '<style>\n  body {\n    background-color: #fde9c8;\n  }\n  h1 {\n    color: #b5151f;\n    text-align: center;\n  }\n  .card {\n    background-color: white;\n    padding: 16px;\n    border-radius: 12px;\n  }\n</style>\n\n<h1>My site</h1>\n<div class="card">\n  <p>Change the colors and see what happens.</p>\n</div>'),
+  js: TR("<h1>Счётчик</h1>\n<button id=\"btn\">Нажми меня</button>\n<p>Нажатий: <span id=\"count\">0</span></p>\n\n<script>\n  const btn = document.querySelector('#btn');\n  const countEl = document.querySelector('#count');\n  let count = 0;\n  btn.addEventListener('click', () => {\n    count++;\n    countEl.textContent = count;\n    console.log('Клик номер', count);\n  });\n<\/script>", "<h1>Counter</h1>\n<button id=\"btn\">Click me</button>\n<p>Clicks: <span id=\"count\">0</span></p>\n\n<script>\n  const btn = document.querySelector('#btn');\n  const countEl = document.querySelector('#count');\n  let count = 0;\n  btn.addEventListener('click', () => {\n    count++;\n    countEl.textContent = count;\n    console.log('Click number', count);\n  });\n<\/script>"),
+});
+function sbxOn() {
+  if (!sbx) { if (st.cur != null) st.code[st.cur] = ta.value; }
+  sbx = true; $('t-sbx').setAttribute('aria-pressed', 'true'); $('map').classList.add('sbxdim');
+  ta.value = st.sandbox != null ? st.sandbox : sbxTpl().html; ta.scrollTop = 0; delete visStores.sbx;
+  show('quest');
+  seal.classList.remove('on');
+  if (isPhone()) setM('code', true);
+  update(false);
+}
+function sbxOff() {
+  if (!sbx) return;
+  sbx = false; $('t-sbx').setAttribute('aria-pressed', 'false'); $('map').classList.remove('sbxdim');
+}
+function sbxUpdate() {
+  const code = ta.value;
+  hl.innerHTML = highlight(code);
+  st.sandbox = code; save();
+  if (/<script/i.test(code)) { if (visEnv) killEnv(visEnv); visEnv = runCode(code, 'visible', SBX, visStores.sbx = visStores.sbx || {}); renderConsole(visEnv); }
+  else { if (visEnv) { killEnv(visEnv); visEnv = null; } renderConsole(null); shadow.innerHTML = BASE + '<div class="__root">' + prep(code) + '</div>'; }
+  const warns = lint(code), jsWarns = visEnv ? [...new Set(visEnv.errors.map(jsErrText))].slice(0, 2) : [];
+  const mc = $('mcnt'); if (mc) { mc.textContent = '∞'; mc.classList.remove('ok'); }
+  brief.innerHTML = `
+    <div><div class="eyebrow">${TR('Свободный режим', 'Free mode')}</div><h2>${TR('Песочница', 'Sandbox')}</h2></div>
+    <p class="sbx-note">${TR('Здесь нет заданий, проверок и звёзд. Пиши что угодно на HTML, CSS и JavaScript и смотри, что получится. Код сохраняется сам.', 'No tasks, checks or stars here. Write anything in HTML, CSS and JavaScript and see what happens. Your code saves itself.')}</p>
+    <div class="task"><h3>${SPARK}${TR('Начать с заготовки', 'Start from a template')}</h3>
+      <div class="sbx-tpl"><button class="btn" type="button" data-tpl="html">HTML</button><button class="btn" type="button" data-tpl="css">HTML + CSS</button><button class="btn" type="button" data-tpl="js">JavaScript</button><button class="btn" type="button" data-tpl="blank">${TR('Пустой лист', 'Blank page')}</button></div>
+      ${warns.length ? `<div class="warn"><b>${TR('Сова заметила опечатку', 'The owl spotted a typo')}</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+      ${jsWarns.length ? `<div class="warn"><b>${TR('Сова заметила ошибку в JavaScript', 'The owl spotted a JavaScript error')}</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+    </div>
+    <div class="helpers"><button class="btn" type="button" id="sbxdl">${TR('Скачать как index.html', 'Download as index.html')}</button><button class="btn primary" type="button" id="sbxback">${TR('Вернуться к квесту', 'Back to the quest')}</button></div>`;
+  markTerms();
+}
+brief.addEventListener('click', e => {
+  if (!sbx) return;
+  const t = e.target.closest('[data-tpl]');
+  if (t) { const v = t.dataset.tpl, had = ta.value.trim(); delete visStores.sbx; ta.focus({ preventScroll: true }); ta.select(); const nv = v === 'blank' ? '' : sbxTpl()[v]; if (!(nv ? document.execCommand('insertText', false, nv) : document.execCommand('delete'))) { ta.value = nv; } update(false); ta.blur(); if (had) toast(TR('Прежний код можно вернуть: Ctrl+Z или ↶', 'You can get the old code back: Ctrl+Z or ↶')); if (isPhone()) setM('code'); return; }
+  if (e.target.closest('#sbxback')) { openLevel(st.cur); return; }
+  if (e.target.closest('#sbxdl')) {
+    const html = `<!doctype html>\n<html lang="${LANG}">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${TR('Мой сайт', 'My site')}</title>\n</head>\n<body>\n${ta.value}\n</body>\n</html>\n`;
+    try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = 'index.html'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast(TR('Файл index.html скачан. Открой его в браузере!', 'index.html downloaded. Open it in a browser!')); }
+    catch (err) { toast(TR('Не получилось скачать файл в этом окне.', 'Could not download the file in this window.')); }
+  }
+});
 
 /* ---------- phone mode ---------- */
 function isPhone() { return matchMedia('(max-width:760px)').matches; }
