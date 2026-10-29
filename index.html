@@ -265,6 +265,23 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .bookicon{width:24px;height:21px;image-rendering:pixelated;flex:0 0 auto}
 .tab .bookicon{width:20px;height:18px}
 .booktab{margin-left:auto}
+.booktab .caret{font-style:normal;font-size:11px;opacity:.7;margin-left:-2px}
+.booktab.on{border-color:var(--gold)}
+.toolmenu{position:fixed;z-index:65;width:min(290px,calc(100vw - 24px));background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 16px 40px rgba(0,0,0,.35);display:grid;gap:2px}
+.toolmenu>button{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:center;text-align:left;border:0;background:transparent;color:var(--ink);border-radius:11px;padding:9px 10px}
+.toolmenu>button:hover,.toolmenu>button:focus-visible{background:var(--soft)}
+.toolmenu>button i{font-style:normal;font:700 16px var(--mono);width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--night);color:var(--gold)}
+.toolmenu>button b{display:block;font-size:14px}
+.toolmenu>button small{display:block;font-size:12px;color:var(--muted)}
+.toolmenu>button[aria-pressed="true"] b::after{content:" ✓";color:var(--gold)}
+.tm-lang{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1.5px solid var(--line);margin-top:4px;padding:9px 10px 4px;font-size:13px;color:var(--muted);font-weight:700}
+.tm-lang .langtab{display:inline-flex;border:1.5px solid var(--line);background:var(--panel);border-radius:10px}
+.owlsay{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:start}
+.owlsay>div{min-width:0}
+.owlsay>div>b{display:block;margin-bottom:3px}
+.owlsay>div>p{margin:3px 0 0}
+.owlav{width:40px;height:40px;border-radius:50%;background:var(--night);display:grid;place-items:center;border:1.5px solid color-mix(in srgb,var(--gold) 50%,transparent)}
+.owlav img{width:27px;height:30px;image-rendering:pixelated;image-rendering:crisp-edges}
 .langtab{gap:0;padding:4px;font-family:"JetBrains Mono",monospace;font-size:12px}
 .langtab span{padding:5px 8px;border-radius:8px;color:var(--muted,#8a7a70)}
 .langtab span.on{background:var(--ink);color:var(--panel)}
@@ -510,9 +527,7 @@ details.learn .client{margin-top:2px}
     <button class="tab" role="tab" id="t-map" data-v="map" type="button" aria-selected="false" data-en="World map">Карта мира</button>
     <button class="tab" role="tab" id="t-cafe" data-v="cafe" type="button" aria-selected="false"><span data-en="Café window">Окно в кофейню</span> <span class="new" id="newbadge" hidden>NEW</span></button>
     <button class="tab" role="tab" id="t-stats" data-v="stats" type="button" aria-selected="false"><span data-en="Achievements">Достижения</span> <span class="new" id="achbadge" hidden>0</span></button>
-    <button class="tab sbxtab" id="t-sbx" type="button" aria-pressed="false"><span data-en="Sandbox">Песочница</span></button>
-    <button class="tab booktab" type="button" data-book="1"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg><span data-en="Review book">Книга повторения</span></button>
-    <button class="tab langtab" id="langbtn" type="button" aria-label="Язык / Language"><span data-l="ru">RU</span><span data-l="en">EN</span></button>
+    <button class="tab booktab" id="menubtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="toolmenu"><svg class="bookicon" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="3" width="14" height="10" fill="#5a2f8a"/><rect x="2" y="3" width="12" height="9" fill="#fde9c8"/><rect x="7" y="3" width="2" height="10" fill="#c99a3a"/><rect x="3" y="5" width="3" height="1" fill="#a8968a"/><rect x="3" y="7" width="3" height="1" fill="#a8968a"/><rect x="3" y="9" width="2" height="1" fill="#a8968a"/><rect x="10" y="5" width="3" height="1" fill="#a8968a"/><rect x="10" y="7" width="2" height="1" fill="#a8968a"/><rect x="10" y="9" width="3" height="1" fill="#a8968a"/><rect x="12" y="0" width="1" height="3" fill="#ffd27a"/><rect x="11" y="1" width="3" height="1" fill="#ffd27a"/></svg><span data-en="Magic book">Книга мага</span><i class="caret" aria-hidden="true">▾</i></button>
   </div>
 
   <section class="view" id="v-stats" hidden><div class="stv" id="statsview"></div></section>
@@ -569,6 +584,12 @@ details.learn .client{margin-top:2px}
   </section>
 </div>
 
+<div class="toolmenu" id="toolmenu" role="menu" hidden>
+  <button type="button" role="menuitem" data-tool="repeat"><i>↻</i><span><b data-en="Repeat a lesson">Повторить урок</b><small data-en="Pick any completed level">Любой пройденный уровень</small></span></button>
+  <button type="button" role="menuitem" data-tool="cheat"><i>☰</i><span><b data-en="Cheat sheet">Шпаргалка</b><small data-en="Cards from your lessons">Карточки по пройденным урокам</small></span></button>
+  <button type="button" role="menuitem" data-tool="sbx" id="t-sbx" aria-pressed="false"><i>✎</i><span><b data-en="Sandbox">Песочница</b><small data-en="Free coding, no checks">Свободный код без проверок</small></span></button>
+  <div class="tm-lang"><span data-en="Language">Язык</span><button class="langtab" id="langbtn" type="button" aria-label="Язык / Language"><span data-l="ru">RU</span><span data-l="en">EN</span></button></div>
+</div>
 <nav class="mnav" id="mnav" aria-label="Уровень" data-en-aria="Level">
   <button type="button" data-m="task" aria-pressed="true"><i>✦</i><span data-en="Task">Задание</span><b class="cnt" id="mcnt">0/0</b></button>
   <button type="button" data-m="code" aria-pressed="false"><i>&lt;/&gt;</i><span data-en="Code">Код</span></button>
@@ -4052,20 +4073,20 @@ function renderBrief(results) {
   const firstFail = L.checks.find((c, k) => !results[k]);
   let helper = '';
   if (st.sol[i]) helper = `<div class="tip"><b>${TR('Готовое заклинание', 'Ready-made spell')}</b><pre>${esc(L.solution)}</pre><button class="btn" id="useSol" type="button">${TR('Вставить в книгу', 'Insert into the book')}</button></div>`;
-  else if (st.hint[i]) helper = `<div class="tip"><b>${TR('Подсказка от совы.', 'A hint from the owl.')}</b> ${esc(L.hint)}</div>`;
-  else if (st.nudge[i] && !passed) helper = `<div class="tip nudge"><b>${TR('Намёк от совы.', 'A nudge from the owl.')}</b> ${firstFail ? TR('Начни с пункта', 'Start with the item') + ` «${fmt(firstFail[0])}». ` : ''}${L.extra ? TR('Вспомни уроки этой главы — всё нужное там уже было.', 'Think back to this chapter\'s lessons: everything you need was there.') : TR('Посмотри ещё раз на пример из урока «', 'Look again at the example from the lesson “') + esc(L.learn.t) + TR('»:', '”:') + `<pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre>`}</div>`;
+  else if (st.hint[i]) helper = `<div class="tip owlsay">${owlAv()}<div><b>${TR('Подсказка от совы.', 'A hint from the owl.')}</b> ${esc(L.hint)}</div></div>`;
+  else if (st.nudge[i] && !passed) helper = `<div class="tip nudge owlsay">${owlAv()}<div><b>${TR('Намёк от совы.', 'A nudge from the owl.')}</b> ${firstFail ? TR('Начни с пункта', 'Start with the item') + ` «${fmt(firstFail[0])}». ` : ''}${L.extra ? TR('Вспомни уроки этой главы — всё нужное там уже было.', 'Think back to this chapter\'s lessons: everything you need was there.') : TR('Посмотри ещё раз на пример из урока «', 'Look again at the example from the lesson “') + esc(L.learn.t) + TR('»:', '”:') + `<pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre>`}</div></div>`;
   const step = st.sol[i] ? 3 : st.hint[i] ? 2 : st.nudge[i] ? 1 : 0;
 
   brief.innerHTML = `
     <div><div class="eyebrow">${L.extra ? TR('Экстра-уровень · повторение главы ', 'Extra level · chapter review ') + L.chapter : TR('Уровень ', 'Level ') + displayNum(i) + TR(' из ', ' of ') + REG}</div><h2>${esc(L.title)}</h2></div>
     ${(() => { const k = CH.findIndex(ch => ch.from === i); if (k < 0 || !briefFirst) return ''; const ch = CH[k]; return `<div class="chapintro"><b>${TR('Начинается', 'Starting:')} ${esc(ch.title)}</b><p>${esc(ch.blurb)} ${TR('Тропа научит тебя:', 'The path will teach you:')}</p><ul class="topics">${ch.learn.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`; })()}
-    ${briefFirst ? `<div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>` : ''}
-    <details class="learn"${learnOpen ? ' open' : ''}><summary><h3>${SPARK}${esc(L.learn.t)}</h3><span class="more">${TR('📖 напомнить теорию', '📖 show the theory')}</span></summary>${briefFirst ? '' : `<div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>`}<p>${esc(L.learn.p)}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></details>
+    <div class="client"><div class="avatar"><svg aria-hidden="true"><use href="#cat"/></svg></div><div class="bubble"><b>${TR('Марта, кошка-магиня', 'Marta, the cat wizard')}</b>${esc(L.say)}</div></div>
+    <div class="learn"><h3>${SPARK}${esc(L.learn.t)}</h3><p>${esc(L.learn.p)}</p><pre>${L.js && !L.learn.code.trimStart().startsWith('<') ? hlJS(L.learn.code) : highlight(L.learn.code)}</pre></div>
     ${L.extra ? TR('<div class="xtra-note"><b>Экстра-уровень.</b> Новой теории нет, только то, что ты уже знаешь. Награда двойная.</div>', '<div class="xtra-note"><b>Extra level.</b> No new theory, only what you already know. Double reward.</div>') : ''}
     <div class="task"><h3>${SPARK}${TR('Задание', 'Task')}</h3><p>${fmt(L.task)}</p>
       <ul class="checks">${L.checks.map((c, k) => `<li class="${results[k] ? 'pass' : ''}"><span>${fmt(c[0])}</span></li>`).join('')}</ul>
-      ${warns.length ? `<div class="warn"><b>${TR('Сова заметила опечатку', 'The owl spotted a typo')}</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
-      ${jsWarns.length ? `<div class="warn"><b>${TR('Сова заметила ошибку в JavaScript', 'The owl spotted a JavaScript error')}</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+      ${warns.length ? `<div class="warn owlsay">${owlAv()}<div><b>${TR('Сова заметила опечатку', 'The owl spotted a typo')}</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div></div>` : ''}
+      ${jsWarns.length ? `<div class="warn owlsay">${owlAv()}<div><b>${TR('Сова заметила ошибку в JavaScript', 'The owl spotted a JavaScript error')}</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div></div>` : ''}
     </div>
     ${passed && stars ? `<div class="win"><h3>${SEASON_END.includes(i) ? TR('Сезон пройден!', 'Season complete!') : TR('Заклинание сработало', 'The spell worked')}</h3>
       <div class="stars" aria-label="${stars} ${TR('из 3 звёзд', 'of 3 stars')}">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
@@ -4083,6 +4104,9 @@ function renderBrief(results) {
     ${st.tested && st.tested[i] ? TR('<div class="skip"><span><b>Уровень зачтён тестом.</b> Пройди его, чтобы получить больше звёзд.</span></div>', '<div class="skip"><span><b>Level credited by the test.</b> Complete it to earn more stars.</span></div>') : ''}`;
 }
 
+let owlSrc = null;
+function owlImg() { if (owlSrc) return owlSrc; const c = document.createElement('canvas'); c.width = OWL[0].length; c.height = OWL.length; const prev = cx; cx = c.getContext('2d'); spr(0, 0, OWL); cx = prev; owlSrc = c.toDataURL(); return owlSrc; }
+const owlAv = () => `<span class="owlav" aria-hidden="true"><img src="${owlImg()}" alt=""></span>`;
 function markTerms() { brief.querySelectorAll('code').forEach(c => { if (!c.closest('pre') && findTerm(c.textContent)) c.classList.add('term'); }); }
 function prep(code) { return code.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>|$)/gi, (m, a, b, c) => a + b.replace(/:root\b/g, ':host').replace(/(^|[\s,}])(html|body)(?=\s*[,{:.#\[])/g, (mm, p1, tag) => p1 + (tag === 'html' ? ':host' : '.__root')) + c); }
 function check(code) {
@@ -4168,7 +4192,7 @@ brief.addEventListener('click', e => {
   if (id === 'peek') show('cafe');
   if (id === 'quiz') openQuiz(chapterOf(st.cur));
 });
-document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.id === 't-sbx') { sbxOn(); return; } if (b.dataset.v === 'quest' && sbx) { openLevel(st.cur); } if (b.dataset.v) show(b.dataset.v); });
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.dataset.v === 'quest' && sbx) { openLevel(st.cur); } if (b.dataset.v) show(b.dataset.v); });
 $('stops').addEventListener('click', e => { const b = e.target.closest('.stop'); if (b && !b.disabled) { openLevel(+b.dataset.i); show('quest'); } });
 $('cafec').addEventListener('click', e => {
   if (cafeScene !== 'hall') { npcClick(e); return; }
@@ -4542,7 +4566,7 @@ const sbxTpl = () => ({
 });
 function sbxOn() {
   if (!sbx) { if (st.cur != null) st.code[st.cur] = ta.value; }
-  sbx = true; $('t-sbx').setAttribute('aria-pressed', 'true'); $('map').classList.add('sbxdim');
+  sbx = true; $('t-sbx').setAttribute('aria-pressed', 'true'); $('menubtn').classList.add('on'); $('map').classList.add('sbxdim');
   ta.value = st.sandbox != null ? st.sandbox : sbxTpl().html; ta.scrollTop = 0; delete visStores.sbx;
   show('quest');
   seal.classList.remove('on');
@@ -4551,7 +4575,7 @@ function sbxOn() {
 }
 function sbxOff() {
   if (!sbx) return;
-  sbx = false; $('t-sbx').setAttribute('aria-pressed', 'false'); $('map').classList.remove('sbxdim');
+  sbx = false; $('t-sbx').setAttribute('aria-pressed', 'false'); $('menubtn').classList.remove('on'); $('map').classList.remove('sbxdim');
 }
 function sbxUpdate() {
   const code = ta.value;
@@ -4566,8 +4590,8 @@ function sbxUpdate() {
     <p class="sbx-note">${TR('Здесь нет заданий, проверок и звёзд. Пиши что угодно на HTML, CSS и JavaScript и смотри, что получится. Код сохраняется сам.', 'No tasks, checks or stars here. Write anything in HTML, CSS and JavaScript and see what happens. Your code saves itself.')}</p>
     <div class="task"><h3>${SPARK}${TR('Начать с заготовки', 'Start from a template')}</h3>
       <div class="sbx-tpl"><button class="btn" type="button" data-tpl="html">HTML</button><button class="btn" type="button" data-tpl="css">HTML + CSS</button><button class="btn" type="button" data-tpl="js">JavaScript</button><button class="btn" type="button" data-tpl="blank">${TR('Пустой лист', 'Blank page')}</button></div>
-      ${warns.length ? `<div class="warn"><b>${TR('Сова заметила опечатку', 'The owl spotted a typo')}</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
-      ${jsWarns.length ? `<div class="warn"><b>${TR('Сова заметила ошибку в JavaScript', 'The owl spotted a JavaScript error')}</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div>` : ''}
+      ${warns.length ? `<div class="warn owlsay">${owlAv()}<div><b>${TR('Сова заметила опечатку', 'The owl spotted a typo')}</b>${warns.map(w => `<p>${fmt(w)}</p>`).join('')}</div></div>` : ''}
+      ${jsWarns.length ? `<div class="warn owlsay">${owlAv()}<div><b>${TR('Сова заметила ошибку в JavaScript', 'The owl spotted a JavaScript error')}</b>${jsWarns.map(w => `<p>${fmt(w)}</p>`).join('')}</div></div>` : ''}
     </div>
     <div class="helpers"><button class="btn" type="button" id="sbxdl">${TR('Скачать как index.html', 'Download as index.html')}</button><button class="btn primary" type="button" id="sbxback">${TR('Вернуться к квесту', 'Back to the quest')}</button></div>`;
   markTerms();
@@ -4584,6 +4608,31 @@ brief.addEventListener('click', e => {
     catch (err) { toast(TR('Не получилось скачать файл в этом окне.', 'Could not download the file in this window.')); }
   }
 });
+
+/* ---------- book menu ---------- */
+function closeMenu() { const m = $('toolmenu'); if (m.hidden) return; m.hidden = true; $('menubtn').setAttribute('aria-expanded', 'false'); }
+function openMenu() {
+  const m = $('toolmenu'), r = $('menubtn').getBoundingClientRect();
+  m.hidden = false; $('menubtn').setAttribute('aria-expanded', 'true');
+  const w = m.offsetWidth, h = m.offsetHeight;
+  let x = Math.min(innerWidth - w - 12, Math.max(12, r.right - w)), y = r.bottom + 8;
+  if (y + h > innerHeight - 12) y = Math.max(12, r.top - h - 8);
+  m.style.left = x + 'px'; m.style.top = y + 'px';
+  const f = m.querySelector('[data-tool]'); if (f) f.focus({ preventScroll: true });
+}
+$('menubtn').addEventListener('click', e => { e.stopPropagation(); $('toolmenu').hidden ? openMenu() : closeMenu(); });
+$('toolmenu').addEventListener('click', e => {
+  e.stopPropagation();
+  const t = e.target.closest('[data-tool]'); if (!t) return;
+  closeMenu();
+  const v = t.dataset.tool;
+  if (v === 'repeat') openBook();
+  if (v === 'cheat') { bk0mode = 'cheat'; openBook(); }
+  if (v === 'sbx') { if (sbx) openLevel(st.cur); else sbxOn(); }
+});
+document.addEventListener('click', e => { if (!e.target.closest('#toolmenu')) closeMenu(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('toolmenu').hidden) { closeMenu(); $('menubtn').focus(); } });
+addEventListener('resize', closeMenu);
 
 /* ---------- phone mode ---------- */
 function isPhone() { return matchMedia('(max-width:760px)').matches; }
