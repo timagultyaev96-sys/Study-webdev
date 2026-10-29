@@ -3451,7 +3451,31 @@ function guestAt(x, y) {
 /* ---------- state ---------- */
 const KEY = 'pixel-quest-v2';
 let st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {} };
-try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s.cur === 'number') st = Object.assign(st, s); } catch (e) {}
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object' && !Array.isArray(s)) st = Object.assign(st, s); } catch (e) {}
+function sanitizeState() {
+  const N = LEVELS.length, obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+  const int = (v, lo, hi, d) => { v = Math.floor(Number(v)); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
+  const lvKeys = (o, ok) => { const r = {}; for (const [k, v] of Object.entries(obj(o))) { const i = Number(k); if (Number.isInteger(i) && i >= 0 && i < N && ok(v)) r[i] = v; } return r; };
+  st.stars = lvKeys(st.stars, v => v === 1 || v === 2 || v === 3);
+  st.code = lvKeys(st.code, v => typeof v === 'string');
+  st.hint = lvKeys(st.hint, v => v === true); st.sol = lvKeys(st.sol, v => v === true);
+  st.tested = lvKeys(st.tested, v => v === true);
+  st.cur = int(st.cur, 0, N - 1, 0);
+  st.unlocked = int(st.unlocked, 0, N - 1, 0);
+  st.unlocked = Math.max(st.unlocked, st.cur, ...Object.keys(st.stars).map(i => Math.min(N - 1, +i + 1)));
+  if (st.seen != null) st.seen = int(st.seen, -1, N - 1, -1);
+  st.served = int(st.served, 0, 1e9, 0);
+  const q = {}; for (const [k, v] of Object.entries(obj(st.quiz))) { const i = Number(k); if (Number.isInteger(i) && i >= 0 && i < 10 && Number.isFinite(v)) q[i] = v; } st.quiz = q;
+  const a = {}; for (const [k, v] of Object.entries(obj(st.ach))) if (Number.isFinite(v)) a[k] = v; st.ach = a;
+  st.achSeen = int(st.achSeen, 0, 1e15, 0);
+  const x = obj(st.stats); st.stats = x;
+  x.lv = obj(x.lv); for (const k of Object.keys(x.lv)) { const v = obj(x.lv[k]); x.lv[k] = { t: int(v.t, 0, 1e12, 0), runs: int(v.runs, 0, 1e9, 0), warn: int(v.warn, 0, 1e9, 0) }; }
+  x.days = Array.isArray(x.days) ? x.days.filter(d => typeof d === 'string') : [];
+  x.dayTime = obj(x.dayTime); for (const k of Object.keys(x.dayTime)) if (!Number.isFinite(x.dayTime[k])) delete x.dayTime[k];
+  for (const k of ['total', 'typos', 'fixed', 'talks', 'repeats']) x[k] = int(x[k], 0, 1e12, 0);
+  x.met = obj(x.met); x.flags = obj(x.flags);
+}
+try { sanitizeState(); } catch (e) { st = { cur: 0, unlocked: 0, stars: {}, code: {}, hint: {}, sol: {} }; }
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
 
 /* ---------- statistics & achievements ---------- */
@@ -4217,13 +4241,13 @@ function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { co
 let qz = null;
 function openQuiz(k) {
   qz = { k, items: shuffle(QUIZ[k]).slice(0, QN).map(it => { const order = shuffle(it.o.map((_, n) => n)); return { ...it, order }; }), n: 0, picked: null, right: 0, marks: [] };
-  let box = document.querySelector('.quizbox');
+  let box = document.querySelector('.quizbox:not(.bookbox)');
   if (!box) { box = document.createElement('div'); box.className = 'quizbox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', TR('Тест главы', 'Chapter test')); document.body.appendChild(box); box.addEventListener('click', quizClick); }
   box.hidden = false; renderQuiz();
 }
-function closeQuiz() { const box = document.querySelector('.quizbox'); if (box) box.hidden = true; qz = null; }
+function closeQuiz() { const box = document.querySelector('.quizbox:not(.bookbox)'); if (box) box.hidden = true; qz = null; }
 function renderQuiz() {
-  const box = document.querySelector('.quizbox'); if (!box || !qz) return;
+  const box = document.querySelector('.quizbox:not(.bookbox)'); if (!box || !qz) return;
   const ch = CH[qz.k], dots = qz.items.map((_, n) => `<i class="${qz.marks[n] === true ? 'ok' : qz.marks[n] === false ? 'no' : n === qz.n ? 'now' : ''}"></i>`).join('');
   const head = `<div class="qtop"><div class="eyebrow">${TR('Тест', 'Test')} · ${esc(ch.title)}</div><button class="qclose" type="button" data-q="close" aria-label="${TR('Закрыть тест', 'Close the test')}">×</button></div><div class="qdots" aria-hidden="true">${dots}</div>`;
   if (qz.n >= qz.items.length) {
