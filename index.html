@@ -409,6 +409,8 @@ details.learn .client{margin-top:2px}
 .sbx-note{font-size:14px;color:var(--muted);margin:0}
 .map.sbxdim .node{opacity:.55}
 
+/* theory is for reading and retyping, not copying */
+.learn,.nudge,.termtip,.cheat,.bubble{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 /* ---------- phone ---------- */
 .mnav,.keybar{display:none}
 .keybar button{flex:0 0 auto;min-width:38px;height:38px;padding:0 9px;border-radius:9px;border:1px solid var(--code-line);background:#0f2433;color:#fbe9de;font:600 16px var(--mono);touch-action:manipulation;-webkit-user-select:none;user-select:none}
@@ -4660,6 +4662,20 @@ $('toolmenu').addEventListener('click', e => {
 document.addEventListener('click', e => { if (!e.target.closest('#toolmenu')) closeMenu(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('toolmenu').hidden) { closeMenu(); $('menubtn').focus(); } });
 addEventListener('resize', closeMenu);
+
+/* ---------- no copying from theory ---------- */
+const NOCOPY = '.learn, .nudge, .termtip, .cheat, .bubble';
+const inTheory = n => { const el = n && (n.nodeType === 1 ? n : n.parentElement); return !!(el && el.closest && el.closest(NOCOPY)); };
+let copyHintAt = 0;
+const copyHint = () => { const now = Date.now(); if (now - copyHintAt < 4000) return; copyHintAt = now; toast(TR('Код из теории лучше набрать руками — так он запомнится ✍️', 'Type the code from the theory by hand: that\'s how it sticks ✍️')); };
+['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => {
+  const sel = getSelection();
+  if (e.target === ta || !sel || sel.isCollapsed) { if (inTheory(e.target)) { e.preventDefault(); copyHint(); } return; }
+  if (inTheory(sel.anchorNode) || inTheory(sel.focusNode)) { e.preventDefault(); copyHint(); }
+}, true));
+document.addEventListener('dragstart', e => { if (inTheory(e.target)) e.preventDefault(); }, true);
+document.addEventListener('contextmenu', e => { if (inTheory(e.target)) e.preventDefault(); }, true);
+document.addEventListener('selectstart', e => { if (inTheory(e.target)) e.preventDefault(); }, true);
 
 /* ---------- phone mode ---------- */
 function isPhone() { return matchMedia('(max-width:760px)').matches; }
