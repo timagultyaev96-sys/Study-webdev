@@ -2,7 +2,7 @@
 
 **[English](#english) · [Русский](#русский)**
 
-▶ **Play / Играть:** https://timagultyaev96-sys.github.io/Study-webdev/
+▶ **Play / Играть:** https://pixelquest.uk
 
 ---
 
@@ -27,13 +27,14 @@ A browser game that teaches web development to complete beginners. Marta, a cat 
   - Statistics.
 - **Gentle help.** Help comes in three steps (a free nudge, a hint, the solution), and the owl itself delivers its tips. `code` words in a task open a pop-up reminder from the lesson where they were taught.
 - **The magic book menu.** One button holds everything extra: repeat any lesson, a cheat sheet with a card for every completed lesson, a free sandbox with no checks (download your page as `index.html`), and the language switch.
-- **Two languages.** Switch between Russian and English in the magic book menu. The lessons, the code and the checks all switch.
+- **Learn by typing.** Theory and examples can't be copied: you retype the code yourself, which is how it sticks. Copy and paste still work inside the editor.
+- **Two languages.** The game follows your system language (Russian or English) and you can pick Auto, RU or EN in the magic book menu. The lessons, the code and the checks all switch.
 
 ### Running it
 
-It's one self-contained `index.html` with no build step and no server. Open the file in a browser, or use the GitHub Pages link above. Progress is saved in your browser's localStorage.
+It's one self-contained `index.html` with no build step and no server. Open the file in a browser, or play at https://pixelquest.uk (hosted on GitHub Pages). Progress is saved in your browser's localStorage.
 
-On a phone the game has its own layout: a bottom bar switches between the task, the code and the site, and a row of symbol keys (`< > / = " { } ;` and more) sits above the keyboard. From the GitHub Pages link you can add the game to your home screen (Share → Add to Home Screen on iPhone, ⋮ → Install app on Android). It then opens like an app and works offline.
+On a phone the game has its own layout: a bottom bar switches between the task, the code and the site, and a row of symbol keys (`< > / = " { } ;` and more) sits above the keyboard. From https://pixelquest.uk you can add the game to your home screen (Share → Add to Home Screen on iPhone, ⋮ → Install app on Android). It then opens like an app and works offline.
 
 ---
 
@@ -58,10 +59,11 @@ On a phone the game has its own layout: a bottom bar switches between the task, 
   - Статистика.
 - **Мягкая помощь.** Помощь идёт ступеньками (бесплатный намёк, подсказка, решение), и подсказки даёт сама сова. Слова `кода` в задании открывают напоминание из урока, где их проходили.
 - **Меню «Книга мага».** Одна кнопка для всего дополнительного: повторить любой урок, шпаргалка с карточками по пройденным урокам, песочница без проверок (страницу можно скачать как `index.html`) и переключение языка.
-- **Два языка.** Русский и английский переключаются в меню «Книга мага». Вместе с языком меняются уроки, код и проверки.
+- **Учимся руками.** Теорию и примеры нельзя скопировать: код набираешь сам, так он лучше запоминается. В самом редакторе копирование и вставка работают.
+- **Два языка.** Игра подстраивается под язык системы (русский или английский), а в меню «Книга мага» можно выбрать «Авто», RU или EN. Вместе с языком меняются уроки, код и проверки.
 
 ### Как запустить
 
-Вся игра — это один файл `index.html`: без сборки и без сервера. Открой его в браузере или перейди по ссылке на GitHub Pages выше. Прогресс сохраняется в localStorage браузера.
+Вся игра — это один файл `index.html`: без сборки и без сервера. Открой его в браузере или играй на https://pixelquest.uk (сайт работает на GitHub Pages). Прогресс сохраняется в localStorage браузера.
 
-На телефоне у игры своя раскладка: нижняя панель переключает задание, код и сайт, а над клавиатурой появляется ряд символов (`< > / = " { } ;` и другие). С сайта на GitHub Pages игру можно добавить на главный экран (iPhone: «Поделиться» → «На экран „Домой“», Android: ⋮ → «Установить приложение»). Тогда она открывается как приложение и работает без интернета.
+На телефоне у игры своя раскладка: нижняя панель переключает задание, код и сайт, а над клавиатурой появляется ряд символов (`< > / = " { } ;` и другие). С сайта https://pixelquest.uk игру можно добавить на главный экран (iPhone: «Поделиться» → «На экран „Домой“», Android: ⋮ → «Установить приложение»). Тогда она открывается как приложение и работает без интернета.
