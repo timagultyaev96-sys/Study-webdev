@@ -36,6 +36,10 @@ It's one self-contained `index.html` with no build step and no server. Open the 
 
 On a phone the game has its own layout: a bottom bar switches between the task, the code and the site, and a row of symbol keys (`< > / = " { } ;` and more) sits above the keyboard. From https://pixelquest.uk you can add the game to your home screen (Share → Add to Home Screen on iPhone, ⋮ → Install app on Android). It then opens like an app and works offline.
 
+### License
+
+© 2026 timagultyaev96-sys. All rights reserved. You may play the game and view the code for personal learning; copying, modifying, re-hosting or commercial use requires written permission. See [LICENSE](LICENSE).
+
 ---
 
 ## Русский
@@ -67,3 +71,7 @@ On a phone the game has its own layout: a bottom bar switches between the task, 
 Вся игра — это один файл `index.html`: без сборки и без сервера. Открой его в браузере или играй на https://pixelquest.uk (сайт работает на GitHub Pages). Прогресс сохраняется в localStorage браузера.
 
 На телефоне у игры своя раскладка: нижняя панель переключает задание, код и сайт, а над клавиатурой появляется ряд символов (`< > / = " { } ;` и другие). С сайта https://pixelquest.uk игру можно добавить на главный экран (iPhone: «Поделиться» → «На экран „Домой“», Android: ⋮ → «Установить приложение»). Тогда она открывается как приложение и работает без интернета.
+
+### Лицензия
+
+© 2026 timagultyaev96-sys. Все права защищены. Играть и смотреть код для личного обучения можно; копировать, изменять, размещать на других сайтах или использовать в коммерческих целях — только с письменного разрешения. Подробности в файле [LICENSE](LICENSE).

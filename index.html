@@ -274,6 +274,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 
 .toolmenu>button b{display:block;font-size:14px}
 .toolmenu>button small{display:block;font-size:12px;color:var(--muted)}
 .toolmenu>button[aria-pressed="true"] b::after{content:" ✓";color:var(--gold)}
+.tm-copy{padding:6px 10px 4px;font-size:11px;color:var(--muted);text-align:center}
 .tm-lang{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1.5px solid var(--line);margin-top:4px;padding:9px 10px 4px;font-size:13px;color:var(--muted);font-weight:700}
 .tm-lang .langtab{display:inline-flex;border:1.5px solid var(--line);background:var(--panel);border-radius:10px;padding:3px;gap:2px}
 .tm-lang .langtab button{border:0;background:transparent;color:var(--muted);border-radius:7px;padding:4px 8px;font:700 12px var(--mono)}
@@ -593,6 +594,7 @@ details.learn .client{margin-top:2px}
   <button type="button" role="menuitem" data-tool="cheat"><i>☰</i><span><b data-en="Cheat sheet">Шпаргалка</b><small data-en="Cards from your lessons">Карточки по пройденным урокам</small></span></button>
   <button type="button" role="menuitem" data-tool="sbx" id="t-sbx" aria-pressed="false"><i>✎</i><span><b data-en="Sandbox">Песочница</b><small data-en="Free coding, no checks">Свободный код без проверок</small></span></button>
   <div class="tm-lang"><span data-en="Language">Язык</span><div class="langtab" id="langbtn" role="group" aria-label="Язык / Language"><button type="button" data-l="auto" data-en="Auto">Авто</button><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></div></div>
+  <div class="tm-copy" data-en="© 2026 Pixel Web Quest · All rights reserved">© 2026 Веб-квест «Пиксель» · Все права защищены</div>
 </div>
 <nav class="mnav" id="mnav" aria-label="Уровень" data-en-aria="Level">
   <button type="button" data-m="task" aria-pressed="true"><i>✦</i><span data-en="Task">Задание</span><b class="cnt" id="mcnt">0/0</b></button>
@@ -600,6 +602,7 @@ details.learn .client{margin-top:2px}
   <button type="button" data-m="site" aria-pressed="false"><i>▣</i><span data-en="Site">Сайт</span></button>
 </nav>
 <script>
+/* Pixel Web Quest · © 2026 timagultyaev96-sys. All rights reserved. Copying, modifying or re-hosting without written permission is prohibited. */
 /* ---------- i18n ---------- */
 const LANGKEY = 'pixel-quest-lang';
 // Language: the player's own choice if they made one, otherwise the system language (Russian-family -> RU, everything else -> EN).
