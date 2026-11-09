@@ -25,6 +25,7 @@ A browser game that teaches web development to complete beginners. Marta, a cat 
   - A review book for repeating any lesson.
   - Achievements with pixel-cat portraits.
   - Statistics.
+- **Intro tour.** On the first launch a short guided tour points out where everything is — the task, the editor, the preview, the levels and the menu. You can replay it anytime from the magic book menu ("How to play").
 - **Gentle help.** Help comes in three steps (a free nudge, a hint, the solution), and the owl itself delivers its tips. `code` words in a task open a pop-up reminder from the lesson where they were taught.
 - **The magic book menu.** One button holds everything extra: repeat any lesson, a cheat sheet with a card for every completed lesson, a free sandbox with no checks (download your page as `index.html`), and the language switch.
 - **Learn by typing.** Theory and examples can't be copied: you retype the code yourself, which is how it sticks. Copy and paste still work inside the editor.
@@ -61,6 +62,7 @@ On a phone the game has its own layout: a bottom bar switches between the task, 
   - Книга повторения: любой урок можно пройти ещё раз.
   - Достижения с портретами пиксельных котиков.
   - Статистика.
+- **Обучение при первом запуске.** В первый раз короткое интерактивное обучение показывает, что где находится: задание, редактор, превью, уровни и меню. Повторить можно в любой момент из меню «Книга мага» → «Как играть».
 - **Мягкая помощь.** Помощь идёт ступеньками (бесплатный намёк, подсказка, решение), и подсказки даёт сама сова. Слова `кода` в задании открывают напоминание из урока, где их проходили.
 - **Меню «Книга мага».** Одна кнопка для всего дополнительного: повторить любой урок, шпаргалка с карточками по пройденным урокам, песочница без проверок (страницу можно скачать как `index.html`) и переключение языка.
 - **Учимся руками.** Теорию и примеры нельзя скопировать: код набираешь сам, так он лучше запоминается. В самом редакторе копирование и вставка работают.
