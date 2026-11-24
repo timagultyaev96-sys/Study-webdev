@@ -9,8 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script>try{if(localStorage.getItem('pixel-quest-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
 <style>
   :root{--bg:#0a1822;--panel:#112a3a;--ink:#fbe9de;--muted:#a9b8c3;--line:#21485a;--gold:#f7bb4c;--night:#07141d}
+  :root[data-theme="light"]{--bg:#e7d4da;--panel:#f7ece3;--ink:#2a1f27;--muted:#6a5560;--line:#d8bcc6;--gold:#a56d10;--night:#241a22}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Nunito","Segoe UI",system-ui,sans-serif;
     padding:max(16px,env(safe-area-inset-top)) 16px 60px}
