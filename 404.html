@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Страница не найдена · Веб-квест «Пиксель»</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script>try{if(localStorage.getItem('pixel-quest-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}</script>
+<style>
+  :root{--bg:#0a1822;--panel:#112a3a;--ink:#fbe9de;--muted:#a9b8c3;--line:#21485a;--gold:#f7bb4c;--night:#07141d;--red:#e2464e}
+  :root[data-theme="light"]{--bg:#e7d4da;--panel:#f7ece3;--ink:#2a1f27;--muted:#6a5560;--line:#d8bcc6;--gold:#a56d10;--night:#241a22;--red:#b5151f}
+  *{box-sizing:border-box;margin:0}
+  body{min-height:100vh;background:var(--bg);color:var(--ink);
+    font:16px/1.6 "Nunito","Segoe UI",system-ui,sans-serif;
+    display:grid;place-items:center;padding:24px;text-align:center}
+  .card{max-width:520px;display:grid;gap:14px;justify-items:center}
+  .moon{width:70px;height:70px;border-radius:50%;box-shadow:-16px 7px 0 0 var(--gold),0 0 30px 8px rgba(247,187,76,.5);transform:rotate(-12deg);margin-bottom:6px}
+  .code{font:700 72px/1 "Philosopher",Georgia,serif;color:var(--gold)}
+  h1{font:700 26px/1.2 "Philosopher",Georgia,serif}
+  p{color:var(--muted);max-width:40ch}
+  p.en{font-size:14px;opacity:.85}
+  a.btn{margin-top:10px;display:inline-block;background:var(--gold);color:var(--night);
+    text-decoration:none;font-weight:800;padding:12px 22px;border-radius:12px}
+  a.btn:hover{filter:brightness(1.06)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="moon" aria-hidden="true"></div>
+    <div class="code">404</div>
+    <h1>Такой страницы нет</h1>
+    <p>Кажется, кот-маг утащил эту страницу к себе в кофейню. Давай вернёмся на главную.</p>
+    <p class="en">Page not found — this one wandered off. Let’s head back to the game.</p>
+    <a class="btn" href="/" id="back">Вернуться в игру</a>
+  </div>
+  <script>
+    try{var l=localStorage.getItem('pixel-quest-lang');if(l!=='ru'&&(l==='en'||(navigator.language||'').slice(0,2)!=='ru')){
+      document.documentElement.lang='en';
+      document.title='Page not found · Pixel Web Quest';
+      document.querySelector('h1').textContent='Page not found';
+      document.querySelector('p:not(.en)').textContent='Looks like the cat wizard carried this page off to the café. Let’s go back home.';
+      document.querySelector('p.en').textContent='Такой страницы нет — давай вернёмся в игру.';
+      document.getElementById('back').textContent='Back to the game';
+    }}catch(e){}
+  </script>
+</body>
+</html>
