@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Политика конфиденциальности · Веб-квест «Пиксель»</title>
+<meta name="robots" content="index,follow">
+<meta name="description" content="Политика конфиденциальности веб-квеста «Пиксель»: какие данные собираются, зачем и как ими управлять.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a1822;--panel:#112a3a;--ink:#fbe9de;--muted:#a9b8c3;--line:#21485a;--gold:#f7bb4c;--night:#07141d}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Nunito","Segoe UI",system-ui,sans-serif;
+    padding:max(16px,env(safe-area-inset-top)) 16px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
+  h1{font:700 clamp(24px,5vw,34px)/1.1 "Philosopher",Georgia,serif;margin:0}
+  h2{font:700 clamp(19px,3.4vw,23px)/1.2 "Philosopher",Georgia,serif;margin:30px 0 8px;color:var(--gold)}
+  p,li{color:var(--ink)}
+  a{color:var(--gold)}
+  .lead{color:var(--muted)}
+  .meta{color:var(--muted);font-size:14px;margin:2px 0 0}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:12px 16px;margin:16px 0;font-size:14.5px;color:var(--muted)}
+  ul{padding-left:22px}
+  li{margin:5px 0}
+  .back{display:inline-block;margin:28px 0 0;color:var(--gold);text-decoration:none;font-weight:700}
+  .toggle{margin-left:auto;display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .toggle button{border:0;background:var(--panel);color:var(--muted);padding:7px 13px;font:700 13px "Nunito",sans-serif;cursor:pointer}
+  .toggle button[aria-pressed="true"]{background:var(--gold);color:var(--night)}
+  .toggle button+button{border-left:1.5px solid var(--line)}
+  [hidden]{display:none!important}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="title">Политика конфиденциальности</h1>
+    <div class="toggle" role="group" aria-label="Язык / Language">
+      <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+  <p class="meta" id="updated">Обновлено: 24 ноября 2026</p>
+
+  <!-- RU -->
+  <section data-sec="ru">
+    <div class="note">Это шаблон политики, подготовленный для проекта. Перед публичным запуском, особенно если среди пользователей есть несовершеннолетние, желательно показать его юристу и указать реальный контакт и страну оператора.</div>
+
+    <p class="lead">Эта страница объясняет, какие данные собирает игра «Веб-квест «Пиксель»» (далее — «Игра», сайт <a href="https://pixelquest.uk">pixelquest.uk</a>), зачем и как вы можете ими управлять.</p>
+
+    <h2>Кто обрабатывает данные</h2>
+    <p>Оператор Игры — автор проекта «Веб-квест «Пиксель»». Связаться можно через <a href="https://github.com/timagultyaev96-sys/Study-webdev/issues">страницу обращений на GitHub</a> или по адресу <a href="mailto:ВАШ_КОНТАКТНЫЙ_EMAIL">ВАШ_КОНТАКТНЫЙ_EMAIL</a>.</p>
+
+    <h2>Какие данные мы собираем</h2>
+    <ul>
+      <li><b>Данные Google-аккаунта</b> — когда вы входите через Google: имя, адрес электронной почты и идентификатор аккаунта. Пароль Google мы не видим и не храним.</li>
+      <li><b>Прогресс в игре</b> — пройденные уровни, звёзды, написанный вами код заданий и статистика обучения.</li>
+      <li><b>Сообщения о проблемах</b> — текст, который вы отправляете через «Сообщить о проблеме», и, по желанию, оставленный вами контакт. Автоматически к сообщению прикрепляются номер уровня, язык интерфейса и тип устройства/браузера.</li>
+      <li><b>Технические настройки</b> — выбранные тема и язык хранятся локально в вашем браузере (localStorage) и к нам не передаются.</li>
+    </ul>
+
+    <h2>Зачем мы это используем</h2>
+    <ul>
+      <li>Сохранять ваш прогресс и синхронизировать его между устройствами.</li>
+      <li>Обрабатывать и исправлять ошибки, о которых вы сообщаете.</li>
+      <li>Обеспечивать работу и безопасность Игры.</li>
+    </ul>
+    <p>Мы <b>не продаём</b> ваши данные и не используем их для рекламы.</p>
+
+    <h2>Где хранятся данные</h2>
+    <p>Аккаунты и прогресс хранятся в <b>Google Firebase (Authentication и Cloud Firestore)</b>. Google выступает обработчиком данных; данные могут обрабатываться на серверах Google. Политика Google: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>.</p>
+
+    <h2>Сколько храним</h2>
+    <p>Данные аккаунта и прогресса хранятся, пока существует ваш аккаунт. Вы можете удалить их в любой момент (см. ниже).</p>
+
+    <h2>Ваши права</h2>
+    <ul>
+      <li><b>Доступ и удаление.</b> В Игре есть кнопка <b>«Удалить мои данные»</b> (меню «Книга мага»), которая стирает ваш прогресс и выходит из аккаунта. Для полного удаления аккаунта напишите нам.</li>
+      <li>Вы можете запросить копию своих данных, их исправление или ограничение обработки — напишите по контакту выше.</li>
+      <li>Если вы в ЕС/ЕЭЗ, у вас есть права по GDPR, включая право на жалобу в надзорный орган.</li>
+    </ul>
+
+    <h2>Дети</h2>
+    <p>Игра может использоваться для обучения. Если вы несовершеннолетний, пользуйтесь Игрой с согласия и под присмотром родителя или опекуна. Мы не собираем данные детей сознательно сверх необходимого для работы аккаунта; родитель может запросить удаление данных ребёнка по контакту выше.</p>
+
+    <h2>Изменения</h2>
+    <p>Мы можем обновлять эту политику. Дата последнего обновления указана вверху страницы.</p>
+  </section>
+
+  <!-- EN -->
+  <section data-sec="en" hidden>
+    <div class="note">This is a template prepared for the project. Before a public launch — especially if any users are minors — have it reviewed by a lawyer and fill in a real contact and the operator's country.</div>
+
+    <p class="lead">This page explains what data the game “Pixel Web Quest” (the “Game”, at <a href="https://pixelquest.uk">pixelquest.uk</a>) collects, why, and how you can control it.</p>
+
+    <h2>Who processes the data</h2>
+    <p>The Game is operated by the author of the “Pixel Web Quest” project. You can reach us via the <a href="https://github.com/timagultyaev96-sys/Study-webdev/issues">GitHub issues page</a> or at <a href="mailto:YOUR_CONTACT_EMAIL">YOUR_CONTACT_EMAIL</a>.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li><b>Google account data</b> — when you sign in with Google: your name, email address and account identifier. We never see or store your Google password.</li>
+      <li><b>Game progress</b> — completed levels, stars, the task code you write, and learning statistics.</li>
+      <li><b>Problem reports</b> — the text you send via “Report a problem” and, optionally, a contact you provide. The level number, interface language and device/browser type are attached automatically.</li>
+      <li><b>Technical settings</b> — your chosen theme and language are stored locally in your browser (localStorage) and are not sent to us.</li>
+    </ul>
+
+    <h2>Why we use it</h2>
+    <ul>
+      <li>To save your progress and sync it across devices.</li>
+      <li>To handle and fix the issues you report.</li>
+      <li>To run and secure the Game.</li>
+    </ul>
+    <p>We <b>do not sell</b> your data and do not use it for advertising.</p>
+
+    <h2>Where data is stored</h2>
+    <p>Accounts and progress are stored in <b>Google Firebase (Authentication and Cloud Firestore)</b>. Google acts as a data processor; data may be processed on Google servers. Google’s policy: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a>.</p>
+
+    <h2>Retention</h2>
+    <p>Account and progress data are kept while your account exists. You can delete them at any time (see below).</p>
+
+    <h2>Your rights</h2>
+    <ul>
+      <li><b>Access and deletion.</b> The Game has a <b>“Delete my data”</b> button (the “Magic book” menu) that erases your progress and signs you out. For full account deletion, contact us.</li>
+      <li>You may request a copy of your data, its correction, or restriction of processing — contact us above.</li>
+      <li>If you are in the EU/EEA, you have GDPR rights, including the right to lodge a complaint with a supervisory authority.</li>
+    </ul>
+
+    <h2>Children</h2>
+    <p>The Game may be used for learning. If you are a minor, use the Game with the consent and supervision of a parent or guardian. We do not knowingly collect children’s data beyond what is needed to run an account; a parent may request deletion of a child’s data via the contact above.</p>
+
+    <h2>Changes</h2>
+    <p>We may update this policy. The last-updated date is shown at the top of the page.</p>
+  </section>
+
+  <a class="back" href="/" data-back>← Вернуться в игру</a>
+  <footer id="foot">© 2026 Веб-квест «Пиксель». Все права защищены.</footer>
+</div>
+<script>
+  (function(){
+    var T={ru:{title:'Политика конфиденциальности',updated:'Обновлено: 24 ноября 2026',back:'← Вернуться в игру',foot:'© 2026 Веб-квест «Пиксель». Все права защищены.',htmllang:'ru'},
+            en:{title:'Privacy Policy',updated:'Last updated: 24 November 2026',back:'← Back to the game',foot:'© 2026 Pixel Web Quest. All rights reserved.',htmllang:'en'}};
+    function set(l){
+      document.querySelectorAll('[data-sec]').forEach(function(s){s.hidden=s.dataset.sec!==l;});
+      document.querySelectorAll('.toggle button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false');});
+      document.getElementById('title').textContent=T[l].title;
+      document.getElementById('updated').textContent=T[l].updated;
+      document.querySelector('[data-back]').textContent=T[l].back;
+      document.getElementById('foot').textContent=T[l].foot;
+      document.documentElement.lang=T[l].htmllang;
+      try{localStorage.setItem('pixel-quest-lang',l);}catch(e){}
+      document.title=T[l].title+' · '+(l==='en'?'Pixel Web Quest':'Веб-квест «Пиксель»');
+    }
+    document.querySelectorAll('.toggle button').forEach(function(b){b.addEventListener('click',function(){set(b.dataset.lang);});});
+    var pref='ru'; try{var s=localStorage.getItem('pixel-quest-lang'); if(s==='en'||s==='ru')pref=s; else if((navigator.language||'').slice(0,2)!=='ru')pref='en';}catch(e){}
+    set(pref);
+  })();
+</script>
+</body>
+</html>
